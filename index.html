@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Sharing Session - Rumah Scopus</title>
+
+    <!-- Favicon -->
+    <link rel="icon" href="images/Icon-RS.png" type="image/png">
+    <link href="images/Icon-RS.png" rel="icon">
+    <link href="images/Icon-RS.png" rel="apple-touch-icon">
+
+    <!-- Bootstrap 5 & FontAwesome -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Google Fonts: Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800;900&display=swap"
+        rel="stylesheet">
+
+    <!-- Facebook Pixel Code -->
+    <script>
+        ! function (f, b, e, v, n, t, s) {
+            if (f.fbq) return;
+            n = f.fbq = function () {
+                n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments)
+            };
+            if (!f._fbq) f._fbq = n;
+            n.push = n;
+            n.loaded = !0;
+            n.version = '2.0';
+            n.queue = [];
+            t = b.createElement(e);
+            t.async = !0;
+            t.src = v;
+            s = b.getElementsByTagName(e)[0];
+            s.parentNode.insertBefore(t, s)
+        }(window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', '1627568205358582');
+        fbq('track', 'PageView');
+    </script>
+    <noscript>
+        <img height="1" width="1" src="https://www.facebook.com/tr?id=1627568205358582&ev=PageView&noscript=1" />
+    </noscript>
+    <!-- End Facebook Pixel Code -->
+
+    <!-- (Style CSS lainnya tetap di sini) -->
+
+    <style>
+        :root {
+            --primary-navy: #0f2b5b;
+            --primary-orange: #ff6a00;
+            --gradient-orange: linear-gradient(135deg, #ff8c00 0%, #e65c00 100%);
+            --gradient-navy: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            --bg-light: #f8fafc;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-light);
+            background-image: radial-gradient(#e2e8f0 2px, transparent 2px);
+            background-size: 30px 30px;
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        /* ==== GLOSSY & GLASSMORPHISM UTILITIES ==== */
+        .glossy-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+            padding: 2.5rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        .glossy-badge-orange {
+            background: var(--gradient-orange);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(255, 106, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            display: inline-block;
+        }
+
+        .glossy-badge-navy {
+            background: var(--gradient-navy);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(30, 60, 114, 0.3);
+            display: inline-block;
+        }
+
+        /* ==== BUTTONS ==== */
+        .btn-glossy-primary {
+            background: var(--gradient-orange);
+            color: white;
+            font-weight: 800;
+            padding: 15px 35px;
+            border-radius: 50px;
+            border: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(255, 106, 0, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-glossy-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(255, 106, 0, 0.6);
+            color: white;
+        }
+
+        /* ==== TYPOGRAPHY ==== */
+        .title-main {
+            font-weight: 900;
+            font-size: 3.5rem;
+            line-height: 1.1;
+            color: var(--primary-navy);
+            text-transform: uppercase;
+        }
+
+        .title-highlight {
+            color: var(--primary-orange);
+        }
+
+        .hook-text {
+            font-size: 1.15rem;
+            color: #475569;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+            border-left: 4px solid var(--primary-orange);
+            padding-left: 15px;
+        }
+
+        /* ==== SPEAKER SECTION ==== */
+        .speaker-img-wrapper {
+            position: relative;
+            border-radius: 20px;
+            padding: 10px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.4));
+            box-shadow: 0 15px 35px rgba(15, 43, 91, 0.15);
+            border: 1px solid white;
+        }
+
+        .speaker-img-wrapper img {
+            border-radius: 15px;
+            width: 100%;
+            object-fit: cover;
+        }
+
+        .speaker-name-badge {
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--gradient-orange);
+            color: white;
+            padding: 10px 25px;
+            border-radius: 12px;
+            font-weight: 800;
+            white-space: nowrap;
+            box-shadow: 0 10px 20px rgba(255, 106, 0, 0.3);
+            text-align: center;
+            width: 90%;
+            border: 2px solid white;
+        }
+
+        .price-box {
+            background: var(--gradient-navy);
+            color: white;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* Custom Shapes */
+        .shape-blob {
+            position: absolute;
+            background: rgba(255, 106, 0, 0.1);
+            filter: blur(60px);
+            border-radius: 50%;
+            z-index: 1;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="shape-blob" style="top: -100px; left: -100px; width: 400px; height: 400px;"></div>
+    <div class="shape-blob"
+        style="bottom: 100px; right: -50px; width: 300px; height: 300px; background: rgba(15, 43, 91, 0.1);"></div>
+
+    <div class="container py-5" style="position: relative; z-index: 2;">
+
+        <div class="row mb-4 pt-3">
+            <div class="col-12 text-center text-md-start">
+                <img src="images/Logo RSC 01.png" alt="Rumah Scopus Foundation" class="mb-3"
+                    style="max-height: 65px; width: auto; object-fit: contain;">
+
+                <h6 class="fw-bold text-muted d-none d-md-block mt-2">Join our exclusive <span class="text-dark">FREE
+                        Online Webinar</span></h6>
+            </div>
+        </div>
+
+        <div class="row align-items-center mb-5 pb-5">
+
+            <div class="col-lg-6 mb-5 mb-lg-0 pe-lg-5">
+                <div class="mb-3">
+                    <span class="glossy-badge-orange mb-2">ONLINE</span>
+                    <h1 class="title-main">SHARING<br><span class="title-highlight">SESSION</span></h1>
+                </div>
+
+                <div class="hook-text">
+                    <strong>Sering bingung memulai riset atau takut ditolak jurnal Scopus karena metodologi yang
+                        lemah?</strong><br>
+                    Pelajari trik rahasia menyusun Bab Metode yang solid, meyakinkan reviewer, dan memastikan paper Anda
+                    <em>"Anti-Reject"</em>. Dirancang khusus untuk peneliti pemula!
+                </div>
+
+                <div class="d-flex flex-wrap gap-3 mb-4">
+                    <div class="glossy-card p-3 flex-grow-1" style="border-radius: 15px;">
+                        <div class="text-muted fw-bold" style="font-size: 12px;"><i
+                                class="fas fa-calendar-alt text-warning me-1"></i> TANGGAL</div>
+                        <h5 class="fw-black mb-0" style="color: var(--primary-navy);">14 JUNI 2026</h5>
+                        <small class="text-muted">09.30 - 11.30 WIB</small>
+                    </div>
+                    <div class="glossy-card p-3 flex-grow-1" style="border-radius: 15px;">
+                        <div class="text-muted fw-bold" style="font-size: 12px;"><i
+                                class="fas fa-video text-primary me-1"></i> PLATFORM</div>
+                        <h5 class="fw-black mb-0" style="color: var(--primary-navy);">ZOOM</h5>
+                        <small class="text-muted">Meeting Online</small>
+                    </div>
+                </div>
+
+                <div class="glossy-card p-4 mb-4"
+                    style="background: linear-gradient(to right, #f8fafc, #f1f5f9); border-left: 5px solid var(--primary-navy);">
+                    <span class="glossy-badge-navy mb-2" style="font-size: 11px;">TOPIC <i
+                            class="fas fa-arrow-right ms-1"></i></span>
+                    <h4 class="fw-bold mb-0" style="color: var(--primary-navy); font-style: italic;">
+                        "Pondasi Anti-Reject: Trik Menyusun Bab Metode yang Kuat untuk Paper Scopus Pemula"
+                    </h4>
+                </div>
+
+                <div class="d-grid d-md-flex gap-3">
+                    <!-- Mengarahkan ke WA Kumala dengan pesan otomatis & membuka tab baru -->
+                    <a href="https://wa.me/6288983567819?text=Halo%20Kak%20Kumala,%20saya%20ingin%20mendaftar%20Webinar%20Gratis%20Rumah%20Scopus:%20Pondasi%20Anti-Reject%20tanggal%2014%20Juni."
+                        target="_blank" class="btn-glossy-primary">
+                        Daftar Webinar Gratis <i class="fab fa-whatsapp fs-5"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-lg-5 offset-lg-1">
+
+                <div class="speaker-img-wrapper mb-5">
+                    <img src="images/14juni2026.jpeg" alt="Speaker Biwi Fa'iza">
+
+                    <div class="speaker-name-badge">
+                        <span class="d-block" style="font-size: 1.1rem;">BIWI FA'IZA TU Z. Y. S.</span>
+                        <span class="fw-normal" style="font-size: 0.8rem;">Trainer <span
+                                class="text-warning fw-bold">Terbaik</span> Rumah Scopus</span>
+                    </div>
+                </div>
+
+                <div class="glossy-card p-0 overflow-hidden mt-5">
+                    <div class="row g-0">
+                        <div class="col-7 p-4">
+                            <h6 class="fw-bold mb-1" style="color: var(--primary-navy);">Lebih dari sekadar ilmu!</h6>
+                            <p class="text-muted small mb-0">Tingkatkan portofolio akademik Anda dengan bukti kehadiran
+                                resmi.</p>
+                        </div>
+                        <div class="col-5 price-box d-flex flex-column justify-content-center">
+                            <span style="font-size: 11px; opacity: 0.8;">Sertifikat Webinar</span>
+                            <h3 class="fw-black mb-0 text-warning">Rp 50.000</h3>
+                        </div>
+                    </div>
+                    <div class="bg-light p-2 text-center border-top"
+                        style="font-size: 11px; color: #64748b; font-family: monospace;">
+                        PEMBAYARAN: BRI - 216401000467563 (RUMAH SCOPUS AKADEMI)
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="row mt-5">
+            <div class="col-12 text-center text-muted border-top pt-4">
+                <p class="mb-1 fw-bold">Butuh Bantuan Registrasi?</p>
+                <div class="d-flex justify-content-center gap-4 flex-wrap">
+                    <span><i class="fab fa-whatsapp text-success"></i> 0889-8356-7819 (KUMALA)</span>
+                    <span><i class="fab fa-whatsapp text-success"></i> 0856-6964-7204 (RIZAL)</span>
+                </div>
+                <div class="mt-4 small text-muted">
+                    &copy; 2026 Hak Cipta Dilindungi. <br class="d-md-none">
+                    <a href="http://www.rumahscopusfoundation.com"
+                        class="text-decoration-none text-primary fw-bold">rumahscopusfoundation</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
