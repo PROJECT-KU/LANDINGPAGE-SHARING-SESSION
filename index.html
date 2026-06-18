@@ -51,6 +51,7 @@
             --primary-orange: #ff6a00;
             --gradient-orange: linear-gradient(135deg, #ff8c00 0%, #e65c00 100%);
             --gradient-navy: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            --gradient-green: linear-gradient(135deg, #10b981 0%, #059669 100%);
             --bg-light: #f8fafc;
         }
 
@@ -86,6 +87,36 @@
             box-shadow: 0 4px 15px rgba(255, 106, 0, 0.3);
             border: 1px solid rgba(255, 255, 255, 0.3);
             display: inline-block;
+        }
+
+        .glossy-badge-free {
+            background: var(--gradient-green);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-weight: 900;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            display: inline-block;
+            animation: pulse-badge 2s infinite;
+        }
+
+        @keyframes pulse-badge {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+            }
+
+            50% {
+                transform: scale(1.05);
+                box-shadow: 0 8px 25px rgba(16, 185, 129, 0.6);
+            }
+
+            100% {
+                transform: scale(1);
+                box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+            }
         }
 
         .glossy-badge-navy {
@@ -221,7 +252,9 @@
 
             <div class="col-lg-6 mb-5 mb-lg-0 pe-lg-5">
                 <div class="mb-3">
-                    <span class="glossy-badge-orange mb-2">ONLINE</span>
+                    <span class="glossy-badge-orange mb-2 me-2">ONLINE</span>
+                    <!-- Badge GRATIS Ditambahkan di sini -->
+                    <span class="glossy-badge-free mb-2"><i class="fas fa-gift me-1"></i> 100% GRATIS</span>
                     <h1 class="title-main">SHARING<br><span class="title-highlight">SESSION</span></h1>
                 </div>
 
@@ -283,9 +316,10 @@
                 <div class="glossy-card p-0 overflow-hidden mt-5">
                     <div class="row g-0">
                         <div class="col-7 p-4">
-                            <h6 class="fw-bold mb-1" style="color: var(--primary-navy);">Lebih dari sekadar ilmu!</h6>
+                            <!-- Copywriting Sertifikat dipertegas -->
+                            <h6 class="fw-bold mb-1" style="color: var(--primary-navy);">Webinarnya GRATIS!</h6>
                             <p class="text-muted small mb-0">Tingkatkan portofolio akademik Anda dengan bukti kehadiran
-                                resmi.</p>
+                                resmi <strong class="text-dark">(Opsional)</strong>.</p>
                         </div>
                         <div class="col-5 price-box d-flex flex-column justify-content-center">
                             <span style="font-size: 11px; opacity: 0.8;">Sertifikat Webinar</span>
