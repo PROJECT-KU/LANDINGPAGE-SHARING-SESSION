@@ -683,29 +683,128 @@
         }
 
         /* ---- Galeri ---- */
+        /* ---- Galeri: barisan yang digeser ---- */
+
+        .galeri-bingkai { position: relative; }
+
+        /*
+         * Digeser, bukan dikisi. Foto galeri bisa belasan, dan kisi membuat
+         * halamannya memanjang berlembar-lembar — sementara yang ingin dilihat
+         * orang cuma beberapa.
+         *
+         * Memakai gulungan asli peramban, BUKAN transform: di ponsel ia langsung
+         * bisa diusap tanpa satu baris JavaScript pun, dan tetap jalan kalau
+         * skripnya gagal dimuat.
+         */
         .galeri {
-            display: grid;
-            /*
-             * auto-FIT, bukan auto-fill. Keduanya sama saja saat fotonya
-             * banyak, tetapi auto-fill tetap membuat kolom kosong saat fotonya
-             * sedikit: terukur di 1440px, tiga foto menempati 3 dari 6 kolom
-             * dan berkerumun kecil di kiri. auto-fit meruntuhkan kolom kosong
-             * itu sehingga ketiganya melebar memenuhi barisnya.
-             */
-            grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+            display: flex;
             gap: 14px;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            scroll-behavior: smooth;
+            /* Ruang bagi bayangan kartu supaya tidak terpotong tepi gulungan. */
+            padding: 6px 2px 14px;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: thin;
         }
 
         .galeri img {
-            width: 100%;
+            /* flex-basis per tampilan: satu foto di ponsel, dua di tablet,
+               tiga di layar lebar. Diatur di media query di bawah. */
+            flex: 0 0 100%;
+
+            /*
+             * min-width: 0 WAJIB ada.
+             *
+             * Item flex bawaannya `min-width: auto`, dan untuk <img> itu
+             * berarti LEBAR ASLI gambarnya. Lebar asli menang atas flex-basis,
+             * jadi tiap foto 1400px memakai 1400px — berapa pun basisnya.
+             *
+             * Yang menyesatkan: sebelum gambarnya selesai dimuat ia belum punya
+             * lebar asli, jadi tata letaknya SEMPAT terlihat benar. Terukur:
+             * di 1440px foto tampak 421px selagi memuat, lalu melar jadi
+             * 1402px begitu selesai — dan penanda halamannya jadi 16 titik
+             * untuk 5 foto.
+             */
+            min-width: 0;
+            max-width: 100%;
+
+            scroll-snap-align: start;
             aspect-ratio: 4 / 3;
             object-fit: cover;
             border-radius: 16px;
             border: 1px solid rgba(255, 255, 255, .8);
             box-shadow: 0 12px 28px -20px rgba(15, 43, 91, .6);
-            /* Tanpa tinggi tetap, kotaknya melompat-lompat saat foto demi foto
-               selesai dimuat; aspect-ratio menahannya sejak awal. */
+            /* Tanpa tinggi tetap, barisannya melompat-lompat saat foto demi
+               foto selesai dimuat; aspect-ratio menahannya sejak awal. */
             background: #eef2f7;
+        }
+
+        @media (min-width: 576px) {
+            .galeri img { flex-basis: calc((100% - 14px) / 2); }
+        }
+
+        @media (min-width: 992px) {
+            .galeri img { flex-basis: calc((100% - 28px) / 3); }
+        }
+
+        /* Tombol geser. Disembunyikan sendiri kalau memang tidak ada yang bisa
+           digeser — panah mati yang tetap terpampang membuat orang mengiranya
+           rusak. */
+        .galeri-tombol {
+            position: absolute;
+            top: 50%;
+            z-index: 3;
+            display: grid;
+            place-items: center;
+            width: 44px;
+            height: 44px;
+            transform: translateY(-50%);
+            border: 1px solid #e2e8f0;
+            border-radius: 50%;
+            background: #fff;
+            color: var(--primary-navy);
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 8px 20px -8px rgba(15, 43, 91, .5);
+            transition: background .2s ease;
+        }
+
+        .galeri-tombol:hover { background: #f1f5f9; }
+        .galeri-tombol[hidden] { display: none; }
+        .galeri-mundur { left: -6px; }
+        .galeri-maju { right: -6px; }
+
+        @media (min-width: 1200px) {
+            .galeri-mundur { left: -22px; }
+            .galeri-maju { right: -22px; }
+        }
+
+        /* Titik penanda halaman. Jumlahnya mengikuti berapa layar penuh yang
+           ada, bukan jumlah fotonya — dua belas titik tidak memberi tahu apa
+           pun yang berguna. */
+        .galeri-titik {
+            display: flex;
+            justify-content: center;
+            gap: 7px;
+            margin-top: 6px;
+        }
+
+        .galeri-titik button {
+            width: 8px;
+            height: 8px;
+            padding: 0;
+            border: 0;
+            border-radius: 50%;
+            background: #cbd5e1;
+            cursor: pointer;
+            transition: width .2s ease, background .2s ease;
+        }
+
+        .galeri-titik button[aria-current="true"] {
+            width: 22px;
+            border-radius: 999px;
+            background: var(--primary-orange);
         }
 
         [hidden] { display: none !important; }
@@ -991,7 +1090,21 @@
         <div class="bagian" id="bagian-galeri" hidden>
             <h2 class="kop">Galeri <em>kegiatan</em></h2>
             <p class="kop-sub">Suasana sesi-sesi sebelumnya, bukan foto stok.</p>
-            <div class="galeri" id="galeri"></div>
+            <div class="galeri-bingkai">
+                <button type="button" class="galeri-tombol galeri-mundur" id="galeri-mundur"
+                    aria-label="Foto sebelumnya" hidden>
+                    <i class="fa-solid fa-chevron-left"></i>
+                </button>
+
+                <div class="galeri" id="galeri" tabindex="0" aria-label="Galeri kegiatan"></div>
+
+                <button type="button" class="galeri-tombol galeri-maju" id="galeri-maju"
+                    aria-label="Foto berikutnya" hidden>
+                    <i class="fa-solid fa-chevron-right"></i>
+                </button>
+            </div>
+
+            <div class="galeri-titik" id="galeri-titik"></div>
         </div>
 
         <!-- ============================================================= -->
@@ -1236,7 +1349,21 @@
 
             mulaiPenghitung();
 
-            fetch(PANGKALAN + '/api/webinar-eksklusif', { headers: { 'Accept': 'application/json' } })
+            /*
+             * Di lokal, tembolok API dilewati.
+             *
+             * Jawabannya ditembolok semenit — itu disengaja, sebab halaman ini
+             * halaman iklan dan satu iklan yang jalan bisa membuat ratusan orang
+             * membukanya bersamaan. Tetapi saat menguji, semenit itu membuat
+             * foto yang baru diunggah belum tampil dan terlihat seperti rusak.
+             */
+            var pilihanAmbil = { headers: { 'Accept': 'application/json' } };
+
+            if (LOKAL.indexOf(location.hostname) !== -1 || paksa) {
+                pilihanAmbil.cache = 'no-store';
+            }
+
+            fetch(PANGKALAN + '/api/webinar-eksklusif', pilihanAmbil)
                 .then(function (r) {
                     if (!r.ok) throw new Error('status ' + r.status);
                     return r.json();
@@ -1416,7 +1543,159 @@
                     wadah.appendChild(img);
                 });
 
-                if (wadah.children.length) el('bagian-galeri').hidden = false;
+                if (!wadah.children.length) return;
+
+                el('bagian-galeri').hidden = false;
+                siapkanGeser();
+            }
+
+            /**
+             * Tombol geser dan titik penandanya.
+             *
+             * Barisannya sendiri sudah bisa digulung dan diusap tanpa ini —
+             * yang ditambahkan di sini hanya kendali untuk tetikus dan penanda
+             * posisi. Jadi kalau bagian ini gagal, galerinya tetap terpakai.
+             */
+            function siapkanGeser() {
+                var barisan = el('galeri');
+                var mundur = el('galeri-mundur');
+                var maju = el('galeri-maju');
+                var titik = el('galeri-titik');
+
+                if (!barisan || !mundur || !maju) return;
+
+                var selangkah = function () {
+                    // Satu layar penuh, bukan satu foto: menggeser satu foto di
+                    // layar lebar hampir tidak terlihat berubah.
+                    return barisan.clientWidth;
+                };
+
+                mundur.addEventListener('click', function () {
+                    barisan.scrollBy({ left: -selangkah(), behavior: 'smooth' });
+                });
+
+                maju.addEventListener('click', function () {
+                    barisan.scrollBy({ left: selangkah(), behavior: 'smooth' });
+                });
+
+                /** Berapa foto yang muat dalam satu layar penuh. */
+                function fotoPerLayar() {
+                    var foto = barisan.querySelector('img');
+
+                    if (!foto || barisan.clientWidth < 1) return 1;
+
+                    var selebar = foto.getBoundingClientRect().width
+                        + parseFloat(getComputedStyle(barisan).gap || 0);
+
+                    return Math.max(1, Math.round(barisan.clientWidth / selebar));
+                }
+
+                function jumlahHalaman() {
+                    /*
+                     * Dihitung dari JUMLAH FOTO dibagi berapa yang muat, bukan
+                     * dari scrollWidth / clientWidth. Yang terakhir ikut
+                     * menghitung bantalan dan sela, jadi lima foto yang muat
+                     * satu-satu menghasilkan enam titik — dan titik terakhir
+                     * tidak pernah menunjuk apa pun.
+                     *
+                     * Lebarnya juga bisa 0 kalau dihitung sebelum tata letaknya
+                     * selesai; terukur 16 titik untuk 5 foto di 390px.
+                     */
+                    var jumlah = barisan.querySelectorAll('img').length;
+
+                    if (!jumlah || barisan.clientWidth < 1) return 1;
+
+                    return Math.max(1, Math.ceil(jumlah / fotoPerLayar()));
+                }
+
+                function halamanSekarang() {
+                    if (barisan.clientWidth < 1) return 0;
+
+                    // Dibatasi ke halaman terakhir: di ujung kanan, sisa
+                    // bantalan membuat pembagiannya melewati jumlah titik dan
+                    // tidak ada satu pun yang tersorot.
+                    return Math.min(
+                        jumlahHalaman() - 1,
+                        Math.round(barisan.scrollLeft / barisan.clientWidth)
+                    );
+                }
+
+                function susunTitik() {
+                    if (!titik) return;
+
+                    var n = jumlahHalaman();
+
+                    // Satu halaman berarti tidak ada yang bisa digeser; titik
+                    // tunggal tidak memberi tahu apa pun.
+                    titik.innerHTML = '';
+
+                    if (n < 2) return;
+
+                    for (var i = 0; i < n; i++) {
+                        (function (ke) {
+                            var t = document.createElement('button');
+                            t.type = 'button';
+                            t.setAttribute('aria-label', 'Ke bagian ' + (ke + 1));
+                            t.addEventListener('click', function () {
+                                barisan.scrollTo({ left: ke * barisan.clientWidth, behavior: 'smooth' });
+                            });
+                            titik.appendChild(t);
+                        })(i);
+                    }
+                }
+
+                function perbarui() {
+                    /*
+                     * Ambang 8px, bukan perbandingan persis: barisannya punya
+                     * bantalan 2px dan scrollLeft bisa pecahan sesudah
+                     * scroll-snap. Terukur dengan ambang 2px, tombol "mundur"
+                     * sudah tampil sejak awal padahal belum digeser sama sekali.
+                     */
+                    var sisaKanan = barisan.scrollWidth - barisan.clientWidth - barisan.scrollLeft;
+
+                    mundur.hidden = barisan.scrollLeft < 8;
+                    maju.hidden = sisaKanan < 8;
+
+                    if (!titik) return;
+
+                    var kini = halamanSekarang();
+
+                    Array.prototype.forEach.call(titik.children, function (t, i) {
+                        t.setAttribute('aria-current', i === kini ? 'true' : 'false');
+                    });
+                }
+
+                barisan.addEventListener('scroll', perbarui, { passive: true });
+                window.addEventListener('resize', function () { susunTitik(); perbarui(); });
+
+                /*
+                 * Dijalankan juga SESUDAH gambarnya selesai dimuat: sebelum itu
+                 * scrollWidth masih mengira barisannya sempit, dan tombolnya
+                 * disembunyikan padahal ada empat foto lagi di kanan.
+                 */
+                Array.prototype.forEach.call(barisan.querySelectorAll('img'), function (img) {
+                    if (img.complete) return;
+                    img.addEventListener('load', function () { susunTitik(); perbarui(); });
+                });
+
+                /*
+                 * Dihitung ulang sesudah tata letaknya benar-benar selesai.
+                 *
+                 * Dipanggil langsung sesudah fotonya ditempel, lebar barisannya
+                 * belum final — dan jumlah titik serta tampil-tidaknya tombol
+                 * dihitung dari lebar yang salah. Dua lapis: satu bingkai
+                 * berikutnya untuk tata letak, dan window.load untuk gambar
+                 * yang baru selesai diambil.
+                 */
+                requestAnimationFrame(function () {
+                    susunTitik();
+                    perbarui();
+                });
+
+                window.addEventListener('load', function () { susunTitik(); perbarui(); });
+
+                susunTitik();
+                perbarui();
             }
 
             function pasangFlyer(s) {
