@@ -708,6 +708,39 @@
             scrollbar-width: thin;
         }
 
+        /*
+         * Pengganjal di KEDUA UJUNG selebar sisa satu layar.
+         *
+         * Tanpa ini foto pertama dan terakhir tidak akan pernah sampai ke
+         * tengah: yang pertama mentok di kiri, yang terakhir mentok di kanan.
+         * Dengan tiga foto per layar dan lima foto, cuma foto ke-2 sampai ke-4
+         * yang pernah menonjol — dua sisanya tidak pernah dapat giliran.
+         *
+         * PENGGANJAL, bukan padding. Dicoba dengan padding lebih dulu dan
+         * hasilnya salah: padding memperkecil kotak isi, sementara flex-basis
+         * fotonya juga persen — jadi keduanya saling memakan dan tiap foto
+         * menyusut dari 421px jadi 132px. Pengganjal adalah item flex biasa,
+         * jadi kotak isinya tetap selebar penuh.
+         *
+         * Lebarnya = (lebar barisan - lebar satu foto) / 2, memakai basis yang
+         * sama dengan fotonya supaya ikut berubah per titik putus.
+         */
+        .galeri::before,
+        .galeri::after {
+            content: '';
+            flex: 0 0 0;
+        }
+
+        @media (min-width: 576px) {
+            .galeri::before,
+            .galeri::after { flex-basis: calc(25% + 3.5px); }
+        }
+
+        @media (min-width: 992px) {
+            .galeri::before,
+            .galeri::after { flex-basis: calc(33.3333% + 4.6667px); }
+        }
+
         .galeri img {
             /* flex-basis per tampilan: satu foto di ponsel, dua di tablet,
                tiga di layar lebar. Diatur di media query di bawah. */
@@ -761,7 +794,11 @@
             min-width: 0;
             max-width: 100%;
 
-            scroll-snap-align: start;
+            /*
+             * center, bukan start: yang berhenti di titik snap adalah foto yang
+             * sedang DITONJOLKAN, dan itu foto di tengah barisan.
+             */
+            scroll-snap-align: center;
             aspect-ratio: 4 / 3;
             object-fit: cover;
             border-radius: 16px;
@@ -1596,59 +1633,63 @@
 
                 if (!barisan || !mundur || !maju) return;
 
-                var selangkah = function () {
-                    // Satu layar penuh, bukan satu foto: menggeser satu foto di
-                    // layar lebar hampir tidak terlihat berubah.
-                    return barisan.clientWidth;
-                };
+                /**
+                 * Menggeser sampai foto ke-N tepat di tengah.
+                 *
+                 * Menargetkan NOMOR FOTO, bukan jarak piksel. Digeser sejauh
+                 * satu lebar foto, perhitungannya bertabrakan dengan scroll-snap
+                 * di ujung kanan: gulungannya dipotong ke batas maksimum, snap
+                 * menariknya balik, lalu langkah berikutnya menghitung dari
+                 * posisi yang sudah berubah — dan galerinya macet di foto
+                 * terakhir, tidak pernah berputar kembali.
+                 */
+                function keFoto(ke) {
+                    var semua = barisan.querySelectorAll('img');
+
+                    if (!semua.length) return;
+
+                    var n = Math.max(0, Math.min(semua.length - 1, ke));
+                    var foto = semua[n];
+
+                    barisan.scrollTo({
+                        left: foto.offsetLeft - (barisan.clientWidth - foto.offsetWidth) / 2,
+                        behavior: 'smooth',
+                    });
+                }
 
                 mundur.addEventListener('click', function () {
-                    barisan.scrollBy({ left: -selangkah(), behavior: 'smooth' });
+                    keFoto(halamanSekarang() - 1);
                 });
 
                 maju.addEventListener('click', function () {
-                    barisan.scrollBy({ left: selangkah(), behavior: 'smooth' });
+                    keFoto(halamanSekarang() + 1);
                 });
 
-                /** Berapa foto yang muat dalam satu layar penuh. */
-                function fotoPerLayar() {
-                    var foto = barisan.querySelector('img');
-
-                    if (!foto || barisan.clientWidth < 1) return 1;
-
-                    var selebar = foto.getBoundingClientRect().width
-                        + parseFloat(getComputedStyle(barisan).gap || 0);
-
-                    return Math.max(1, Math.round(barisan.clientWidth / selebar));
-                }
-
+                /**
+                 * Satu titik untuk satu FOTO.
+                 *
+                 * Sejak gesernya per foto, tiap foto memang punya gilirannya
+                 * sendiri di tengah — jadi titiknya mengikuti foto, bukan
+                 * layar. Dulu dihitung per layar, dan di 1440px lima foto cuma
+                 * punya dua titik padahal ada lima giliran.
+                 */
                 function jumlahHalaman() {
-                    /*
-                     * Dihitung dari JUMLAH FOTO dibagi berapa yang muat, bukan
-                     * dari scrollWidth / clientWidth. Yang terakhir ikut
-                     * menghitung bantalan dan sela, jadi lima foto yang muat
-                     * satu-satu menghasilkan enam titik — dan titik terakhir
-                     * tidak pernah menunjuk apa pun.
-                     *
-                     * Lebarnya juga bisa 0 kalau dihitung sebelum tata letaknya
-                     * selesai; terukur 16 titik untuk 5 foto di 390px.
-                     */
-                    var jumlah = barisan.querySelectorAll('img').length;
-
-                    if (!jumlah || barisan.clientWidth < 1) return 1;
-
-                    return Math.max(1, Math.ceil(jumlah / fotoPerLayar()));
+                    return Math.max(1, barisan.querySelectorAll('img').length);
                 }
 
+                /** Urutan foto yang sedang berada di tengah. */
                 function halamanSekarang() {
-                    if (barisan.clientWidth < 1) return 0;
+                    var tengah = barisan.querySelector('img.tengah');
 
-                    // Dibatasi ke halaman terakhir: di ujung kanan, sisa
-                    // bantalan membuat pembagiannya melewati jumlah titik dan
-                    // tidak ada satu pun yang tersorot.
-                    return Math.min(
-                        jumlahHalaman() - 1,
-                        Math.round(barisan.scrollLeft / barisan.clientWidth)
+                    if (!tengah) return 0;
+
+                    // Dibaca dari foto yang MEMANG ditandai tengah, bukan
+                    // dihitung ulang dari scrollLeft: dua perhitungan yang
+                    // berbeda untuk hal yang sama pasti akan berselisih, dan
+                    // titiknya lalu menyorot foto yang bukan sedang menonjol.
+                    return Array.prototype.indexOf.call(
+                        barisan.querySelectorAll('img'),
+                        tengah
                     );
                 }
 
@@ -1668,9 +1709,7 @@
                             var t = document.createElement('button');
                             t.type = 'button';
                             t.setAttribute('aria-label', 'Ke bagian ' + (ke + 1));
-                            t.addEventListener('click', function () {
-                                barisan.scrollTo({ left: ke * barisan.clientWidth, behavior: 'smooth' });
-                            });
+                            t.addEventListener('click', function () { keFoto(ke); });
                             titik.appendChild(t);
                         })(i);
                     }
@@ -1792,15 +1831,23 @@
                     var jam = null;
                     var berhentiSelamanya = false;
 
-                    function maju1() {
-                        var sisaKanan = barisan.scrollWidth - barisan.clientWidth - barisan.scrollLeft;
+                    /*
+                     * Nomor foto yang sedang dituju disimpan sendiri, tidak
+                     * dibaca ulang dari posisi gulungan tiap kali. Dibaca ulang,
+                     * satu geseran yang belum selesai membuat hitungannya
+                     * mundur dan galerinya berhenti di foto yang sama
+                     * berkali-kali — terukur: 1,1,1,2,2,2 di 390px.
+                     */
+                    var tujuan = halamanSekarang();
 
-                        // Di ujung kanan kembali ke awal, supaya galerinya
-                        // berputar dan foto pertama ikut terlihat lagi.
-                        barisan.scrollTo({
-                            left: sisaKanan < 8 ? 0 : barisan.scrollLeft + barisan.clientWidth,
-                            behavior: 'smooth',
-                        });
+                    function maju1() {
+                        var jumlah = barisan.querySelectorAll('img').length;
+
+                        // Lewat foto terakhir, kembali ke yang pertama supaya
+                        // galerinya berputar dan semuanya dapat giliran lagi.
+                        tujuan = (tujuan + 1) % Math.max(1, jumlah);
+
+                        keFoto(tujuan);
                     }
 
                     function jalan() {
