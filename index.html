@@ -682,6 +682,32 @@
             color: #475569;
         }
 
+        /* ---- Galeri ---- */
+        .galeri {
+            display: grid;
+            /*
+             * auto-FIT, bukan auto-fill. Keduanya sama saja saat fotonya
+             * banyak, tetapi auto-fill tetap membuat kolom kosong saat fotonya
+             * sedikit: terukur di 1440px, tiga foto menempati 3 dari 6 kolom
+             * dan berkerumun kecil di kiri. auto-fit meruntuhkan kolom kosong
+             * itu sehingga ketiganya melebar memenuhi barisnya.
+             */
+            grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+            gap: 14px;
+        }
+
+        .galeri img {
+            width: 100%;
+            aspect-ratio: 4 / 3;
+            object-fit: cover;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, .8);
+            box-shadow: 0 12px 28px -20px rgba(15, 43, 91, .6);
+            /* Tanpa tinggi tetap, kotaknya melompat-lompat saat foto demi foto
+               selesai dimuat; aspect-ratio menahannya sejak awal. */
+            background: #eef2f7;
+        }
+
         [hidden] { display: none !important; }
     </style>
 </head>
@@ -957,7 +983,19 @@
         </div>
 
         <!-- ============================================================= -->
-        <!-- 7. SIAPA YANG WAJIB IKUT                                      -->
+        <!-- 7. GALERI — dari API, diisi admin lewat MIS                   -->
+        <!-- ============================================================= -->
+        <!-- Seluruh bagian ini tersembunyi kalau galerinya memang kosong:
+             judul "Galeri kegiatan" di atas ruang kosong lebih buruk daripada
+             tidak ada bagiannya sama sekali. -->
+        <div class="bagian" id="bagian-galeri" hidden>
+            <h2 class="kop">Galeri <em>kegiatan</em></h2>
+            <p class="kop-sub">Suasana sesi-sesi sebelumnya, bukan foto stok.</p>
+            <div class="galeri" id="galeri"></div>
+        </div>
+
+        <!-- ============================================================= -->
+        <!-- 8. SIAPA YANG WAJIB IKUT                                      -->
         <!-- ============================================================= -->
         <div class="bagian">
             <h2 class="kop">Siapa yang <em>wajib ikut?</em></h2>
@@ -996,7 +1034,7 @@
         </div>
 
         <!-- ============================================================= -->
-        <!-- 8. YANG DIBAWA PULANG + HARGA                                 -->
+        <!-- 9. YANG DIBAWA PULANG + HARGA                                 -->
         <!-- ============================================================= -->
         <div class="bagian" id="daftar">
             <div class="row g-4 align-items-center mb-4">
@@ -1047,7 +1085,7 @@
         </div>
 
         <!-- ============================================================= -->
-        <!-- 9. FAQ                                                        -->
+        <!-- 10. FAQ                                                       -->
         <!-- ============================================================= -->
         <div class="bagian">
             <h2 class="kop">Pertanyaan yang <em>sering ditanyakan</em></h2>
@@ -1241,7 +1279,7 @@
                  * yang masih berguna bagi orang yang terlanjur membuka halaman
                  * ini dari iklan.
                  */
-                ['rinci', 'bagian-pemateri', 'daftar'].forEach(function (id) {
+                ['rinci', 'bagian-pemateri', 'bagian-galeri', 'daftar'].forEach(function (id) {
                     var e = el(id);
                     if (e) e.hidden = true;
                 });
@@ -1310,6 +1348,7 @@
                 pasangDaftar('daftar-kegiatan', s.kegiatan || [], 'nomor');
                 pasangDaftar('daftar-fasilitas', s.fasilitas || [], 'centang');
                 pasangFlyer(s);
+                pasangGaleri(s.galeri || []);
 
                 if (s.mulai_pada) mulaiHitungMundur(s.mulai_pada);
             }
@@ -1349,6 +1388,35 @@
                         if (window.fbq) fbq('track', 'InitiateCheckout');
                     });
                 });
+            }
+
+            /**
+             * Mengisi galeri dari API.
+             *
+             * Fotonya sudah WebP dan sudah diperkecil di sisi MIS, jadi di sini
+             * tidak ada yang perlu diukur ulang. Yang dijaga cuma dua hal:
+             * dimuat belakangan (loading="lazy"), dan foto yang gagal dimuat
+             * dibuang dari kisinya supaya tidak menyisakan kotak kosong.
+             */
+            function pasangGaleri(daftar) {
+                if (!daftar.length) return;
+
+                var wadah = el('galeri');
+
+                daftar.forEach(function (g) {
+                    if (!g.gambar) return;
+
+                    var img = document.createElement('img');
+                    img.src = g.gambar;
+                    img.alt = g.keterangan || 'Dokumentasi kegiatan Rumah Scopus';
+                    img.loading = 'lazy';
+                    img.decoding = 'async';
+                    img.addEventListener('error', function () { img.remove(); });
+
+                    wadah.appendChild(img);
+                });
+
+                if (wadah.children.length) el('bagian-galeri').hidden = false;
             }
 
             function pasangFlyer(s) {
