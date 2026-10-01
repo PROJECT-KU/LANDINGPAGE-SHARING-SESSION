@@ -811,7 +811,26 @@
              * halaman ini terhadap peladen lokal tanpa menyunting berkas lalu
              * lupa mengembalikannya sebelum dideploy.
              */
-            var PANGKALAN = 'https://rumahscopus.org';
+            var PRODUKSI = 'https://rumahscopus.org';
+
+            /*
+             * Saat halaman ini dibuka dari mesin sendiri — Live Server di
+             * 127.0.0.1:5500, `python3 -m http.server`, dan sejenisnya —
+             * alamatnya pindah SENDIRI ke peladen lokal.
+             *
+             * Tanpa ini, membukanya di lokal selalu berakhir "Sedang ada
+             * gangguan": halamannya menanyai rumahscopus.org, yang menjawab
+             * 404 selama MIS-nya belum dideploy ke sana. Yang terlihat seperti
+             * halaman rusak, padahal datanya ada — cuma di tempat lain.
+             *
+             * Hanya nama HOST yang diperiksa, bukan portnya: Live Server,
+             * Vite, dan `php artisan serve` semuanya memakai port berbeda.
+             */
+            var LOKAL = ['localhost', '127.0.0.1', '0.0.0.0', '[::1]'];
+
+            var PANGKALAN = LOKAL.indexOf(location.hostname) !== -1
+                ? 'http://127.0.0.1:8000'
+                : PRODUKSI;
 
             var paksa = new URLSearchParams(location.search).get('api');
             if (paksa) PANGKALAN = paksa.replace(/\/+$/, '');
@@ -860,7 +879,11 @@
                      * membukanya orang yang baru saja menekan iklan, dan satu-
                      * satunya yang masih berguna baginya adalah nomor panitia.
                      */
-                    console.error('Gagal memuat data sesi:', e);
+                    // Alamat yang gagal ikut dicatat. Tanpa itu, "gagal memuat"
+                    // tidak membedakan API yang belum dideploy dari peladen yang
+                    // sedang mati — dan keduanya diperbaiki dengan cara yang
+                    // sama sekali berbeda.
+                    console.error('Gagal memuat data sesi dari ' + PANGKALAN + ':', e);
 
                     tampilkanKosong(
                         'Jadwalnya sedang tidak bisa dimuat. Hubungi panitia untuk informasi terbaru.',
