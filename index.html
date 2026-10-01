@@ -4,9 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sharing Session - Rumah Scopus</title>
+    <title>Webinar Eksklusif - Rumah Scopus</title>
     <meta name="description"
-        content="Sharing session daring Rumah Scopus. Materi terapan, pemateri praktisi, rekaman, dan e-sertifikat resmi.">
+        content="Webinar eksklusif daring Rumah Scopus. Materi terapan, pemateri praktisi, rekaman, dan e-sertifikat resmi.">
 
     <!-- Favicon -->
     <link rel="icon" href="images/Icon-RS.png" type="image/png">
@@ -528,7 +528,7 @@
                 <div class="mb-3">
                     <span class="glossy-badge-orange mb-2 me-2" id="platform">ONLINE</span>
                     <span class="glossy-badge-red mb-2" id="kuota" hidden></span>
-                    <h1 class="title-main">SHARING<br><span class="title-highlight">SESSION</span></h1>
+                    <h1 class="title-main">WEBINAR<br><span class="title-highlight">EKSKLUSIF</span></h1>
                 </div>
 
                 <div class="hook-text">
@@ -672,7 +672,7 @@
             <p class="text-muted mb-4" id="kosong-sub">
                 Jadwal berikutnya diumumkan lewat Instagram dan grup WhatsApp Rumah Scopus.</p>
             <a class="btn-glossy-primary"
-                href="https://wa.me/6288983567819?text=Halo,%20saya%20mau%20ikut%20Sharing%20Session%20Rumah%20Scopus%20berikutnya."
+                href="https://wa.me/6288983567819?text=Halo,%20saya%20mau%20ikut%20Webinar%20Eksklusif%20Rumah%20Scopus%20berikutnya."
                 target="_blank" rel="noopener">
                 Tanya jadwal <i class="fa-brands fa-whatsapp"></i>
             </a>
@@ -860,7 +860,7 @@
 
             mulaiPenghitung();
 
-            fetch(PANGKALAN + '/api/sharing-session', { headers: { 'Accept': 'application/json' } })
+            fetch(PANGKALAN + '/api/webinar-eksklusif', { headers: { 'Accept': 'application/json' } })
                 .then(function (r) {
                     if (!r.ok) throw new Error('status ' + r.status);
                     return r.json();
