@@ -500,6 +500,188 @@
 
         .btn-ajakan:hover { color: #ff3131; transform: translateY(-3px); }
 
+        /* ====================================================================
+           Bagian penjelas — alurnya meniru surat penjualan rumahscopus.org
+           ====================================================================
+
+           Harga SENGAJA tidak muncul di layar pertama. Di halaman iklan, angka
+           yang ditembakkan sebelum orang paham apa yang ditawarkan akan dinilai
+           tanpa pembanding: pertanyaan yang tersisa jadi "mahal atau murah",
+           bukan "saya butuh atau tidak". Urutannya masalah, isi, pemateri,
+           bukti, baru harga. */
+
+        .bagian { margin: 54px 0; }
+
+        .kop {
+            margin: 0 auto 10px;
+            font-size: clamp(1.4rem, 4.5vw, 2.05rem);
+            font-weight: 900;
+            line-height: 1.25;
+            color: var(--primary-navy);
+            text-align: center;
+            text-transform: uppercase;
+        }
+
+        .kop em { font-style: normal; color: var(--primary-orange); }
+
+        .kop-sub {
+            max-width: 640px;
+            margin: 0 auto 28px;
+            color: #64748b;
+            text-align: center;
+        }
+
+        /* ---- Kartu "kenapa" & "siapa yang wajib ikut" ---- */
+        .kartu-poin {
+            height: 100%;
+            padding: 22px;
+            border-radius: 18px;
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 10px 26px -20px rgba(15, 43, 91, .55);
+        }
+
+        .kartu-poin .ikon {
+            display: grid;
+            place-items: center;
+            width: 48px;
+            height: 48px;
+            margin-bottom: 12px;
+            border-radius: 14px;
+            color: #fff;
+            font-size: 20px;
+        }
+
+        .kartu-poin h5 { font-size: 1.02rem; font-weight: 800; color: var(--primary-navy); }
+        .kartu-poin p { margin: 0; font-size: .9rem; line-height: 1.6; color: #64748b; }
+
+        /* ---- Kartu pemateri ---- */
+        .kartu-pemateri {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 24px;
+            align-items: center;
+            padding: 26px;
+            border-radius: 22px;
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 18px 44px -30px rgba(15, 43, 91, .6);
+        }
+
+        @media (min-width: 768px) {
+            .kartu-pemateri { grid-template-columns: 230px 1fr; }
+        }
+
+        .kartu-pemateri img,
+        .kartu-pemateri .inisial {
+            width: 100%;
+            aspect-ratio: 4 / 5;
+            border-radius: 18px;
+            object-fit: cover;
+        }
+
+        .kartu-pemateri .inisial {
+            display: grid;
+            place-items: center;
+            background: var(--gradient-navy);
+            color: #fff;
+            font-size: 4.5rem;
+            font-weight: 900;
+        }
+
+        /* ---- Bagian harga ---- */
+        .kotak-harga {
+            max-width: 560px;
+            margin: 0 auto;
+            padding: 36px 28px;
+            border-radius: 24px;
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 22px 60px -34px rgba(15, 43, 91, .7);
+            text-align: center;
+        }
+
+        /* Harga asal dicoret hanya muncul kalau memang ADA promo. Coretan yang
+           selalu ada berhenti dipercaya orang. */
+        .harga-coret {
+            display: block;
+            margin-bottom: 2px;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #ef4444;
+            text-decoration: line-through;
+        }
+
+        .harga-utama {
+            display: block;
+            font-size: clamp(2.4rem, 9vw, 3.4rem);
+            font-weight: 900;
+            line-height: 1.05;
+            color: #16a34a;
+        }
+
+        .harga-satuan { font-size: .9rem; color: #64748b; }
+
+        .kursi-sisa {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin: 16px 0 4px;
+            padding: 9px 18px;
+            border-radius: 999px;
+            background: #fef2f2;
+            color: #b91c1c;
+            font-size: .88rem;
+            font-weight: 700;
+        }
+
+        .catatan-bayar {
+            margin: 18px 0 0;
+            font-size: .8rem;
+            line-height: 1.6;
+            color: #94a3b8;
+        }
+
+        /* ---- FAQ ---- */
+        .faq { max-width: 760px; margin: 0 auto; }
+
+        .faq details {
+            margin-bottom: 10px;
+            border-radius: 14px;
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+        }
+
+        .faq summary {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 16px 20px;
+            cursor: pointer;
+            list-style: none;
+            font-size: .98rem;
+            font-weight: 700;
+            color: var(--primary-navy);
+        }
+
+        /* Segitiga bawaan dibuang di kedua mesin peramban; penandanya diambil
+           alih ikon di kanan supaya tingginya tidak berubah saat dibuka. */
+        .faq summary::-webkit-details-marker { display: none; }
+        .faq summary::marker { content: ''; }
+
+        .faq summary i { flex: 0 0 auto; color: var(--primary-orange); transition: transform .25s ease; }
+        .faq details[open] summary i { transform: rotate(180deg); }
+
+        .faq p {
+            margin: 0;
+            padding: 0 20px 18px;
+            font-size: .93rem;
+            line-height: 1.75;
+            color: #475569;
+        }
+
         [hidden] { display: none !important; }
     </style>
 </head>
@@ -521,8 +703,15 @@
             </div>
         </div>
 
-        <!-- ================================================ sesi tersedia -->
-        <div class="row align-items-center mb-5 pb-5" id="isi">
+        <!-- ============================================================= -->
+        <!-- 1. HERO — TANPA HARGA                                         -->
+        <!-- ============================================================= -->
+        <!-- Harga SENGAJA tidak ada di layar pertama. Angka yang ditembakkan
+             sebelum orang paham apa yang ditawarkan akan dinilai tanpa
+             pembanding: pertanyaan yang tersisa jadi "mahal atau murah",
+             bukan "saya butuh atau tidak". Harganya muncul di bagian 8,
+             sesudah masalah, isi, pemateri, dan buktinya dijelaskan. -->
+        <div class="row align-items-center mb-5" id="isi">
 
             <div class="col-lg-6 mb-5 mb-lg-0 pe-lg-5">
                 <div class="mb-3">
@@ -532,9 +721,10 @@
                 </div>
 
                 <div class="hook-text">
-                    <strong>Ilmu yang bisa langsung dipakai, bukan teori yang berhenti di catatan.</strong><br>
-                    Dua jam bersama praktisi yang sudah menjalaninya — lengkap dengan studi kasus, sesi tanya
-                    jawab, rekaman, dan e-sertifikat resmi.
+                    <strong>Riset Anda bagus, tapi berhenti di laci — karena tidak tahu
+                        harus mulai dari mana.</strong><br>
+                    Dua jam bersama praktisi yang sudah menjalaninya. Bukan teori, tapi
+                    langkah yang bisa Anda kerjakan hari itu juga.
                 </div>
 
                 <!-- Hitung mundur; tetap tersembunyi kalau jam acaranya belum diisi -->
@@ -572,19 +762,19 @@
                         Judul sesi sedang dimuat dari sistem Rumah Scopus</h4>
                 </div>
 
+                <!-- Tombol hero mengantar ke bagian harga di bawah, BUKAN
+                     langsung ke borang: yang menekannya di detik pertama belum
+                     tahu harganya, dan menemukan angka baru di halaman
+                     berikutnya terasa seperti dijebak. -->
                 <div class="d-grid d-md-flex gap-3">
-                    <a href="#" id="cta" class="btn-glossy-primary" rel="noopener">
-                        <span id="cta-teks">Daftar sekarang</span> <i class="fa-solid fa-arrow-right"></i>
+                    <a href="#daftar" class="btn-glossy-primary">
+                        Lihat detail &amp; biayanya <i class="fa-solid fa-arrow-down"></i>
                     </a>
                 </div>
             </div>
 
             <div class="col-lg-5 offset-lg-1">
-
                 <div class="speaker-img-wrapper mb-5">
-                    <!-- Tanpa atribut src sama sekali. src="" membuat peramban meminta
-                         ULANG alamat halaman ini sendiri sebagai gambar, lalu
-                         mencatatnya sebagai permintaan gagal. JS yang memasangnya. -->
                     <img id="foto-pemateri" alt="" hidden>
                     <div class="speaker-initial" id="inisial-pemateri">R</div>
 
@@ -593,97 +783,105 @@
                         <span class="fw-normal" style="font-size: 0.8rem;" id="jabatan-pemateri">Rumah Scopus</span>
                     </div>
                 </div>
-
-                <div class="glossy-card p-0 overflow-hidden mt-5">
-                    <div class="row g-0">
-                        <div class="col-7 p-4">
-                            <h6 class="fw-bold mb-1" style="color: var(--primary-navy);">Sekali bayar, semua dapat</h6>
-                            <p class="text-muted small mb-0">
-                                Termasuk <strong class="text-dark">e-sertifikat resmi</strong>, materi, rekaman sesi,
-                                dan grup diskusi peserta.
-                            </p>
-                        </div>
-                        <div class="col-5 price-box d-flex flex-column justify-content-center">
-                            <span style="font-size: 11px; opacity: 0.8;">Investasi</span>
-                            <h3 class="fw-bold mb-0 text-warning rangka" id="harga">Rp 000.000</h3>
-                            <span style="font-size: 11px; opacity: 0.8;">per peserta</span>
-                        </div>
-                    </div>
-                    <div class="bg-light p-2 text-center border-top" style="font-size: 11px; color: #64748b;">
-                        Pendaftaran dan pembayaran diproses di halaman resmi Rumah Scopus.
-                    </div>
-                </div>
-
-                <!-- Tanggal lain yang juga dibuka -->
-                <div class="mt-4" id="kotak-lain" hidden>
-                    <p class="fw-bold mb-2" style="font-size: 0.9rem; color: var(--primary-navy);">
-                        Tanggal lain yang juga dibuka
-                    </p>
-                    <div class="d-grid gap-2" id="daftar-lain"></div>
-                </div>
-
             </div>
         </div>
 
-        <!-- ===================================== rincian sesi dari API -->
-        <div id="rinci">
+        <!-- ============================================================= -->
+        <!-- 2. KENAPA INI PENTING — masalahnya dulu                       -->
+        <!-- ============================================================= -->
+        <div class="bagian">
+            <h2 class="kop">Kenapa paper Anda harus <em>terindeks Scopus?</em></h2>
+            <p class="kop-sub">
+                Scopus adalah pengindeks jurnal berreputasi internasional, dan sudah jadi standar
+                yang wajib ditaklukkan para akademisi dan peneliti.
+            </p>
 
-            <div class="row g-4 align-items-center mb-5">
+            <div class="row g-3">
+                <div class="col-md-6 col-lg-3">
+                    <div class="kartu-poin">
+                        <span class="ikon gradien-rs"><i class="fa-solid fa-arrow-trend-up"></i></span>
+                        <h5>Naik jabatan</h5>
+                        <p>Publikasi internasional jadi syarat yang paling sering mengganjal kenaikan jabatan.</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="kartu-poin">
+                        <span class="ikon gradien-rs"><i class="fa-solid fa-graduation-cap"></i></span>
+                        <h5>Syarat kelulusan S3</h5>
+                        <p>Banyak program doktor mensyaratkan satu artikel terindeks sebelum sidang.</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="kartu-poin">
+                        <span class="ikon gradien-rs"><i class="fa-solid fa-award"></i></span>
+                        <h5>Percepatan guru besar</h5>
+                        <p>Rekam jejak publikasi yang terindeks memperpendek jalan ke guru besar.</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="kartu-poin">
+                        <span class="ikon gradien-rs"><i class="fa-solid fa-globe"></i></span>
+                        <h5>Diakui dunia</h5>
+                        <p>Penelitian Anda terbaca dan bisa disitasi peneliti dari negara mana pun.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================================= -->
+        <!-- 3. YANG DIPELAJARI — dari API                                 -->
+        <!-- ============================================================= -->
+        <div class="bagian" id="rinci">
+            <div class="row g-4 align-items-center">
                 <div class="col-lg-6">
-                    <h2 class="judul-bagian text-lg-start">Yang dibahas di sesi ini</h2>
-                    <p class="sub-bagian text-lg-start ms-lg-0">
+                    <h2 class="kop text-lg-start">Materi apa yang <em>akan Anda pelajari?</em></h2>
+                    <p class="kop-sub text-lg-start ms-lg-0">
                         Bukan teori yang berhenti di catatan — tiap bagian langsung dipraktikkan
                         bersama pemateri.
                     </p>
                     <ul class="daftar-poin" id="daftar-kegiatan"></ul>
                 </div>
-                <!-- Flyer sesi INI, bukan foto umum. Gambar paling tepat untuk
-                     halaman ini memang poster acaranya sendiri, dan itu yang
-                     diunggah admin tiap kali membuat sesi baru. Kolomnya
-                     disembunyikan kalau sesinya memang belum punya flyer. -->
                 <div class="col-lg-6" id="kolom-flyer" hidden>
                     <img class="foto-suasana" id="flyer-sesi" alt="" loading="lazy" decoding="async">
                 </div>
             </div>
+        </div>
 
-            <div class="row g-4 align-items-center flex-lg-row-reverse mb-5">
-                <div class="col-lg-6">
-                    <h2 class="judul-bagian text-lg-start">Yang Anda bawa pulang</h2>
-                    <p class="sub-bagian text-lg-start ms-lg-0">
-                        Sekali bayar, semuanya ikut. Tidak ada biaya tambahan di belakang.
-                    </p>
-                    <ul class="daftar-poin" id="daftar-fasilitas"></ul>
+        <!-- ============================================================= -->
+        <!-- 4. PEMATERI                                                   -->
+        <!-- ============================================================= -->
+        <div class="bagian">
+            <h2 class="kop">Siapa yang <em>membawakan?</em></h2>
+            <p class="kop-sub">Praktisi yang sudah menjalani sendiri prosesnya, bukan sekadar membacakan slide.</p>
+
+            <div class="kartu-pemateri">
+                <div>
+                    <img id="pemateri-foto-besar" alt="" loading="lazy" decoding="async" hidden>
+                    <div class="inisial" id="pemateri-inisial-besar">R</div>
                 </div>
-                <!-- Ilustrasi yang sama dengan yang dipakai beranda
-                     rumahscopus.org, versi ringkasnya: 0,94 MB jadi 72 KB.
-                     Halaman ini halaman iklan dan banyak dibuka dengan kuota. -->
-                <div class="col-lg-6" id="kolom-ilustrasi">
-                    <img class="foto-suasana" id="ilustrasi" alt="Ilustrasi belajar menulis artikel ilmiah"
-                        width="1000" height="716" loading="lazy" decoding="async">
+                <div>
+                    <h3 class="fw-bold mb-1" style="color: var(--primary-navy);" id="pemateri-nama-besar">Pemateri</h3>
+                    <p class="fw-bold mb-3" style="color: var(--primary-orange);" id="pemateri-jabatan-besar">
+                        Trainer Rumah Scopus</p>
+                    <ul class="daftar-poin">
+                        <li><i class="fa-solid fa-circle-check"></i>
+                            <span>Mendampingi langsung peserta sampai naskahnya layak disubmit</span></li>
+                        <li><i class="fa-solid fa-circle-check"></i>
+                            <span>Terbiasa menangani naskah dari berbagai bidang ilmu</span></li>
+                        <li><i class="fa-solid fa-circle-check"></i>
+                            <span>Membawakan materi dengan contoh kasus nyata, bukan teori</span></li>
+                    </ul>
                 </div>
             </div>
         </div>
 
-        <!-- ============================================ belum ada / galat -->
-        <div class="pesan-kosong" id="kosong" hidden>
-            <i class="fa-regular fa-calendar-xmark"></i>
-            <h5 class="fw-bold" style="color: var(--primary-navy);" id="kosong-judul">
-                Belum ada sesi yang dijadwalkan</h5>
-            <p class="text-muted mb-4" id="kosong-sub">
-                Jadwal berikutnya diumumkan lewat Instagram dan grup WhatsApp Rumah Scopus.</p>
-            <a class="btn-glossy-primary"
-                href="https://wa.me/6288983567819?text=Halo,%20saya%20mau%20ikut%20Webinar%20Eksklusif%20Rumah%20Scopus%20berikutnya."
-                target="_blank" rel="noopener">
-                Tanya jadwal <i class="fa-brands fa-whatsapp"></i>
-            </a>
-        </div>
-
-        <!-- ======================================= kenapa memilih kami -->
+        <!-- ============================================================= -->
+        <!-- 5. KENAPA MEMILIH KAMI                                        -->
+        <!-- ============================================================= -->
         <!-- Kalimat dan susunannya mengikuti rumahscopus.org. Statis di sini,
              bukan dari API: ini janji merek yang jarang berubah, sementara
-             yang berganti tiap sesi — tanggal, pemateri, harga — semuanya
-             sudah datang dari API di atas. -->
-        <div class="main-card gradien-rs mt-5 mb-5"
+             yang berganti tiap sesi sudah datang dari API di atas. -->
+        <div class="main-card gradien-rs bagian"
             style="border-radius: 15px; box-shadow: 0 10px 20px rgba(0, 0, 0, .2); overflow: hidden;">
             <h2 class="text-center mt-4" style="font-weight: 900; color: #fff;">Kenapa Memilih Kami?</h2>
             <div style="padding: 24px 30px 30px;">
@@ -728,8 +926,10 @@
             </div>
         </div>
 
-        <!-- ================================= sudah dipercaya ribuan orang -->
-        <div class="main-card gradien-rs mb-5"
+        <!-- ============================================================= -->
+        <!-- 6. ANGKA KEPERCAYAAN                                          -->
+        <!-- ============================================================= -->
+        <div class="main-card gradien-rs bagian"
             style="border-radius: 15px; box-shadow: 0 10px 20px rgba(0, 0, 0, .2); overflow: hidden;">
             <h2 class="text-center mt-4" style="font-weight: 900; color: #fff;">Sudah Dipercaya Ribuan Orang</h2>
             <div style="padding: 24px 30px 30px;">
@@ -756,15 +956,153 @@
             </div>
         </div>
 
-        <!-- ================================================ ajakan penutup -->
-        <div class="ajakan gradien-rs mb-5" id="ajakan">
-            <h3>Kursinya terbatas, dan diisi siapa yang mendaftar duluan</h3>
-            <p>
-                Daftar sekarang, selesaikan pembayarannya, lalu tautan masuk dan materinya
-                dikirim ke email Anda.
-            </p>
-            <a class="btn-ajakan" id="cta-bawah" href="#" rel="noopener">
-                <span id="cta-bawah-teks">Daftar sekarang</span> <i class="fa-solid fa-arrow-right"></i>
+        <!-- ============================================================= -->
+        <!-- 7. SIAPA YANG WAJIB IKUT                                      -->
+        <!-- ============================================================= -->
+        <div class="bagian">
+            <h2 class="kop">Siapa yang <em>wajib ikut?</em></h2>
+            <p class="kop-sub">Kalau Anda ada di salah satu barisan ini, sesi ini memang dibuat untuk Anda.</p>
+
+            <div class="row g-3">
+                <div class="col-md-6 col-lg-3">
+                    <div class="kartu-poin">
+                        <span class="ikon gradien-rs"><i class="fa-solid fa-chalkboard-user"></i></span>
+                        <h5>Dosen</h5>
+                        <p>Yang sedang mengejar kenaikan pangkat dan butuh publikasi terindeks.</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="kartu-poin">
+                        <span class="ikon gradien-rs"><i class="fa-solid fa-user-graduate"></i></span>
+                        <h5>Mahasiswa</h5>
+                        <p>Yang publikasinya jadi syarat kelulusan dan waktunya mepet.</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="kartu-poin">
+                        <span class="ikon gradien-rs"><i class="fa-solid fa-flask"></i></span>
+                        <h5>Peneliti</h5>
+                        <p>Yang hasil risetnya sudah ada tapi belum tahu ke mana harus disubmit.</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="kartu-poin">
+                        <span class="ikon gradien-rs"><i class="fa-solid fa-building-columns"></i></span>
+                        <h5>Pengelola kampus</h5>
+                        <p>Yang sedang mendorong akreditasi lewat publikasi internasional.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================================= -->
+        <!-- 8. YANG DIBAWA PULANG + HARGA                                 -->
+        <!-- ============================================================= -->
+        <div class="bagian" id="daftar">
+            <div class="row g-4 align-items-center mb-4">
+                <div class="col-lg-6">
+                    <h2 class="kop text-lg-start">Yang Anda <em>bawa pulang</em></h2>
+                    <p class="kop-sub text-lg-start ms-lg-0">
+                        Sekali bayar, semuanya ikut. Tidak ada biaya tambahan di belakang.
+                    </p>
+                    <ul class="daftar-poin" id="daftar-fasilitas"></ul>
+                </div>
+                <div class="col-lg-6" id="kolom-ilustrasi">
+                    <img class="foto-suasana" id="ilustrasi" alt="Ilustrasi belajar menulis artikel ilmiah"
+                        width="1000" height="716" loading="lazy" decoding="async">
+                </div>
+            </div>
+
+            <!-- Harganya baru muncul DI SINI, sesudah semuanya dijelaskan. -->
+            <div class="kotak-harga">
+                <p class="fw-bold mb-3" style="color: var(--primary-navy); font-size: 1.1rem;">
+                    Amankan kursi Anda sekarang
+                </p>
+
+                <span class="harga-coret rangka" id="harga-coret" hidden>Rp 000.000</span>
+                <span class="harga-utama rangka" id="harga">Rp 000.000</span>
+                <span class="harga-satuan">per peserta</span>
+
+                <div><span class="kursi-sisa" id="kursi" hidden></span></div>
+
+                <div class="d-grid mt-3">
+                    <a class="btn-glossy-primary" id="cta" href="#" rel="noopener">
+                        <span id="cta-teks">Daftar sekarang</span> <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+
+                <p class="catatan-bayar">
+                    <i class="fa-solid fa-lock"></i>
+                    Pendaftaran dan pembayaran diproses di halaman resmi Rumah Scopus.
+                </p>
+            </div>
+
+            <!-- Tanggal lain yang juga dibuka -->
+            <div class="mt-4" id="kotak-lain" hidden>
+                <p class="fw-bold mb-2 text-center" style="font-size: 0.9rem; color: var(--primary-navy);">
+                    Tanggal lain yang juga dibuka
+                </p>
+                <div class="d-grid gap-2 mx-auto" style="max-width: 560px;" id="daftar-lain"></div>
+            </div>
+        </div>
+
+        <!-- ============================================================= -->
+        <!-- 9. FAQ                                                        -->
+        <!-- ============================================================= -->
+        <div class="bagian">
+            <h2 class="kop">Pertanyaan yang <em>sering ditanyakan</em></h2>
+
+            <div class="faq">
+                <details open>
+                    <summary>Saya tidak jago bahasa Inggris, bisa ikut tidak?
+                        <i class="fa-solid fa-chevron-down"></i></summary>
+                    <p>Bisa. Materinya dibawakan dalam bahasa Indonesia, dan yang diajarkan justru
+                        cara menyiasatinya — mulai dari struktur kalimat yang dipakai jurnal sampai
+                        alat bantu yang boleh dipakai.</p>
+                </details>
+
+                <details>
+                    <summary>Kalau saya berhalangan hadir, bagaimana?
+                        <i class="fa-solid fa-chevron-down"></i></summary>
+                    <p>Rekaman sesinya dikirim ke email peserta, jadi Anda tetap bisa menontonnya
+                        belakangan. Sertifikatnya juga tetap terbit atas nama Anda.</p>
+                </details>
+
+                <details>
+                    <summary>Sertifikatnya resmi?
+                        <i class="fa-solid fa-chevron-down"></i></summary>
+                    <p>Resmi, diterbitkan Rumah Scopus Foundation atas nama peserta, dan dikirim
+                        dalam bentuk digital ke email yang Anda isi saat mendaftar.</p>
+                </details>
+
+                <details>
+                    <summary>Saya baru pertama kali menulis artikel ilmiah, terlalu dini tidak?
+                        <i class="fa-solid fa-chevron-down"></i></summary>
+                    <p>Tidak. Justru lebih hemat waktu memulai dengan cara yang benar daripada
+                        memperbaiki naskah yang terlanjur jauh melenceng.</p>
+                </details>
+
+                <details>
+                    <summary>Bagaimana cara membayarnya?
+                        <i class="fa-solid fa-chevron-down"></i></summary>
+                    <p>Tekan tombol daftar di atas, isi datanya, lalu Anda diarahkan ke halaman
+                        pembayaran resmi Rumah Scopus. Tautan masuk dikirim ke email Anda setelah
+                        pembayaran diterima.</p>
+                </details>
+            </div>
+        </div>
+
+        <!-- ============================================ belum ada / galat -->
+        <div class="pesan-kosong" id="kosong" hidden>
+            <i class="fa-regular fa-calendar-xmark"></i>
+            <h5 class="fw-bold" style="color: var(--primary-navy);" id="kosong-judul">
+                Belum ada sesi yang dijadwalkan</h5>
+            <p class="text-muted mb-4" id="kosong-sub">
+                Jadwal berikutnya diumumkan lewat Instagram dan grup WhatsApp Rumah Scopus.</p>
+            <a class="btn-glossy-primary"
+                href="https://wa.me/6288983567819?text=Halo,%20saya%20mau%20ikut%20Webinar%20Eksklusif%20Rumah%20Scopus%20berikutnya."
+                target="_blank" rel="noopener">
+                Tanya jadwal <i class="fa-brands fa-whatsapp"></i>
             </a>
         </div>
 
@@ -897,8 +1235,17 @@
                 // bicara tentang sesi yang justru tidak ada. Bagian merek —
                 // "Kenapa Memilih Kami" dan angka kepercayaan — tetap tampil,
                 // sebab itu yang masih berguna bagi pembukanya.
-                el('rinci').hidden = true;
-                el('ajakan').hidden = true;
+                /*
+                 * Yang disembunyikan hanya bagian yang bicara tentang SESI —
+                 * materi, pemateri, dan harga. Bagian merek tetap tampil: itu
+                 * yang masih berguna bagi orang yang terlanjur membuka halaman
+                 * ini dari iklan.
+                 */
+                ['rinci', 'bagian-pemateri', 'daftar'].forEach(function (id) {
+                    var e = el(id);
+                    if (e) e.hidden = true;
+                });
+
                 el('kosong').hidden = false;
 
                 if (judul) el('kosong-judul').textContent = judul;
@@ -924,7 +1271,18 @@
                 isi('jam', s.jam || 'Jam menyusul');
                 isi('platform', s.platform || 'ONLINE');
                 isi('platform2', s.platform || 'Daring');
-                isi('harga', s.harga_promo_tulis || s.harga_tulis || 'Hubungi panitia');
+                /*
+                 * Harga coret dipasang hanya kalau promonya MEMANG ada. Coretan
+                 * yang selalu muncul berhenti dipercaya, dan harga asal yang
+                 * dikarang supaya ada yang dicoret itu menyesatkan.
+                 */
+                if (s.harga_promo_tulis && s.harga_tulis) {
+                    isi('harga-coret', s.harga_tulis);
+                    el('harga-coret').hidden = false;
+                    isi('harga', s.harga_promo_tulis);
+                } else {
+                    isi('harga', s.harga_tulis || 'Hubungi panitia');
+                }
 
                 /*
                  * Lencana sisa kursi hanya muncul kalau memang tinggal
@@ -935,6 +1293,14 @@
                 if (s.kuota && s.kuota.sisa !== null && s.kuota.sisa > 0 && s.kuota.sisa <= 10) {
                     el('kuota').textContent = s.kuota.kalimat;
                     el('kuota').hidden = false;
+                }
+
+                // Di kotak harga, sisa kursi disebut berapa pun jumlahnya — di
+                // sanalah orang sedang menimbang, dan angka yang jelas membantu
+                // memutuskan.
+                if (s.kuota && s.kuota.kalimat) {
+                    el('kursi').textContent = s.kuota.kalimat;
+                    el('kursi').hidden = false;
                 }
 
                 pasangPemateri(s.pemateri || {});
@@ -950,13 +1316,13 @@
 
             function pasangTombol(s) {
                 /*
-                 * Dua tombol diurus bersama. Halamannya panjang, dan tombol
-                 * yang cuma ada di atas berarti orang yang membaca sampai
-                 * bawah harus menggulung kembali untuk mendaftar.
+                 * Satu tombol daftar, dan letaknya DI BAWAH harga. Tombol di
+                 * hero sengaja hanya mengantar ke bagian itu — yang menekannya
+                 * di detik pertama belum tahu harganya, dan menemukan angka
+                 * baru di halaman berikutnya terasa seperti dijebak.
                  */
                 var pasangan = [
-                    { tombol: el('cta'), teks: el('cta-teks') },
-                    { tombol: el('cta-bawah'), teks: el('cta-bawah-teks') }
+                    { tombol: el('cta'), teks: el('cta-teks') }
                 ];
 
                 pasangan.forEach(function (p) {
@@ -1037,8 +1403,27 @@
             }
 
             function pasangPemateri(p) {
-                isi('nama-pemateri', p.nama || 'Rumah Scopus');
-                isi('jabatan-pemateri', p.jabatan || 'Trainer');
+                var nama = p.nama || 'Rumah Scopus';
+                var jabatan = p.jabatan || 'Trainer';
+
+                isi('nama-pemateri', nama);
+                isi('jabatan-pemateri', jabatan);
+                isi('pemateri-nama-besar', nama);
+                isi('pemateri-jabatan-besar', jabatan);
+
+                // Kartu pemateri di bagian 4 memakai foto yang sama. Dipasang
+                // di sini, bukan di fungsi tersendiri, supaya tidak ada jalan
+                // yang mengisi salah satunya saja.
+                if (p.foto) {
+                    var besar = el('pemateri-foto-besar');
+                    besar.src = p.foto;
+                    besar.alt = 'Pemateri ' + nama;
+                    besar.hidden = false;
+                    el('pemateri-inisial-besar').hidden = true;
+                } else {
+                    el('pemateri-inisial-besar').textContent =
+                        nama.trim().charAt(0).toUpperCase() || 'R';
+                }
 
                 if (p.foto) {
                     var img = el('foto-pemateri');
