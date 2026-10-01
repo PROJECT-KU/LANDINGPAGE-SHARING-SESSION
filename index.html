@@ -876,6 +876,64 @@
             background: var(--primary-orange);
         }
 
+        /* ---- Tokoh di balik Rumah Scopus ---- */
+
+        .tokoh {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 26px;
+            align-items: center;
+            padding: 26px;
+            border-radius: 22px;
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 18px 44px -30px rgba(15, 43, 91, .6);
+        }
+
+        @media (min-width: 768px) {
+            .tokoh { grid-template-columns: 300px 1fr; padding: 32px; }
+        }
+
+        .tokoh img {
+            width: 100%;
+
+            /*
+             * height: auto WAJIB ada karena <img>-nya memakai atribut
+             * width/height.
+             *
+             * Atribut itu dipasang supaya peramban menyediakan ruangnya sejak
+             * awal dan tata letaknya tidak melompat saat fotonya selesai
+             * dimuat. Tetapi tingginya lalu dipakai apa adanya: terukur
+             * 300x1536 — melar ke bawah sejauh satu setengah layar — sebab
+             * aspect-ratio kalah oleh tinggi yang sudah dinyatakan.
+             */
+            height: auto;
+            /*
+             * 2/3, sama persis dengan fotonya (1024x1536). Nama dan jabatannya
+             * MENYATU di bagian bawah gambar, jadi nisbah yang berbeda akan
+             * memotongnya — dan yang hilang justru keterangan yang membuat
+             * fotonya berarti.
+             */
+            aspect-ratio: 2 / 3;
+            object-fit: cover;
+            border-radius: 18px;
+            background: #eef2f7;
+        }
+
+        .tokoh-nama {
+            margin: 0 0 2px;
+            font-size: clamp(1.15rem, 3vw, 1.45rem);
+            font-weight: 900;
+            color: var(--primary-navy);
+        }
+
+        .tokoh-jabatan {
+            margin: 0 0 18px;
+            font-size: .92rem;
+            font-weight: 700;
+            color: var(--primary-orange);
+        }
+
         [hidden] { display: none !important; }
     </style>
 </head>
@@ -1070,7 +1128,48 @@
         </div>
 
         <!-- ============================================================= -->
-        <!-- 5. KENAPA MEMILIH KAMI                                        -->
+        <!-- 5. TOKOH DI BALIK RUMAH SCOPUS                                -->
+        <!-- ============================================================= -->
+        <!-- Ditaruh SESUDAH pemateri sesi: pembacanya baru tahu siapa yang
+             membawakan kelasnya, lalu diperlihatkan siapa yang berdiri di
+             belakang lembaganya. Urutan sebaliknya membuat pematerinya terasa
+             nomor dua di kelasnya sendiri.
+
+             Teksnya statis seperti "Kenapa Memilih Kami" di bawah — ini profil
+             satu orang yang jarang berubah. Yang berganti tiap sesi semuanya
+             sudah datang dari API. Fotonya diambil dari MIS pada jalur TETAP,
+             jadi menggantinya cukup menimpa berkas itu. -->
+        <div class="bagian">
+            <h2 class="kop">Di balik <em>Rumah Scopus</em></h2>
+            <p class="kop-sub">Yang menyusun kurikulumnya, dan masih turun langsung sampai sekarang.</p>
+
+            <div class="tokoh">
+                <div>
+                    <img id="foto-tokoh" alt="Dr. Jumintono SJS, M.Pd — Presiden Rumah Scopus & Master Trainer"
+                        width="1024" height="1536" loading="lazy" decoding="async">
+                </div>
+                <div>
+                    <p class="tokoh-nama">Dr. Jumintono SJS, M.Pd</p>
+                    <p class="tokoh-jabatan">Presiden Rumah Scopus &amp; Master Trainer</p>
+
+                    <ul class="daftar-poin">
+                        <li><i class="fa-solid fa-circle-check"></i>
+                            <span>Dosen UTHM selama 3,2 tahun. Diminta menaikkan poin
+                                <em>The World Class University</em> dengan publikasi di jurnal
+                                internasional yang terindeks Scopus.</span></li>
+                        <li><i class="fa-solid fa-circle-check"></i>
+                            <span>Memiliki <strong>46 paper</strong> yang terindeks Scopus
+                                dengan <strong>H-index 12</strong>.</span></li>
+                        <li><i class="fa-solid fa-circle-check"></i>
+                            <span>Sudah membantu <strong>1.000+ akademisi</strong> tembus Scopus
+                                dalam 6 bulan.</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================================= -->
+        <!-- 6. KENAPA MEMILIH KAMI                                        -->
         <!-- ============================================================= -->
         <!-- Kalimat dan susunannya mengikuti rumahscopus.org. Statis di sini,
              bukan dari API: ini janji merek yang jarang berubah, sementara
@@ -1121,7 +1220,7 @@
         </div>
 
         <!-- ============================================================= -->
-        <!-- 6. ANGKA KEPERCAYAAN                                          -->
+        <!-- 7. ANGKA KEPERCAYAAN                                          -->
         <!-- ============================================================= -->
         <div class="main-card gradien-rs bagian"
             style="border-radius: 15px; box-shadow: 0 10px 20px rgba(0, 0, 0, .2); overflow: hidden;">
@@ -1151,7 +1250,7 @@
         </div>
 
         <!-- ============================================================= -->
-        <!-- 7. GALERI — dari API, diisi admin lewat MIS                   -->
+        <!-- 8. GALERI — dari API, diisi admin lewat MIS                   -->
         <!-- ============================================================= -->
         <!-- Seluruh bagian ini tersembunyi kalau galerinya memang kosong:
              judul "Galeri kegiatan" di atas ruang kosong lebih buruk daripada
@@ -1177,7 +1276,7 @@
         </div>
 
         <!-- ============================================================= -->
-        <!-- 8. SIAPA YANG WAJIB IKUT                                      -->
+        <!-- 9. SIAPA YANG WAJIB IKUT                                      -->
         <!-- ============================================================= -->
         <div class="bagian">
             <h2 class="kop">Siapa yang <em>wajib ikut?</em></h2>
@@ -1216,7 +1315,7 @@
         </div>
 
         <!-- ============================================================= -->
-        <!-- 9. YANG DIBAWA PULANG + HARGA                                 -->
+        <!-- 10. YANG DIBAWA PULANG + HARGA                                -->
         <!-- ============================================================= -->
         <div class="bagian" id="daftar">
             <div class="row g-4 align-items-center mb-4">
@@ -1267,7 +1366,7 @@
         </div>
 
         <!-- ============================================================= -->
-        <!-- 10. FAQ                                                       -->
+        <!-- 11. FAQ                                                       -->
         <!-- ============================================================= -->
         <div class="bagian">
             <h2 class="kop">Pertanyaan yang <em>sering ditanyakan</em></h2>
@@ -1406,15 +1505,27 @@
              * disembunyikan — bukan menyisakan kotak gambar rusak di halaman
              * yang dituju iklan berbayar.
              */
-            (function () {
-                var img = el('ilustrasi');
+            [
+                ['ilustrasi', '/assets/img/public/ringkas/ilustrasi-belajar.jpg', 'kolom-ilustrasi'],
+                /*
+                 * Jalur TETAP, bukan nama berkas berkode acak: mengganti foto
+                 * tokohnya cukup menimpa berkas itu di MIS, tanpa menyentuh
+                 * halaman ini sama sekali.
+                 */
+                ['foto-tokoh', '/storage/tokoh/presiden-master-trainer.webp', null],
+            ].forEach(function (p) {
+                var img = el(p[0]);
                 if (!img) return;
 
-                img.src = PANGKALAN + '/assets/img/public/ringkas/ilustrasi-belajar.jpg';
+                img.src = PANGKALAN + p[1];
+
                 img.addEventListener('error', function () {
-                    el('kolom-ilustrasi').hidden = true;
+                    // Yang gagal dimuat disembunyikan — kotak gambar rusak di
+                    // halaman iklan lebih buruk daripada tidak ada gambarnya.
+                    var wadah = p[2] ? el(p[2]) : img;
+                    if (wadah) wadah.hidden = true;
                 });
-            })();
+            });
 
             mulaiPenghitung();
 
