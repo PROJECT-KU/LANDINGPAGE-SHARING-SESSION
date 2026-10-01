@@ -714,6 +714,38 @@
             flex: 0 0 100%;
 
             /*
+             * Yang di tengah dimajukan. Foto sampingnya dikecilkan sedikit dan
+             * diredupkan, jadi mata punya satu tempat untuk mendarat alih-alih
+             * tiga yang sama kuat.
+             *
+             * transform, BUKAN mengubah lebar: lebar yang berubah akan menggeser
+             * tetangganya dan membuat posisi gulungannya melompat tiap kali
+             * foto tengahnya berganti.
+             */
+            transform: scale(.92);
+            opacity: .62;
+            transition: transform .45s ease, opacity .45s ease, box-shadow .45s ease;
+            /* Ruang bagi foto tengah yang membesar supaya tidak terpotong. */
+            transform-origin: center;
+        }
+
+        .galeri img.tengah {
+            transform: scale(1);
+            opacity: 1;
+            box-shadow: 0 22px 44px -18px rgba(15, 43, 91, .55);
+            z-index: 2;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            /* Perangkat yang minta animasi dikurangi: semuanya tampil penuh,
+               tanpa membesar-mengecil. */
+            .galeri img,
+            .galeri img.tengah { transform: none; opacity: 1; transition: none; }
+        }
+
+        .galeri img {
+
+            /*
              * min-width: 0 WAJIB ada.
              *
              * Item flex bawaannya `min-width: auto`, dan untuk <img> itu
@@ -1665,7 +1697,39 @@
                     });
                 }
 
-                barisan.addEventListener('scroll', perbarui, { passive: true });
+                /**
+                 * Menandai foto yang paling dekat ke TENGAH barisan.
+                 *
+                 * Dihitung dari jarak titik tengah tiap foto ke titik tengah
+                 * barisannya, bukan dari urutannya: di layar lebar tiga foto
+                 * terlihat sekaligus, dan yang menonjol harus yang benar-benar
+                 * di tengah pandangan — bukan yang kebetulan nomor dua.
+                 */
+                function tandaiTengah() {
+                    var kotak = barisan.getBoundingClientRect();
+                    var pusat = kotak.left + kotak.width / 2;
+                    var terdekat = null;
+                    var selisihTerkecil = Infinity;
+
+                    Array.prototype.forEach.call(barisan.querySelectorAll('img'), function (f) {
+                        var b = f.getBoundingClientRect();
+                        var selisih = Math.abs((b.left + b.width / 2) - pusat);
+
+                        if (selisih < selisihTerkecil) {
+                            selisihTerkecil = selisih;
+                            terdekat = f;
+                        }
+                    });
+
+                    Array.prototype.forEach.call(barisan.querySelectorAll('img'), function (f) {
+                        f.classList.toggle('tengah', f === terdekat);
+                    });
+                }
+
+                barisan.addEventListener('scroll', function () {
+                    perbarui();
+                    tandaiTengah();
+                }, { passive: true });
                 window.addEventListener('resize', function () { susunTitik(); perbarui(); });
 
                 /*
@@ -1690,12 +1754,111 @@
                 requestAnimationFrame(function () {
                     susunTitik();
                     perbarui();
+                    tandaiTengah();
                 });
 
-                window.addEventListener('load', function () { susunTitik(); perbarui(); });
+                window.addEventListener('load', function () {
+                    susunTitik();
+                    perbarui();
+                    tandaiTengah();
+                });
 
                 susunTitik();
                 perbarui();
+                tandaiTengah();
+
+                mulaiJalanSendiri();
+
+                /**
+                 * Galeri berjalan sendiri.
+                 *
+                 * Empat keadaan membuatnya BERHENTI, dan ketiganya disengaja:
+                 *
+                 *   - tetikus di atasnya atau ada yang menerima fokus papan
+                 *     ketik — orang sedang melihat satu foto, dan menggesernya
+                 *     saat itu terasa seperti direbut
+                 *   - galerinya sedang tidak terlihat di layar — menganimasikan
+                 *     yang tidak dilihat siapa pun cuma memakan daya
+                 *   - orang sudah menggeser sendiri — ia sudah memilih, dan
+                 *     sistem tidak boleh menimpanya
+                 *   - perangkatnya minta animasi dikurangi
+                 */
+                function mulaiJalanSendiri() {
+                    var pelan = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+                    if (pelan.matches) return;
+                    if (jumlahHalaman() < 2) return;
+
+                    var jam = null;
+                    var berhentiSelamanya = false;
+
+                    function maju1() {
+                        var sisaKanan = barisan.scrollWidth - barisan.clientWidth - barisan.scrollLeft;
+
+                        // Di ujung kanan kembali ke awal, supaya galerinya
+                        // berputar dan foto pertama ikut terlihat lagi.
+                        barisan.scrollTo({
+                            left: sisaKanan < 8 ? 0 : barisan.scrollLeft + barisan.clientWidth,
+                            behavior: 'smooth',
+                        });
+                    }
+
+                    function jalan() {
+                        if (berhentiSelamanya || jam) return;
+
+                        // 4,5 detik: cukup untuk melihat satu foto tanpa
+                        // membuat orang merasa dikejar.
+                        jam = setInterval(maju1, 4500);
+                    }
+
+                    function henti() {
+                        if (!jam) return;
+
+                        clearInterval(jam);
+                        jam = null;
+                    }
+
+                    ['mouseenter', 'focusin'].forEach(function (p) {
+                        barisan.parentElement.addEventListener(p, henti);
+                    });
+
+                    ['mouseleave', 'focusout'].forEach(function (p) {
+                        barisan.parentElement.addEventListener(p, jalan);
+                    });
+
+                    /*
+                     * Begitu orang menggeser sendiri — usapan, panah, atau titik —
+                     * jalan sendirinya BERHENTI untuk seterusnya. Dilanjutkan
+                     * lagi, galerinya akan melompat dari foto yang sedang
+                     * dilihatnya.
+                     */
+                    ['pointerdown', 'wheel', 'keydown'].forEach(function (p) {
+                        barisan.addEventListener(p, function () {
+                            berhentiSelamanya = true;
+                            henti();
+                        }, { passive: true });
+                    });
+
+                    [mundur, maju, titik].forEach(function (e) {
+                        if (!e) return;
+
+                        e.addEventListener('click', function () {
+                            berhentiSelamanya = true;
+                            henti();
+                        });
+                    });
+
+                    // Berhenti saat galerinya tidak terlihat di layar.
+                    if ('IntersectionObserver' in window) {
+                        new IntersectionObserver(function (masuk) {
+                            masuk[0].isIntersecting ? jalan() : henti();
+                        }, { threshold: .25 }).observe(barisan);
+
+                        return;
+                    }
+
+                    jalan();
+                }
             }
 
             function pasangFlyer(s) {
