@@ -4,7 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Online Sharing Session - Rumah Scopus</title>
+    <title>Sharing Session - Rumah Scopus</title>
+    <meta name="description"
+        content="Sharing session daring Rumah Scopus. Materi terapan, pemateri praktisi, rekaman, dan e-sertifikat resmi.">
 
     <!-- Favicon -->
     <link rel="icon" href="images/Icon-RS.png" type="image/png">
@@ -16,6 +18,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <!-- Google Fonts: Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800;900&display=swap"
         rel="stylesheet">
 
@@ -51,7 +55,7 @@
             --primary-orange: #ff6a00;
             --gradient-orange: linear-gradient(135deg, #ff8c00 0%, #e65c00 100%);
             --gradient-navy: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-            --gradient-green: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            --gradient-red: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
             --bg-light: #f8fafc;
         }
 
@@ -61,7 +65,29 @@
             background-image: radial-gradient(#e2e8f0 2px, transparent 2px);
             background-size: 30px 30px;
             color: #333;
-            overflow-x: hidden;
+            position: relative;
+        }
+
+        /*
+         * Lapisan khusus untuk blob hiasan.
+         *
+         * Blob-nya dipasang menjorok keluar (`right: -50px`) supaya warnanya
+         * membaur dari tepi layar. Terukur: tanpa pemotong, halamannya bisa
+         * digeser ke samping tepat 50px di 1440px, 768px, maupun 390px.
+         *
+         * `overflow-x: hidden` pada <body> TIDAK menolong: nilai overflow body
+         * dirambatkan ke viewport, dan body sendiri lalu berperilaku seperti
+         * `visible`. Jadi pemotongnya harus unsur lain — inilah unsur itu.
+         *
+         * pointer-events: none supaya lapisan ini tidak pernah menangkap
+         * sentuhan yang dimaksudkan untuk tombol di bawahnya.
+         */
+        .lapis-hias {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            overflow: hidden;
+            pointer-events: none;
         }
 
         /* ==== GLOSSY & GLASSMORPHISM UTILITIES ==== */
@@ -77,74 +103,70 @@
             z-index: 10;
         }
 
-        .glossy-badge-orange {
-            background: var(--gradient-orange);
-            color: white;
+        .glossy-badge-orange,
+        .glossy-badge-navy,
+        .glossy-badge-red {
+            display: inline-block;
             padding: 8px 20px;
             border-radius: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #fff;
             font-weight: 800;
             letter-spacing: 1px;
+        }
+
+        .glossy-badge-orange {
+            background: var(--gradient-orange);
             box-shadow: 0 4px 15px rgba(255, 106, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            display: inline-block;
-        }
-
-        .glossy-badge-free {
-            background: var(--gradient-green);
-            color: white;
-            padding: 8px 20px;
-            border-radius: 50px;
-            font-weight: 900;
-            letter-spacing: 1px;
-            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            display: inline-block;
-            animation: pulse-badge 2s infinite;
-        }
-
-        @keyframes pulse-badge {
-            0% {
-                transform: scale(1);
-                box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
-            }
-
-            50% {
-                transform: scale(1.05);
-                box-shadow: 0 8px 25px rgba(16, 185, 129, 0.6);
-            }
-
-            100% {
-                transform: scale(1);
-                box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
-            }
         }
 
         .glossy-badge-navy {
             background: var(--gradient-navy);
-            color: white;
-            padding: 8px 20px;
-            border-radius: 50px;
             font-weight: 600;
             box-shadow: 0 4px 15px rgba(30, 60, 114, 0.3);
-            display: inline-block;
+        }
+
+        /* Lencana sisa kursi. Berdenyut seperti lencana GRATIS yang dulu ada
+           di sini — tetapi hanya muncul kalau kursinya MEMANG tinggal
+           sedikit, jadi denyutnya tetap berarti sesuatu. */
+        .glossy-badge-red {
+            background: var(--gradient-red);
+            font-weight: 900;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+            animation: pulse-badge 2s infinite;
+        }
+
+        @keyframes pulse-badge {
+            0% { transform: scale(1); box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4); }
+            50% { transform: scale(1.05); box-shadow: 0 8px 25px rgba(239, 68, 68, 0.6); }
+            100% { transform: scale(1); box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .glossy-badge-red { animation: none; }
         }
 
         /* ==== BUTTONS ==== */
         .btn-glossy-primary {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            /* min-height, bukan padding saja: tombol utama halaman iklan dan
+               ditekan dengan ibu jari, jadi tingginya tidak boleh ikut
+               mengecil saat teksnya pendek. */
+            min-height: 56px;
+            padding: 15px 35px;
+            border: none;
+            border-radius: 50px;
             background: var(--gradient-orange);
             color: white;
             font-weight: 800;
-            padding: 15px 35px;
-            border-radius: 50px;
-            border: none;
-            transition: all 0.3s ease;
-            box-shadow: 0 8px 25px rgba(255, 106, 0, 0.4);
-            text-transform: uppercase;
             letter-spacing: 0.5px;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
+            text-transform: uppercase;
             text-decoration: none;
+            box-shadow: 0 8px 25px rgba(255, 106, 0, 0.4);
+            transition: all 0.3s ease;
         }
 
         .btn-glossy-primary:hover {
@@ -153,44 +175,64 @@
             color: white;
         }
 
+        .btn-glossy-primary.mati {
+            filter: grayscale(1);
+            pointer-events: none;
+            box-shadow: none;
+        }
+
         /* ==== TYPOGRAPHY ==== */
         .title-main {
+            /* clamp, bukan 3.5rem tetap: di 320px judul 3,5rem meluber keluar
+               layar dan halamannya bisa digeser ke samping. */
+            font-size: clamp(2.4rem, 9vw, 3.5rem);
             font-weight: 900;
-            font-size: 3.5rem;
             line-height: 1.1;
             color: var(--primary-navy);
             text-transform: uppercase;
         }
 
-        .title-highlight {
-            color: var(--primary-orange);
-        }
+        .title-highlight { color: var(--primary-orange); }
 
         .hook-text {
-            font-size: 1.15rem;
-            color: #475569;
-            line-height: 1.6;
             margin-bottom: 2rem;
-            border-left: 4px solid var(--primary-orange);
             padding-left: 15px;
+            border-left: 4px solid var(--primary-orange);
+            font-size: 1.15rem;
+            line-height: 1.6;
+            color: #475569;
         }
 
         /* ==== SPEAKER SECTION ==== */
         .speaker-img-wrapper {
             position: relative;
-            border-radius: 20px;
             padding: 10px;
+            border-radius: 20px;
+            border: 1px solid white;
             background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.4));
             box-shadow: 0 15px 35px rgba(15, 43, 91, 0.15);
-            border: 1px solid white;
         }
 
         .speaker-img-wrapper img {
-            border-radius: 15px;
             width: 100%;
+            aspect-ratio: 4 / 5;
             object-fit: cover;
-            /* Pastikan gambar pas di frame */
-            aspect-ratio: 4/5;
+            border-radius: 15px;
+        }
+
+        /* Cadangan saat sesinya belum punya foto pemateri: huruf awal
+           namanya, bukan foto orang lain yang kebetulan masih tertinggal di
+           folder images/ dari sesi sebelumnya. */
+        .speaker-initial {
+            display: grid;
+            place-items: center;
+            width: 100%;
+            aspect-ratio: 4 / 5;
+            border-radius: 15px;
+            background: var(--gradient-navy);
+            color: #fff;
+            font-size: clamp(4rem, 14vw, 7rem);
+            font-weight: 900;
         }
 
         .speaker-name-badge {
@@ -198,43 +240,131 @@
             bottom: -20px;
             left: 50%;
             transform: translateX(-50%);
+            width: 90%;
+            padding: 10px 25px;
+            border: 2px solid white;
+            border-radius: 12px;
             background: var(--gradient-orange);
             color: white;
-            padding: 10px 25px;
-            border-radius: 12px;
             font-weight: 800;
-            white-space: nowrap;
-            box-shadow: 0 10px 20px rgba(255, 106, 0, 0.3);
             text-align: center;
-            width: 90%;
-            border: 2px solid white;
+            box-shadow: 0 10px 20px rgba(255, 106, 0, 0.3);
         }
 
         .price-box {
+            padding: 20px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
             background: var(--gradient-navy);
             color: white;
-            border-radius: 15px;
-            padding: 20px;
             text-align: center;
-            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
-        /* Custom Shapes */
         .shape-blob {
             position: absolute;
+            z-index: 1;
+            border-radius: 50%;
             background: rgba(255, 106, 0, 0.1);
             filter: blur(60px);
-            border-radius: 50%;
-            z-index: 1;
         }
+
+        /* ==== HITUNG MUNDUR ==== */
+        .countdown {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 1.75rem;
+        }
+
+        .countdown div {
+            flex: 1 1 64px;
+            padding: 10px 6px;
+            border-radius: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            background: rgba(255, 255, 255, 0.85);
+            text-align: center;
+        }
+
+        .countdown strong {
+            display: block;
+            font-size: 1.5rem;
+            font-weight: 900;
+            line-height: 1.1;
+            color: var(--primary-navy);
+            /* Angka selebar sama supaya kotaknya tidak bergoyang tiap detik. */
+            font-variant-numeric: tabular-nums;
+        }
+
+        .countdown span {
+            font-size: 11px;
+            letter-spacing: 0.08em;
+            color: #94a3b8;
+            text-transform: uppercase;
+        }
+
+        /* ==== KEADAAN HALAMAN ==== */
+
+        /* Rangka berkilau selama data belum sampai. Dipakai daripada tulisan
+           "Memuat…": halaman iklan dinilai orang dalam dua detik pertama, dan
+           layar kosong berisi satu kata terbaca seperti halaman rusak. */
+        .rangka {
+            border-radius: 10px;
+            background: linear-gradient(90deg, #eef2f7 25%, #e2e8f0 37%, #eef2f7 63%);
+            background-size: 400% 100%;
+            animation: kilau 1.4s ease infinite;
+            color: transparent !important;
+        }
+
+        @keyframes kilau {
+            0% { background-position: 100% 50%; }
+            100% { background-position: 0 50%; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .rangka { animation: none; }
+        }
+
+        .pesan-kosong {
+            max-width: 560px;
+            margin: 40px auto;
+            padding: 44px 28px;
+            border-radius: 20px;
+            border: 1px solid #e2e8f0;
+            background: #fff;
+            text-align: center;
+        }
+
+        .pesan-kosong > i {
+            display: block;
+            margin-bottom: 14px;
+            font-size: 2.6rem;
+            /* Abu-abu khusus untuk ketiadaan data. */
+            color: #cbd5e1;
+        }
+
+        .sesi-lain {
+            display: block;
+            padding: 14px 16px;
+            border-radius: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            background: rgba(255, 255, 255, 0.85);
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .sesi-lain:hover { color: inherit; border-color: var(--primary-orange); }
+
+        [hidden] { display: none !important; }
     </style>
 </head>
 
 <body>
 
-    <div class="shape-blob" style="top: -100px; left: -100px; width: 400px; height: 400px;"></div>
-    <div class="shape-blob"
-        style="bottom: 100px; right: -50px; width: 300px; height: 300px; background: rgba(15, 43, 91, 0.1);"></div>
+    <div class="lapis-hias" aria-hidden="true">
+        <div class="shape-blob" style="top: -100px; left: -100px; width: 400px; height: 400px;"></div>
+        <div class="shape-blob"
+            style="bottom: 100px; right: -50px; width: 300px; height: 300px; background: rgba(15, 43, 91, 0.1);"></div>
+    </div>
 
     <div class="container py-5" style="position: relative; z-index: 2;">
 
@@ -242,60 +372,63 @@
             <div class="col-12 text-center text-md-start">
                 <img src="images/Logo RSC 01.png" alt="Rumah Scopus Foundation" class="mb-3"
                     style="max-height: 65px; width: auto; object-fit: contain;">
-
-                <h6 class="fw-bold text-muted d-none d-md-block mt-2">Join our exclusive <span class="text-dark">FREE
-                        Online Webinar</span></h6>
             </div>
         </div>
 
-        <div class="row align-items-center mb-5 pb-5">
+        <!-- ================================================ sesi tersedia -->
+        <div class="row align-items-center mb-5 pb-5" id="isi">
 
             <div class="col-lg-6 mb-5 mb-lg-0 pe-lg-5">
                 <div class="mb-3">
-                    <span class="glossy-badge-orange mb-2 me-2">ONLINE</span>
-                    <!-- Badge GRATIS Ditambahkan di sini -->
-                    <span class="glossy-badge-free mb-2"><i class="fas fa-gift me-1"></i> 100% GRATIS</span>
+                    <span class="glossy-badge-orange mb-2 me-2" id="platform">ONLINE</span>
+                    <span class="glossy-badge-red mb-2" id="kuota" hidden></span>
                     <h1 class="title-main">SHARING<br><span class="title-highlight">SESSION</span></h1>
                 </div>
 
-                <!-- Teks Hook Diperbarui Sesuai Topik Jurnal Predator -->
                 <div class="hook-text">
-                    <strong>Takut terjebak jurnal abal-abal yang bisa merugikan reputasi akademik Anda?</strong><br>
-                    Jangan biarkan riset berharga Anda sia-sia. Pelajari cara membongkar kedok jurnal palsu dan predator
-                    dengan cepat, tepat, dan akurat bagaikan seorang <em>"Scopus Detective"</em>!
+                    <strong>Ilmu yang bisa langsung dipakai, bukan teori yang berhenti di catatan.</strong><br>
+                    Dua jam bersama praktisi yang sudah menjalaninya — lengkap dengan studi kasus, sesi tanya
+                    jawab, rekaman, dan e-sertifikat resmi.
+                </div>
+
+                <!-- Hitung mundur; tetap tersembunyi kalau jam acaranya belum diisi -->
+                <div class="countdown" id="mundur" hidden>
+                    <div><strong id="m-hari">–</strong><span>Hari</span></div>
+                    <div><strong id="m-jam">–</strong><span>Jam</span></div>
+                    <div><strong id="m-menit">–</strong><span>Menit</span></div>
+                    <div><strong id="m-detik">–</strong><span>Detik</span></div>
                 </div>
 
                 <div class="d-flex flex-wrap gap-3 mb-4">
                     <div class="glossy-card p-3 flex-grow-1" style="border-radius: 15px;">
-                        <div class="text-muted fw-bold" style="font-size: 12px;"><i
-                                class="fas fa-calendar-alt text-warning me-1"></i> TANGGAL</div>
-                        <!-- Tanggal Diperbarui -->
-                        <h5 class="fw-black mb-0" style="color: var(--primary-navy);">21 JUNI 2026</h5>
-                        <small class="text-muted">09.30 - 11.30 WIB</small>
+                        <div class="text-muted fw-bold" style="font-size: 12px;">
+                            <i class="fa-regular fa-calendar me-1" style="color: var(--primary-orange);"></i> TANGGAL
+                        </div>
+                        <h5 class="fw-bold mb-0 rangka" id="tanggal" style="color: var(--primary-navy);">
+                            00 Xxxxxxx 0000</h5>
+                        <small class="text-muted rangka" id="jam">00.00 - 00.00 WIB</small>
                     </div>
                     <div class="glossy-card p-3 flex-grow-1" style="border-radius: 15px;">
-                        <div class="text-muted fw-bold" style="font-size: 12px;"><i
-                                class="fas fa-video text-primary me-1"></i> PLATFORM</div>
-                        <h5 class="fw-black mb-0" style="color: var(--primary-navy);">ZOOM</h5>
-                        <small class="text-muted">Meeting Online</small>
+                        <div class="text-muted fw-bold" style="font-size: 12px;">
+                            <i class="fa-solid fa-video me-1 text-primary"></i> PLATFORM
+                        </div>
+                        <h5 class="fw-bold mb-0 rangka" id="platform2" style="color: var(--primary-navy);">Xxxx</h5>
+                        <small class="text-muted">Pertemuan daring</small>
                     </div>
                 </div>
 
                 <div class="glossy-card p-4 mb-4"
                     style="background: linear-gradient(to right, #f8fafc, #f1f5f9); border-left: 5px solid var(--primary-navy);">
-                    <span class="glossy-badge-navy mb-2" style="font-size: 11px;">TOPIC <i
-                            class="fas fa-arrow-right ms-1"></i></span>
-                    <!-- Judul Topik Diperbarui -->
-                    <h4 class="fw-bold mb-0" style="color: var(--primary-navy); font-style: italic;">
-                        "Scopus Detective: Trik Cepat Membongkar Kedok Jurnal Palsu dan Predator"
-                    </h4>
+                    <span class="glossy-badge-navy mb-2" style="font-size: 11px;">TOPIK <i
+                            class="fa-solid fa-arrow-right ms-1"></i></span>
+                    <h4 class="fw-bold mb-0 rangka" id="judul"
+                        style="color: var(--primary-navy); font-style: italic;">
+                        Judul sesi sedang dimuat dari sistem Rumah Scopus</h4>
                 </div>
 
                 <div class="d-grid d-md-flex gap-3">
-                    <!-- Teks otomatis pada CTA disesuaikan dengan topik dan tanggal baru -->
-                    <a href="https://wa.me/6288983567819?text=Halo%20Kak%20Kumala,%20saya%20ingin%20mendaftar%20Webinar%20Gratis%20Rumah%20Scopus:%20Scopus%20Detective%20tanggal%2021%20Juni."
-                        target="_blank" class="btn-glossy-primary">
-                        Daftar Webinar Gratis <i class="fab fa-whatsapp fs-5"></i>
+                    <a href="#" id="cta" class="btn-glossy-primary" rel="noopener">
+                        <span id="cta-teks">Daftar sekarang</span> <i class="fa-solid fa-arrow-right"></i>
                     </a>
                 </div>
             </div>
@@ -303,55 +436,322 @@
             <div class="col-lg-5 offset-lg-1">
 
                 <div class="speaker-img-wrapper mb-5">
-                    <!-- Gambar Pemateri Diperbarui (Pastikan gambar ini dimasukkan ke folder images) -->
-                    <img src="images/WhatsApp Image 2026-06-06 at 09.59.59.jpeg" alt="Speaker Nofand A.M">
+                    <img id="foto-pemateri" src="" alt="" hidden>
+                    <div class="speaker-initial" id="inisial-pemateri">R</div>
 
                     <div class="speaker-name-badge">
-                        <!-- Nama Pemateri Diperbarui -->
-                        <span class="d-block" style="font-size: 1.1rem;">NOFAND A.M, S.KOM</span>
-                        <span class="fw-normal" style="font-size: 0.8rem;">Trainer Rumah Scopus</span>
+                        <span class="d-block" style="font-size: 1.1rem;" id="nama-pemateri">Pemateri</span>
+                        <span class="fw-normal" style="font-size: 0.8rem;" id="jabatan-pemateri">Rumah Scopus</span>
                     </div>
                 </div>
 
                 <div class="glossy-card p-0 overflow-hidden mt-5">
                     <div class="row g-0">
                         <div class="col-7 p-4">
-                            <!-- Copywriting Sertifikat dipertegas -->
-                            <h6 class="fw-bold mb-1" style="color: var(--primary-navy);">Webinarnya GRATIS!</h6>
-                            <p class="text-muted small mb-0">Tingkatkan portofolio akademik Anda dengan bukti kehadiran
-                                resmi <strong class="text-dark">(Opsional)</strong>.</p>
+                            <h6 class="fw-bold mb-1" style="color: var(--primary-navy);">Sekali bayar, semua dapat</h6>
+                            <p class="text-muted small mb-0">
+                                Termasuk <strong class="text-dark">e-sertifikat resmi</strong>, materi, rekaman sesi,
+                                dan grup diskusi peserta.
+                            </p>
                         </div>
                         <div class="col-5 price-box d-flex flex-column justify-content-center">
-                            <span style="font-size: 11px; opacity: 0.8;">Sertifikat Webinar</span>
-                            <h3 class="fw-black mb-0 text-warning">Rp 50.000</h3>
+                            <span style="font-size: 11px; opacity: 0.8;">Investasi</span>
+                            <h3 class="fw-bold mb-0 text-warning rangka" id="harga">Rp 000.000</h3>
+                            <span style="font-size: 11px; opacity: 0.8;">per peserta</span>
                         </div>
                     </div>
-                    <div class="bg-light p-2 text-center border-top"
-                        style="font-size: 11px; color: #64748b; font-family: monospace;">
-                        PEMBAYARAN: BRI - 216401000467563 (RUMAH SCOPUS AKADEMI)
+                    <div class="bg-light p-2 text-center border-top" style="font-size: 11px; color: #64748b;">
+                        Pendaftaran dan pembayaran diproses di halaman resmi Rumah Scopus.
                     </div>
+                </div>
+
+                <!-- Tanggal lain yang juga dibuka -->
+                <div class="mt-4" id="kotak-lain" hidden>
+                    <p class="fw-bold mb-2" style="font-size: 0.9rem; color: var(--primary-navy);">
+                        Tanggal lain yang juga dibuka
+                    </p>
+                    <div class="d-grid gap-2" id="daftar-lain"></div>
                 </div>
 
             </div>
         </div>
 
-        <!-- Kontak Tetap Sama -->
+        <!-- ============================================ belum ada / galat -->
+        <div class="pesan-kosong" id="kosong" hidden>
+            <i class="fa-regular fa-calendar-xmark"></i>
+            <h5 class="fw-bold" style="color: var(--primary-navy);" id="kosong-judul">
+                Belum ada sesi yang dijadwalkan</h5>
+            <p class="text-muted mb-4" id="kosong-sub">
+                Jadwal berikutnya diumumkan lewat Instagram dan grup WhatsApp Rumah Scopus.</p>
+            <a class="btn-glossy-primary"
+                href="https://wa.me/6288983567819?text=Halo,%20saya%20mau%20ikut%20Sharing%20Session%20Rumah%20Scopus%20berikutnya."
+                target="_blank" rel="noopener">
+                Tanya jadwal <i class="fa-brands fa-whatsapp"></i>
+            </a>
+        </div>
+
+        <!-- Kontak -->
         <div class="row mt-5">
             <div class="col-12 text-center text-muted border-top pt-4">
-                <p class="mb-1 fw-bold">Butuh Bantuan Registrasi?</p>
-                <div class="d-flex justify-content-center gap-4 flex-wrap">
-                    <span><i class="fab fa-whatsapp text-success"></i> 0889-8356-7819 (KUMALA)</span>
-                    <span><i class="fab fa-whatsapp text-success"></i> 0856-6964-7204 (RIZAL)</span>
+                <p class="mb-1 fw-bold">Butuh bantuan pendaftaran?</p>
+                <div class="d-flex justify-content-center gap-4 flex-wrap" id="kontak">
+                    <span><i class="fa-brands fa-whatsapp text-success"></i> 0889-8356-7819 (Kumala)</span>
+                    <span><i class="fa-brands fa-whatsapp text-success"></i> 0856-6964-7204 (Rizal)</span>
                 </div>
                 <div class="mt-4 small text-muted">
-                    &copy; 2026 Hak Cipta Dilindungi. <br class="d-md-none">
-                    <a href="http://www.rumahscopusfoundation.com"
+                    &copy; <span id="tahun">2026</span> Hak Cipta Dilindungi. <br class="d-md-none">
+                    <a href="https://www.rumahscopusfoundation.com"
                         class="text-decoration-none text-primary fw-bold">rumahscopusfoundation</a>
                 </div>
             </div>
         </div>
 
     </div>
+
+    <script>
+        /**
+         * Halaman ini TIDAK lagi memuat data acara di dalam berkasnya.
+         *
+         * Dulu tanggal, topik, pemateri, harga, dan teks tombol WhatsApp
+         * diketik langsung di sini — riwayat repo ini satu commit per webinar,
+         * dan tiap kali ada satu tempat yang terlewat: judul sudah diganti,
+         * tanggal di dalam tautan WhatsApp belum.
+         *
+         * Sekarang semuanya diambil dari MIS Rumah Scopus. Mengganti sesi
+         * cukup dilakukan sekali di layar Angkatan Layanan — flyer, tanggal,
+         * jam, pemateri, harga, sisa kursi — dan halaman ini ikut berubah
+         * tanpa disentuh sama sekali.
+         */
+        (function () {
+            'use strict';
+
+            /*
+             * SATU-SATUNYA baris yang perlu diubah kalau alamat aplikasinya
+             * pindah.
+             *
+             * ?api=... di alamat halaman menimpanya. Itu dipakai untuk mencoba
+             * halaman ini terhadap peladen lokal tanpa menyunting berkas lalu
+             * lupa mengembalikannya sebelum dideploy.
+             */
+            var PANGKALAN = 'https://rumahscopus.org';
+
+            var paksa = new URLSearchParams(location.search).get('api');
+            if (paksa) PANGKALAN = paksa.replace(/\/+$/, '');
+
+            function el(id) { return document.getElementById(id); }
+
+            el('tahun').textContent = new Date().getFullYear();
+
+            fetch(PANGKALAN + '/api/sharing-session', { headers: { 'Accept': 'application/json' } })
+                .then(function (r) {
+                    if (!r.ok) throw new Error('status ' + r.status);
+                    return r.json();
+                })
+                .then(function (d) {
+                    if (!d.ada || !d.sesi) {
+                        tampilkanKosong(d.pesan);
+                        return;
+                    }
+
+                    pasang(d.sesi, d.berikutnya || []);
+                })
+                .catch(function (e) {
+                    /*
+                     * Gagal memuat TIDAK boleh berakhir halaman kosong. Yang
+                     * membukanya orang yang baru saja menekan iklan, dan satu-
+                     * satunya yang masih berguna baginya adalah nomor panitia.
+                     */
+                    console.error('Gagal memuat data sesi:', e);
+
+                    tampilkanKosong(
+                        'Jadwalnya sedang tidak bisa dimuat. Hubungi panitia untuk informasi terbaru.',
+                        'Sedang ada gangguan'
+                    );
+                });
+
+            function tampilkanKosong(pesan, judul) {
+                el('isi').hidden = true;
+                el('kosong').hidden = false;
+
+                if (judul) el('kosong-judul').textContent = judul;
+                if (pesan) el('kosong-sub').textContent = pesan;
+            }
+
+            /* textContent, BUKAN innerHTML: isinya datang dari basis data, dan
+               menempelkannya sebagai HTML berarti apa pun yang diketik admin
+               ikut dijalankan di peramban pengunjung. */
+            function isi(id, teks) {
+                var e = el(id);
+                if (!e) return;
+
+                e.classList.remove('rangka');
+                e.textContent = teks || '';
+            }
+
+            function pasang(s, lain) {
+                document.title = s.judul + ' - Rumah Scopus';
+
+                isi('judul', s.judul);
+                isi('tanggal', s.tanggal || 'Menyusul');
+                isi('jam', s.jam || 'Jam menyusul');
+                isi('platform', s.platform || 'ONLINE');
+                isi('platform2', s.platform || 'Daring');
+                isi('harga', s.harga_promo_tulis || s.harga_tulis || 'Hubungi panitia');
+
+                /*
+                 * Lencana sisa kursi hanya muncul kalau memang tinggal
+                 * sedikit. Lencana "terbatas" yang selalu ada berhenti
+                 * dipercaya orang, dan yang dulu menempel di sini — "100%
+                 * GRATIS" — sekarang justru keliru.
+                 */
+                if (s.kuota && s.kuota.sisa !== null && s.kuota.sisa > 0 && s.kuota.sisa <= 10) {
+                    el('kuota').textContent = s.kuota.kalimat;
+                    el('kuota').hidden = false;
+                }
+
+                pasangPemateri(s.pemateri || {});
+                pasangKontak(s.kontak || []);
+                pasangLain(lain);
+                pasangTombol(s);
+
+                if (s.mulai_pada) mulaiHitungMundur(s.mulai_pada);
+            }
+
+            function pasangTombol(s) {
+                var cta = el('cta');
+
+                if (s.kuota && s.kuota.habis) {
+                    el('cta-teks').textContent = 'Kuota sudah penuh';
+                    cta.removeAttribute('href');
+                    cta.classList.add('mati');
+
+                    return;
+                }
+
+                if (!s.daftar_url) return;
+
+                cta.href = s.daftar_url;
+
+                // Dicatat ke Pixel supaya iklannya bisa diukur sampai klik,
+                // bukan berhenti di jumlah pembuka halaman.
+                cta.addEventListener('click', function () {
+                    if (window.fbq) fbq('track', 'InitiateCheckout');
+                });
+            }
+
+            function pasangPemateri(p) {
+                isi('nama-pemateri', p.nama || 'Rumah Scopus');
+                isi('jabatan-pemateri', p.jabatan || 'Trainer');
+
+                if (p.foto) {
+                    var img = el('foto-pemateri');
+
+                    img.src = p.foto;
+                    img.alt = 'Pemateri ' + (p.nama || '');
+                    img.hidden = false;
+                    el('inisial-pemateri').hidden = true;
+
+                    return;
+                }
+
+                el('inisial-pemateri').textContent =
+                    (p.nama || 'R').trim().charAt(0).toUpperCase() || 'R';
+            }
+
+            function pasangKontak(daftar) {
+                if (!daftar.length) return;
+
+                var wadah = el('kontak');
+                wadah.innerHTML = '';
+
+                daftar.forEach(function (k) {
+                    var simpul = document.createElement(k.wa ? 'a' : 'span');
+
+                    if (k.wa) {
+                        simpul.href = 'https://wa.me/' + k.wa;
+                        simpul.target = '_blank';
+                        simpul.rel = 'noopener';
+                        simpul.className = 'text-decoration-none text-muted';
+                    }
+
+                    var ikon = document.createElement('i');
+                    ikon.className = 'fa-brands fa-whatsapp text-success';
+
+                    simpul.appendChild(ikon);
+                    simpul.appendChild(document.createTextNode(
+                        ' ' + (k.telp || '') + (k.nama ? ' (' + k.nama + ')' : '')
+                    ));
+
+                    wadah.appendChild(simpul);
+                });
+            }
+
+            function pasangLain(daftar) {
+                if (!daftar.length) return;
+
+                var wadah = el('daftar-lain');
+
+                daftar.forEach(function (s) {
+                    var a = document.createElement('a');
+                    a.href = s.daftar_url;
+                    a.className = 'sesi-lain';
+
+                    var tgl = document.createElement('strong');
+                    tgl.style.color = 'var(--primary-navy)';
+                    tgl.style.fontSize = '0.92rem';
+                    tgl.textContent = s.tanggal + (s.jam ? ' · ' + s.jam : '');
+
+                    var jdl = document.createElement('small');
+                    jdl.className = 'd-block text-muted';
+                    jdl.textContent = s.judul;
+
+                    a.appendChild(tgl);
+                    a.appendChild(jdl);
+                    wadah.appendChild(a);
+                });
+
+                el('kotak-lain').hidden = false;
+            }
+
+            function mulaiHitungMundur(iso) {
+                /*
+                 * Waktunya datang LENGKAP beserta zona dari peladen
+                 * (2026-10-21T09:30:00+07:00). Dirakit di sini dari tanggal
+                 * dan jam terpisah, hitungannya meleset tujuh jam bagi
+                 * pengunjung yang perangkatnya bukan WIB.
+                 */
+                var tujuan = new Date(iso).getTime();
+
+                if (isNaN(tujuan)) return;
+
+                var kotak = el('mundur');
+                kotak.hidden = false;
+
+                function pad(n) { return n < 10 ? '0' + n : String(n); }
+
+                function tik() {
+                    var sisa = tujuan - Date.now();
+
+                    if (sisa <= 0) {
+                        kotak.hidden = true;
+                        clearInterval(jam);
+
+                        return;
+                    }
+
+                    var detik = Math.floor(sisa / 1000);
+
+                    el('m-hari').textContent = Math.floor(detik / 86400);
+                    el('m-jam').textContent = pad(Math.floor(detik % 86400 / 3600));
+                    el('m-menit').textContent = pad(Math.floor(detik % 3600 / 60));
+                    el('m-detik').textContent = pad(detik % 60);
+                }
+
+                tik();
+                var jam = setInterval(tik, 1000);
+            }
+        })();
+    </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
