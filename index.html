@@ -1011,6 +1011,39 @@
             box-shadow: 0 15px 35px rgba(15, 43, 91, .15);
         }
 
+        /*
+         * FLYER TIDAK BOLEH DIPOTONG. .foto-suasana memakai 16/10 +
+         * object-fit: cover, dan itu benar untuk foto suasana - tapi flyer ini
+         * poster tegak, jadi cover memangkas bagian bawahnya, termasuk
+         * harganya. Yang hilang justru keterangan yang paling dicari.
+         *
+         * contain, bukan cover: seluruh posternya tampil. Nisbah 16/10 di sini
+         * hanya PEMESAN RUANG sebelum berkasnya tiba; begitu termuat,
+         * nisbahnya diganti skrip dengan nisbah asli gambarnya supaya tidak
+         * ada bidang kosong di atas-bawah.
+         */
+        #flyer-sesi {
+            object-fit: contain;
+            background: transparent;
+        }
+
+        /*
+         * Tingginya dibatasi di layar lebar. Flyernya tegak 1080x1350, jadi
+         * dibiarkan selebar kolomnya ia jadi 776x970 px - jauh lebih tinggi
+         * daripada daftar tiga butir di sebelahnya, dan sisi kiri jadi
+         * melompong. Dibatasi tinggi, bukan lebar, supaya nisbahnya tetap
+         * utuh dan tidak ada yang terpotong.
+         */
+        @media (min-width: 992px) {
+            #flyer-sesi {
+                width: auto;
+                max-width: 100%;
+                max-height: 560px;
+                margin-inline: auto;
+                display: block;
+            }
+        }
+
         /* ---- Ajakan penutup ---- */
         .ajakan {
             padding: 44px 28px;
@@ -3249,13 +3282,29 @@
                 if (!s.flyer) return;
 
                 var img = el('flyer-sesi');
-                img.src = s.flyer;
-                img.alt = 'Flyer ' + s.judul;
-                el('kolom-flyer').hidden = false;
+
+                img.addEventListener('load', function () {
+                    /*
+                     * Nisbah 16/10 di CSS hanya memesan ruang sebelum
+                     * berkasnya tiba. Begitu ukurannya diketahui, nisbah
+                     * aslinya yang dipakai - kalau tidak, poster tegak
+                     * menyisakan bidang kosong di atas dan bawahnya.
+                     */
+                    if (img.naturalWidth && img.naturalHeight) {
+                        img.style.aspectRatio = img.naturalWidth + ' / ' + img.naturalHeight;
+                    }
+                });
 
                 img.addEventListener('error', function () {
                     el('kolom-flyer').hidden = true;
                 });
+
+                // src dipasang SESUDAH penyimaknya: gambar yang sudah
+                // ditembolok bisa selesai dimuat sebelum baris berikutnya
+                // jalan, dan 'load'-nya terlewat.
+                img.src = s.flyer;
+                img.alt = 'Flyer ' + s.judul;
+                el('kolom-flyer').hidden = false;
             }
 
             /**
