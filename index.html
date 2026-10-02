@@ -1951,7 +1951,32 @@
             .dua-tokoh {
                 grid-template-columns: 1fr 1fr;
                 gap: 28px;
-                align-items: start;
+                /*
+                 * stretch supaya kedua kartunya setinggi sama. Butir tokoh
+                 * lembaganya lebih panjang, jadi dengan start kartunya terukur
+                 * 774x402 dan 774x454 - beda 52 px dan terbaca tidak sejajar.
+                 *
+                 * Fotonya sendiri TIDAK bisa disamakan nisbahnya: foto tokoh
+                 * memakai 2/3 sebab nama dan jabatannya menyatu di bagian bawah
+                 * gambar, dan nisbah lain akan memotongnya.
+                 */
+                align-items: stretch;
+            }
+
+            /*
+             * Label tetap di atas, foto dan teksnya yang ditengahkan.
+             *
+             * align-content: center dicoba lebih dulu dan hasilnya salah:
+             * ia menengahkan SELURUH isi termasuk labelnya, jadi label kartu
+             * yang isinya lebih pendek ikut turun dan kedua label tidak lagi
+             * sebaris. Dengan baris kedua 1fr, labelnya tetap di pangkal dan
+             * hanya foto serta teksnya yang ditengahkan di sisa tingginya.
+             */
+            .dua-tokoh .kartu-pemateri,
+            .dua-tokoh .tokoh {
+                grid-template-rows: auto 1fr;
+                align-content: start;
+                align-items: center;
             }
 
             /*
