@@ -1257,19 +1257,23 @@
          * berangka keras di bagian ini, dan kontras penuh membuatnya berhenti
          * dibaca sepintas bersama butir-butir di atasnya.
          */
+        /*
+         * Dulu kotak gelap. Di layar lebar kotak itu ikut meregang sampai
+         * 342 px sementara tulisannya cuma tiga baris, dan hasilnya sebidang
+         * warna pekat dengan kalimat mengambang di tengahnya. Sekarang
+         * kalimat penegas biasa - tanpa kotak.
+         */
         .spanduk-703 {
-            max-width: var(--kolom-teks);
-            margin: 28px auto 0;
-            padding: 18px 24px;
-            border-radius: 14px;
-            background: var(--primary-navy);
-            color: #fff;
+            max-width: 860px;
+            margin: 30px auto 0;
+            color: var(--primary-navy);
             text-align: center;
-            font-weight: 600;
-            line-height: 1.65;
+            font-size: 1.12rem;
+            font-weight: 700;
+            line-height: 1.6;
         }
 
-        .spanduk-703 strong { color: #ffb066; }
+        .spanduk-703 strong { color: var(--primary-orange); }
 
         .bukti-plagiarisme {
             max-width: 560px;
@@ -1294,7 +1298,7 @@
         }
 
         @media (max-width: 575.98px) {
-            .spanduk-703 { padding: 16px 16px; font-size: .94rem; }
+            .spanduk-703 { font-size: 1rem; }
         }
 
         @media (max-width: 575.98px) {
@@ -1776,7 +1780,22 @@
             }
 
             .daftar-gabung { grid-template-columns: repeat(3, 1fr); }
-            .daftar-materi { grid-template-columns: repeat(3, 1fr); }
+
+            /*
+             * Lima butir di tiga kolom menyisakan satu sel kosong di sudut
+             * kanan baris kedua. Grid tidak bisa menengahkan baris yang tidak
+             * penuh, jadi yang ini memakai flex: dua butir terakhir berhenti
+             * di tengah, dan lubangnya jadi jarak yang simetris.
+             */
+            .daftar-materi {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .daftar-materi > li {
+                flex: 0 1 calc((100% - 40px) / 3);
+            }
             #daftar-kegiatan { grid-template-columns: 1fr; }
 
             /* Tiga kolom hanya saat kolom flyernya memang tidak terpakai. */
@@ -1843,34 +1862,6 @@
         }
 
 
-        /*
-         * Spanduk "Framework 703" dan tangkapan Turnitin-nya disandingkan di
-         * layar lebar: keduanya memang satu pernyataan - klaim dan buktinya -
-         * dan ditumpuk di tengah, masing-masing menyisakan ruang kosong di
-         * kiri-kanannya.
-         */
-        @media (min-width: 992px) {
-            .bukti-703 {
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: 36px;
-                align-items: center;
-                margin-top: 28px;
-            }
-
-            .bukti-703 .spanduk-703 { margin: 0; max-width: 100%; }
-
-            /*
-             * Tangkapannya dibatasi, tidak dibiarkan selebar kolomnya:
-             * terukur jadi 790x640 px dan barisnya ikut setinggi itu,
-             * sehingga spanduk setinggi 110 px di sebelahnya mengambang di
-             * tengah bidang kosong.
-             */
-            .bukti-703 .bukti-plagiarisme {
-                margin: 0 auto;
-                max-width: 480px;
-            }
-        }
     </style>
 </head>
 
@@ -2118,7 +2109,6 @@
                         Scopus.</span></li>
             </ul>
 
-            <div class="bukti-703">
             <p class="spanduk-703">
                 Paper yang dibuat dengan <strong>&ldquo;Framework 703&rdquo;</strong> Rumah Scopus
                 konsisten menghasilkan plagiarisme <strong>di bawah 15%</strong>.
@@ -2142,7 +2132,6 @@
                     alt="Laporan orisinalitas Turnitin sebuah paper Rumah Scopus"
                     loading="lazy" decoding="async">
                 <span class="bukti-ket">*Aset foto dari Rumah Scopus</span>
-            </div>
             </div>
         </div>
 
