@@ -571,7 +571,7 @@
          */
         .logo-scopus img {
             width: auto;
-            height: 46px;
+            height: 80px;
             max-width: 100%;
             object-fit: contain;
         }
@@ -694,7 +694,7 @@
         }
 
         @media (max-width: 575.98px) {
-            .logo-scopus img { height: 34px; }
+            .logo-scopus img { height: 58px; }
             .penutup-poin { padding: 14px 16px; font-size: .94rem; }
         }
 
@@ -1189,12 +1189,13 @@
             <p class="kop-sub">Pelajari bagaimana cara cerdik menaklukkannya.</p>
 
             <!--
-                Logo Scopus/Elsevier. Kolomnya ikut tersembunyi sampai
-                berkasnya benar-benar termuat dari MIS, sebab berkasnya
-                belum ada di sana - lihat daftar gambar statis di skrip.
+                Logo Scopus/Elsevier dari MIS, jalur TETAP. Kolomnya tetap
+                mulai tersembunyi dan baru terbuka setelah gambarnya benar-benar
+                termuat - lihat alasannya di daftar gambar statis pada skrip.
             -->
             <div class="logo-scopus" id="kolom-logo-scopus" hidden>
-                <img id="logo-scopus" alt="Scopus - Elsevier" loading="lazy" decoding="async">
+                <img id="logo-scopus" width="600" height="229"
+                    alt="Scopus - Elsevier" loading="lazy" decoding="async">
             </div>
 
             <div class="penjelas">
@@ -1782,7 +1783,7 @@
                  * gambar yang gagal dimuat tetap menyisakan jarak kosong
                  * seandainya kolomnya dibiarkan tampil sejak awal.
                  */
-                ['logo-scopus', '/storage/tokoh/logo-scopus-elsevier.webp', 'kolom-logo-scopus', true],
+                ['logo-scopus', '/storage/bukti/logo-scopus.webp', 'kolom-logo-scopus', true],
                 /*
                  * Dari MIS pada jalur TETAP, sengaja di luar folder galeri/:
                  * perintah `galeri:rapikan --buang-yatim` menyapu berkas di
