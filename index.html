@@ -1850,21 +1850,63 @@
 
         [hidden] { display: none !important; }
         /*
-         * DAFTAR YANG MENYEBAR JADI KARTU DI LAYAR LEBAR.
+         * DAFTAR BERKARTU: RUPANYA DI SEMUA LEBAR, SUSUNANNYA DI LAYAR LEBAR.
          *
-         * Terukur di layar 1920: teks di bagian-bagian ini berhenti di 37-61%
-         * lebar wadah, dan sisanya terbaca melompong. Menarik barisnya sampai
-         * 1.600 px BUKAN jawabannya - baris sepanjang itu tidak enak diikuti
-         * mata, dan itu sebabnya ada batas --kolom-teks.
+         * Rupa kartunya - latar putih, sudut membulat, tepi, bayangan - ditulis
+         * DI LUAR media query. Dulu seluruhnya terkurung di dalam
+         * @media (min-width: 992px), jadi di ponsel ketiga daftar ini jatuh ke
+         * rupa dasar .daftar-poin: baris datar bergaris bawah tipis. Hasilnya
+         * tidak nyambung di layar yang sama - blok "Selamat datang" tepat di
+         * atasnya tetap berkartu putih, sedangkan butir "Kenapa harus
+         * bergabung" di bawahnya terlihat seperti teks yang belum digayakan.
          *
-         * Yang diubah susunannya: satu kolom panjang jadi beberapa kartu
-         * berdampingan. Lebarnya terpakai, tetapi tiap barisnya tetap pendek.
+         * Yang memang hanya masuk akal di layar lebar adalah SUSUNAN kolomnya,
+         * dan itu tinggal di media query di bawah. Terukur di layar 1920: teks
+         * di bagian-bagian ini berhenti di 37-61% lebar wadah, dan sisanya
+         * terbaca melompong. Menarik barisnya sampai 1.600 px BUKAN jawabannya
+         * - baris sepanjang itu tidak enak diikuti mata, dan itu sebabnya ada
+         * batas --kolom-teks. Maka satu kolom panjang dipecah jadi beberapa
+         * kartu berdampingan: lebarnya terpakai, barisnya tetap pendek.
          */
+        .daftar-gabung,
+        .daftar-materi,
+        #daftar-kegiatan {
+            display: grid;
+            gap: 14px;
+        }
+
+        .daftar-gabung > li,
+        .daftar-materi > li,
+        #daftar-kegiatan > li {
+            /* border di bawah ini sekaligus membatalkan garis bawah pemisah
+               dari .daftar-poin li - kartunya bertepi di keempat sisinya. */
+            align-items: flex-start;
+            padding: 18px;
+            border-radius: 16px;
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 12px 30px -24px rgba(15, 43, 91, .6);
+        }
+
+        @media (hover: hover) {
+            .daftar-gabung > li,
+            .daftar-materi > li,
+            #daftar-kegiatan > li {
+                transition: transform .25s ease, box-shadow .25s ease;
+            }
+
+            .daftar-gabung > li:hover,
+            .daftar-materi > li:hover,
+            #daftar-kegiatan > li:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 20px 40px -24px rgba(15, 43, 91, .5);
+            }
+        }
+
         @media (min-width: 992px) {
             .daftar-gabung,
             .daftar-materi,
             #daftar-kegiatan {
-                display: grid;
                 gap: 20px;
                 max-width: 100%;
             }
@@ -1893,33 +1935,12 @@
                 grid-template-columns: repeat(3, 1fr);
             }
 
+            /* Di layar lebar kartunya lebih lapang sedikit. */
             .daftar-gabung > li,
             .daftar-materi > li,
             #daftar-kegiatan > li {
-                /* Garis bawah dibuang: di susunan kolom ia memotong mendatar
-                   antarkartu, bukan memisahkan butir yang berurutan. */
-                border-bottom: 0;
-                align-items: flex-start;
                 padding: 22px;
                 border-radius: 18px;
-                background: #fff;
-                border: 1px solid #e2e8f0;
-                box-shadow: 0 12px 30px -24px rgba(15, 43, 91, .6);
-            }
-
-            @media (hover: hover) {
-                .daftar-gabung > li,
-                .daftar-materi > li,
-                #daftar-kegiatan > li {
-                    transition: transform .25s ease, box-shadow .25s ease;
-                }
-
-                .daftar-gabung > li:hover,
-                .daftar-materi > li:hover,
-                #daftar-kegiatan > li:hover {
-                    transform: translateY(-5px);
-                    box-shadow: 0 20px 40px -24px rgba(15, 43, 91, .5);
-                }
             }
         }
 
