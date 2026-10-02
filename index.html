@@ -2035,6 +2035,35 @@
             border: 1px solid #e2e8f0;
             box-shadow: 0 12px 30px -24px rgba(15, 43, 91, .6);
         }
+
+        /* ==== PENUTUP: DAFTAR FASILITAS + KOTAK HARGA BERDAMPINGAN ==== */
+        .tutup-penawaran { display: grid; gap: 28px; }
+
+        .tutup-penawaran .kotak-harga { margin: 0 auto; }
+
+        @media (min-width: 992px) {
+            .tutup-penawaran {
+                /*
+                 * Kolom kirinya DIBATASI, tidak dibiarkan 1fr. Dengan 1fr ia
+                 * melar sampai 1.072 px di layar 1920 padahal daftarnya sendiri
+                 * dibatasi 560 px demi lebar baca - sisanya jadi ruang kosong
+                 * di dalam kolom. Seluruh blok penutupnya ditengahkan.
+                 */
+                grid-template-columns: minmax(0, 620px) minmax(380px, 460px);
+                justify-content: center;
+                gap: 48px;
+                align-items: center;
+            }
+
+            /* Kotak harganya memeluk isinya, tidak diregangkan setinggi
+               daftar di sebelahnya - bidang putih kosong di dalam kartu lebih
+               mencolok daripada jarak biasa. */
+            .tutup-penawaran .kotak-harga { margin: 0; max-width: 100%; }
+
+            /* Garis pemisah butir berhenti di lebar bacanya, bukan membentang
+               jauh melewati tulisan yang pendek. */
+            .tutup-daftar .daftar-poin { max-width: 560px; }
+        }
     </style>
 </head>
 
@@ -2615,22 +2644,29 @@
         <!-- 13. YANG DIBAWA PULANG + HARGA                                -->
         <!-- ============================================================= -->
         <div class="bagian" id="daftar">
-            <div class="row g-4 align-items-center mb-4">
-                <div class="col-lg-6">
+            <!--
+                Daftar fasilitas dan kotak harga DISANDINGKAN.
+
+                Dulu ilustrasi stok menempati separuh layar di sini, sementara
+                kotak harga - yang justru paling menentukan - terdorong ke
+                bawahnya dalam kotak sempit di tengah. Urutan bobotnya terbalik.
+
+                Ilustrasinya dipindahkan keluar: di titik ini pembacanya sedang
+                menimbang harga, dan gambar hiasan tidak membantu keputusan itu.
+                Markupnya ditinggalkan tersembunyi supaya mudah dikembalikan.
+
+                Harganya tetap baru muncul DI SINI, sesudah semuanya dijelaskan.
+            -->
+            <div class="tutup-penawaran">
+                <div class="tutup-daftar">
                     <h2 class="kop text-lg-start">Yang Anda <em>bawa pulang</em></h2>
                     <p class="kop-sub text-lg-start ms-lg-0">
                         Sekali bayar, semuanya ikut. Tidak ada biaya tambahan di belakang.
                     </p>
                     <ul class="daftar-poin" id="daftar-fasilitas"></ul>
                 </div>
-                <div class="col-lg-6" id="kolom-ilustrasi">
-                    <img class="foto-suasana" id="ilustrasi" alt="Ilustrasi belajar menulis artikel ilmiah"
-                        width="1000" height="716" loading="lazy" decoding="async">
-                </div>
-            </div>
 
-            <!-- Harganya baru muncul DI SINI, sesudah semuanya dijelaskan. -->
-            <div class="kotak-harga">
+                <div class="kotak-harga">
                 <p class="fw-bold mb-3" style="color: var(--primary-navy); font-size: 1.1rem;">
                     Amankan kursi Anda sekarang
                 </p>
@@ -2663,6 +2699,14 @@
                     <i class="fa-solid fa-lock"></i>
                     Pendaftaran dan pembayaran diproses di halaman resmi Rumah Scopus.
                 </p>
+                </div>
+            </div>
+
+            <!-- Ilustrasi lama. Disembunyikan, bukan dibuang: mengembalikannya
+                 cukup dengan menghapus `hidden`. -->
+            <div id="kolom-ilustrasi" hidden>
+                <img class="foto-suasana" id="ilustrasi" alt="Ilustrasi belajar menulis artikel ilmiah"
+                    width="1000" height="716" loading="lazy" decoding="async">
             </div>
 
             <!-- Tanggal lain yang juga dibuka -->
