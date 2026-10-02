@@ -62,9 +62,15 @@
 
         body {
             font-family: 'Poppins', sans-serif;
+            /*
+             * Latar bertitik diganti gradien lembut. Titiknya menjadi pola
+             * yang terus berulang sepanjang 8.800 px halaman ini dan membuat
+             * tiap kartu terbaca menumpuk di atas kertas berbintik; gradien
+             * ini tidak berulang, jadi matanya berhenti pada isinya.
+             */
             background-color: var(--bg-light);
-            background-image: radial-gradient(#e2e8f0 2px, transparent 2px);
-            background-size: 30px 30px;
+            background-image:
+                linear-gradient(180deg, #fdf6f0 0%, var(--bg-light) 38%, var(--bg-light) 100%);
             color: #333;
             position: relative;
         }
@@ -89,6 +95,58 @@
             z-index: 0;
             overflow: hidden;
             pointer-events: none;
+            /*
+             * Cahayanya ditaruh di sini, bukan di body: lapisan ini `fixed`,
+             * jadi gradien sebesar ini digambar sekali seukuran layar dan
+             * tidak perlu direntang sepanjang halaman.
+             */
+            background:
+                radial-gradient(780px 560px at 8% -6%, rgba(255, 140, 0, .16), transparent 62%),
+                radial-gradient(720px 520px at 98% 4%, rgba(30, 60, 114, .13), transparent 60%),
+                radial-gradient(900px 600px at 52% 108%, rgba(255, 106, 0, .10), transparent 62%);
+        }
+
+        /* ==== MUNCUL SAAT DIGULIR ==== */
+        /*
+         * Kelasnya dipasang oleh skrip, BUKAN ditulis di markup. Kalau
+         * ditulis di markup, halaman yang skripnya gagal dimuat akan
+         * menyembunyikan seluruh isinya dan tidak pernah memunculkannya lagi.
+         * Dengan cara ini, tanpa skrip semuanya tetap terbaca seperti biasa.
+         */
+        .muncul {
+            opacity: 0;
+            transform: translateY(26px);
+            transition: opacity .6s ease, transform .6s cubic-bezier(.22, .8, .3, 1);
+        }
+
+        .muncul.tampak {
+            opacity: 1;
+            transform: none;
+        }
+
+        /* Anak-anaknya menyusul berurutan supaya terbaca mengalir, bukan
+           melompat bersamaan. */
+        .muncul-urut > * {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity .5s ease, transform .5s cubic-bezier(.22, .8, .3, 1);
+            transition-delay: calc(var(--urut, 0) * 80ms);
+        }
+
+        .muncul-urut.tampak > * {
+            opacity: 1;
+            transform: none;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .muncul,
+            .muncul.tampak,
+            .muncul-urut > *,
+            .muncul-urut.tampak > * {
+                opacity: 1;
+                transform: none;
+                transition: none;
+            }
         }
 
         /* ==== GLOSSY & GLASSMORPHISM UTILITIES ==== */
@@ -234,6 +292,41 @@
             color: #fff;
             font-size: clamp(4rem, 14vw, 7rem);
             font-weight: 900;
+        }
+
+        /*
+         * Pemateri boleh belum punya foto. Kalau dibiarkan, blok 4:5 selebar
+         * kolomnya itu jadi balok pekat sekitar 640x800 px berisi SATU huruf
+         * - dan itu persis yang dilihat pengunjung di layar pertama.
+         *
+         * Tanpa foto: kartunya mengecil jadi kartu pemateri yang ringkas,
+         * inisialnya jadi lencana bulat, dan ruang di sekitarnya menjadi
+         * jarak yang disengaja, bukan bidang mati.
+         */
+        .speaker-img-wrapper:has(#foto-pemateri[hidden]) {
+            max-width: 360px;
+            margin-inline: auto;
+            padding: 36px 28px 30px;
+            text-align: center;
+        }
+
+        .speaker-img-wrapper:has(#foto-pemateri[hidden]) .speaker-initial {
+            width: 152px;
+            height: 152px;
+            margin: 0 auto;
+            aspect-ratio: 1;
+            border-radius: 50%;
+            font-size: 3.6rem;
+            box-shadow: 0 16px 36px -18px rgba(15, 43, 91, .75);
+        }
+
+        /* Lencana namanya ikut turun dari posisi melayang: di kartu seringkas
+           ini ia cukup mengalir di bawah inisialnya. */
+        .speaker-img-wrapper:has(#foto-pemateri[hidden]) .speaker-name-badge {
+            position: static;
+            width: 100%;
+            margin-top: 22px;
+            transform: none;
         }
 
         .speaker-name-badge {
@@ -2127,6 +2220,8 @@
                 intai.src = sampul;
             })();
 
+            pasangMuncul();
+
             mulaiPenghitung();
 
             /*
@@ -2629,6 +2724,113 @@
 
                 img.addEventListener('error', function () {
                     el('kolom-flyer').hidden = true;
+                });
+            }
+
+            /**
+             * Memunculkan tiap bagian saat tergulir masuk ke layar.
+             *
+             * Kelasnya dipasang DI SINI, bukan di markup, supaya halaman yang
+             * skripnya gagal dimuat tetap menampilkan seluruh isinya.
+             *
+             * Yang sudah terlihat saat halaman dibuka langsung ditandai tampak
+             * tanpa menunggu pengamat: tanpa itu, layar pertama ikut berkedip
+             * padahal tidak ada yang digulir.
+             */
+            function pasangMuncul() {
+                if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+                if (!('IntersectionObserver' in window)) return;
+
+                var sasaran = [].slice.call(document.querySelectorAll('.bagian, #isi'));
+
+                var tersisa = [];
+
+                function tampakkan(b) {
+                    b.classList.add('tampak');
+
+                    var u = b.querySelector('.muncul-urut');
+                    if (u) u.classList.add('tampak');
+
+                    var i = tersisa.indexOf(b);
+                    if (i !== -1) tersisa.splice(i, 1);
+                }
+
+                var pengamat = new IntersectionObserver(function (masuk) {
+                    masuk.forEach(function (e) {
+                        if (!e.isIntersecting) return;
+                        tampakkan(e.target);
+                        pengamat.unobserve(e.target);   // sekali muncul, selesai
+                    });
+                }, { rootMargin: '0px 0px -12% 0px', threshold: 0.08 });
+
+                /*
+                 * JARING PENGAMAN, dan ini bukan kehati-hatian berlebihan.
+                 *
+                 * IntersectionObserver hanya melapor saat ambangnya DILINTASI.
+                 * Kalau halaman melompat - tautan #daftar, pemulihan posisi
+                 * gulir, atau Cmd+End - bagian di tengah berpindah dari "di
+                 * bawah layar" langsung ke "di atas layar" tanpa pernah
+                 * bersinggungan, jadi tidak ada laporan dan bagiannya
+                 * tertinggal opasitas 0 SELAMANYA. Terukur: sesudah melompat
+                 * ke dasar halaman, 11 dari 15 bagian masih tak terlihat.
+                 *
+                 * Penyapu ini memunculkan apa pun yang tepinya sudah terlewati,
+                 * dan berhenti memasang diri begitu semuanya muncul.
+                 */
+                function sapu() {
+                    tersisa.slice().forEach(function (b) {
+                        if (b.getBoundingClientRect().top < window.innerHeight) {
+                            pengamat.unobserve(b);
+                            tampakkan(b);
+                        }
+                    });
+
+                    if (tersisa.length === 0) {
+                        window.removeEventListener('scroll', jadwalkanSapu);
+                        window.removeEventListener('resize', jadwalkanSapu);
+                    }
+                }
+
+                var sapuTerjadwal = false;
+
+                function jadwalkanSapu() {
+                    if (sapuTerjadwal) return;
+                    sapuTerjadwal = true;
+                    requestAnimationFrame(function () { sapuTerjadwal = false; sapu(); });
+                }
+
+                window.addEventListener('scroll', jadwalkanSapu, { passive: true });
+                window.addEventListener('resize', jadwalkanSapu);
+
+                sasaran.forEach(function (b) {
+                    // Daftar dan baris kartu dibuat menyusul berurutan.
+                    var urut = b.querySelector('.daftar-poin, .row');
+
+                    if (urut) {
+                        urut.classList.add('muncul-urut');
+                        [].slice.call(urut.children).forEach(function (anak, i) {
+                            anak.style.setProperty('--urut', i);
+                        });
+                    }
+
+                    b.classList.add('muncul');
+
+                    if (b.getBoundingClientRect().top < window.innerHeight * 0.9) {
+                        // Sudah terlihat sejak awal — ditampilkan di bingkai
+                        // berikutnya supaya transisinya tetap jalan, bukan
+                        // melompat.
+                        requestAnimationFrame(function () {
+                            requestAnimationFrame(function () {
+                                b.classList.add('tampak');
+                                if (urut) urut.classList.add('tampak');
+                            });
+                        });
+
+                        return;
+                    }
+
+                    tersisa.push(b);
+                    pengamat.observe(b);
                 });
             }
 
