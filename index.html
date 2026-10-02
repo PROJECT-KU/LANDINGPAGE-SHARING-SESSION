@@ -2311,6 +2311,58 @@
             border-top: 0;
             padding-top: 0;
         }
+
+        /* ==== BARISAN REKAMAN TESTIMONI ==== */
+        .barisan-testimoni {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 22px;
+            margin-top: 30px;
+        }
+
+        .kartu-testimoni { margin: 0; text-align: center; }
+
+        /*
+         * Di ponsel tiap rekaman selebar layar dan tingginya mengikuti
+         * nisbahnya sendiri - menyamakan tinggi di sini membuat yang mendatar
+         * jadi sekotak perangko.
+         */
+        .kartu-testimoni video {
+            display: block;
+            width: 100%;
+            height: auto;
+            border-radius: 18px;
+            background: #0f172a;
+            box-shadow: 0 18px 44px -26px rgba(15, 43, 91, .75);
+        }
+
+        .kartu-testimoni figcaption {
+            margin-top: 12px;
+            font-size: .84rem;
+            font-weight: 700;
+            color: var(--primary-navy);
+        }
+
+        /*
+         * Mulai tablet, TINGGINYA yang disamakan dan lebarnya menyesuaikan.
+         * Nisbah ketiganya berbeda - dua potret 9:16 dan satu mendatar 16:9 -
+         * jadi menyamakan lebar akan membuat yang potret menjulang dua kali
+         * lipat tinggi tetangganya. Dengan tinggi yang sama, ketiganya berbagi
+         * satu garis dasar dan tidak ada yang terpotong.
+         */
+        @media (min-width: 768px) {
+            .kartu-testimoni video {
+                width: auto;
+                height: 360px;
+                max-width: 100%;
+            }
+        }
+
+        @media (min-width: 1200px) {
+            .kartu-testimoni video { height: 420px; }
+        }
     </style>
 </head>
 
@@ -2907,46 +2959,56 @@
         <div class="bagian">
             <h2 class="kop">Apa kata mereka yang <em>sudah bergabung?</em></h2>
 
-            <div class="testimoni">
-                <!--
-                    preload="none" itu intinya: berkasnya 13 MB, dan tanpa itu
-                    tiap pengunjung iklan membayar 13 MB kuota hanya untuk
-                    menggulir melewatinya. Yang dimuat lebih dulu cuma
-                    sampulnya, 74 KB. Yang menekan putar saja yang mengunduh.
-                -->
-                <video id="video-testimoni" controls playsinline preload="none"
-                    width="540" height="960"
-                    poster="" aria-label="Testimoni peserta Scopus Camp"></video>
+            <!-- Kutipan tertulisnya di atas, lalu rekamannya berjajar. -->
+            <div class="testimoni-kata">
+                <i class="fa-solid fa-quote-left kutip" aria-hidden="true"></i>
 
-                <div class="testimoni-kata">
-                    <i class="fa-solid fa-quote-left kutip" aria-hidden="true"></i>
-
-                    <p>
-                        Testimoni dari peserta yang berhasil <strong>submit ke jurnal
-                        internasional bereputasi di Scopus</strong>. Para peserta merasa bahagia
-                        setelah mengikuti Scopus Camp di Pusat Rumah Scopus, Yogyakarta,
-                        selama 3 hari.
-                    </p>
-                    <p>
-                        Dari yang awalnya pesimis dan takut tidak tembus Scopus, sekarang
-                        mereka <strong>membuktikan sendiri bahwa tembus Scopus itu mudah.</strong>
-                    </p>
-
-                    <p class="testimoni-asal">Peserta Scopus Camp &mdash; Pusat Rumah Scopus, Yogyakarta</p>
-                </div>
+                <p>
+                    Testimoni dari peserta yang berhasil <strong>submit ke jurnal
+                    internasional bereputasi di Scopus</strong>. Para peserta merasa bahagia
+                    setelah mengikuti Scopus Camp di Pusat Rumah Scopus, Yogyakarta,
+                    selama 3 hari.
+                </p>
+                <p>
+                    Dari yang awalnya pesimis dan takut tidak tembus Scopus, sekarang
+                    mereka <strong>membuktikan sendiri bahwa tembus Scopus itu mudah.</strong>
+                </p>
             </div>
 
             <!--
-                Testimoni kedua. Rekamannya MENDATAR 16:9, berbeda dari yang
-                pertama yang potret 9:16 - karena itu ia berdiri sendiri di
-                bawah, bukan disandingkan: dua video dengan nisbah sejauh itu
-                berdampingan selalu terbaca tidak sejajar.
+                Tiga rekaman dengan nisbah BERBEDA - dua potret 9:16, satu
+                mendatar 16:9. Disamakan TINGGINYA, bukan lebarnya: dengan
+                begitu ketiganya berbagi satu garis dasar dan terbaca sebaris,
+                dan tidak ada yang terpotong.
+
+                preload="none" di ketiganya. Berkasnya 13, 54, dan 27 MB; tanpa
+                itu tiap pengunjung iklan membayar 94 MB kuota hanya untuk
+                menggulir melewatinya. Yang dimuat lebih dulu hanya sampulnya.
+
+                Tiap kolom berdiri sendiri - yang berkasnya belum ada
+                disembunyikan tanpa mengganggu yang lain.
             -->
-            <div class="testimoni-kedua" id="kolom-testimoni2" hidden>
-                <video id="video-testimoni2" controls playsinline preload="none"
-                    width="640" height="360"
-                    poster="" aria-label="Testimoni peserta Rumah Scopus"></video>
-                <p class="testimoni-asal">Peserta Rumah Scopus</p>
+            <div class="barisan-testimoni">
+                <figure class="kartu-testimoni" id="kolom-testimoni1" hidden>
+                    <video id="video-testimoni" controls playsinline preload="none"
+                        width="540" height="960"
+                        poster="" aria-label="Testimoni peserta Scopus Camp"></video>
+                    <figcaption>Peserta Scopus Camp &mdash; Yogyakarta</figcaption>
+                </figure>
+
+                <figure class="kartu-testimoni" id="kolom-testimoni2" hidden>
+                    <video id="video-testimoni2" controls playsinline preload="none"
+                        width="640" height="360"
+                        poster="" aria-label="Testimoni peserta Rumah Scopus"></video>
+                    <figcaption>Peserta Rumah Scopus</figcaption>
+                </figure>
+
+                <figure class="kartu-testimoni" id="kolom-testimoni3" hidden>
+                    <video id="video-testimoni3" controls playsinline preload="none"
+                        width="540" height="960"
+                        poster="" aria-label="Testimoni peserta Rumah Scopus"></video>
+                    <figcaption>Peserta Rumah Scopus</figcaption>
+                </figure>
             </div>
         </div>
 
@@ -3242,79 +3304,43 @@
              * Testimoni: sampul dan berkas videonya dipasang di sini supaya
              * ikut berpindah pangkalan saat diuji di lokal.
              *
-             * Sampulnya diintai lebih dulu (74 KB) dan videonya baru dipasang
-             * kalau sampulnya termuat. Videonya sendiri tidak bisa diintai
-             * murah — preload="none" memang ada supaya 13 MB itu tidak
-             * terunduh sebelum ada yang menekan putar — jadi sampulnya yang
-             * dipakai sebagai penanda bahwa berkasnya memang terbit di MIS.
-             * Kalau tidak, seluruh bagiannya disembunyikan: pemutar video
-             * hitam yang tidak bisa diputar lebih buruk daripada tidak ada.
+             * Sampulnya diintai lebih dulu dan videonya baru dipasang kalau
+             * sampulnya termuat. Videonya sendiri tidak bisa diintai murah -
+             * preload="none" memang ada supaya puluhan MB itu tidak terunduh
+             * sebelum ada yang menekan putar - jadi sampulnya yang dipakai
+             * sebagai penanda bahwa berkasnya memang terbit di MIS.
+             *
+             * Tiap rekaman berdiri sendiri: yang berkasnya belum ada
+             * disembunyikan tanpa mengganggu yang lain.
              */
-            (function () {
-                var vid = el('video-testimoni');
-                if (!vid) return;
+            [
+                ['video-testimoni', 'kolom-testimoni1', 'testimoni', 'testimoni-sampul'],
+                ['video-testimoni2', 'kolom-testimoni2', 'testimoni2-web', 'testimoni2-sampul'],
+                ['video-testimoni3', 'kolom-testimoni3', 'testimoni3-web', 'testimoni3-sampul'],
+            ].forEach(function (p) {
+                var vid = el(p[0]);
+                var kolom = el(p[1]);
 
-                var bagian = vid.closest('.bagian');
-                var sampul = PANGKALAN + '/storage/video/testimoni-sampul.webp';
+                if (!vid || !kolom) return;
 
-                /*
-                 * Testimoni kedua dipasang dengan pola yang sama: sampulnya
-                 * diintai lebih dulu, videonya baru menyusul. Kolomnya berdiri
-                 * sendiri - kalau berkasnya belum ada, hanya bagian kedua yang
-                 * disembunyikan, yang pertama tetap tampil.
-                 */
-                (function () {
-                    var v2 = el('video-testimoni2');
-                    var kolom2 = el('kolom-testimoni2');
-                    if (!v2 || !kolom2) return;
-
-                    var sampul2 = PANGKALAN + '/storage/video/testimoni2-sampul.webp';
-                    var intai2 = new Image();
-
-                    intai2.onload = function () {
-                        v2.poster = sampul2;
-
-                        var sumber2 = document.createElement('source');
-                        sumber2.src = PANGKALAN + '/storage/video/testimoni2-web.mp4';
-                        sumber2.type = 'video/mp4';
-                        v2.appendChild(sumber2);
-
-                        kolom2.hidden = false;
-                    };
-
-                    intai2.src = sampul2;
-                })();
-
+                var sampul = PANGKALAN + '/storage/video/' + p[3] + '.webp';
                 var intai = new Image();
 
                 intai.onload = function () {
                     vid.poster = sampul;
 
                     var sumber = document.createElement('source');
-                    sumber.src = PANGKALAN + '/storage/video/testimoni.mp4';
+                    sumber.src = PANGKALAN + '/storage/video/' + p[2] + '.mp4';
                     sumber.type = 'video/mp4';
                     vid.appendChild(sumber);
-                };
 
-                intai.onerror = function () {
-                    if (bagian) bagian.hidden = true;
+                    kolom.hidden = false;
                 };
 
                 intai.src = sampul;
-            })();
+            });
 
-            pasangMuncul();
-            pasangKemajuan();
-            pasangAjakanLengket();
-
-            // Judul hero baru dianimasikan SESUDAH kelasnya dipasang skrip.
-            // Kalau ditulis di markup, halaman tanpa skrip akan menyembunyikan
-            // judulnya selamanya.
-            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-                document.body.classList.add('masuk');
-            }
-
-            mulaiPenghitung();
+                        mulaiPenghitung();
 
             /*
              * Di lokal, tembolok API dilewati.
