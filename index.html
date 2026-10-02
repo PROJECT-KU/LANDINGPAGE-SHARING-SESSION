@@ -674,6 +674,7 @@
             display: block;
             margin-top: 10px;
             font-size: .82rem;
+            font-style: italic;
             color: #94a3b8;
         }
 
@@ -1293,9 +1294,17 @@
                 di skrip, dan alasannya di komentar sana.
             -->
             <div class="bukti-plagiarisme" id="kolom-bukti-703" hidden>
-                <img id="bukti-703" alt="Laporan orisinalitas Turnitin sebuah paper Rumah Scopus"
+                <!--
+                    width/height dipasang supaya ruangnya sudah disediakan
+                    sebelum gambarnya tiba — tanpa itu teks di bawahnya
+                    melompat saat gambar 70 KB ini selesai dimuat. Harus
+                    disertai height:auto di CSS, kalau tidak tinggi 908 itu
+                    menang atas lebar 100%.
+                -->
+                <img id="bukti-703" width="1400" height="908"
+                    alt="Laporan orisinalitas Turnitin sebuah paper Rumah Scopus"
                     loading="lazy" decoding="async">
-                <span class="bukti-ket">Contoh laporan orisinalitas paper anggota Rumah Scopus.</span>
+                <span class="bukti-ket">*Aset foto dari Rumah Scopus</span>
             </div>
         </div>
 
@@ -1740,9 +1749,13 @@
                  * seandainya kolomnya dibiarkan tampil sejak awal.
                  */
                 ['logo-scopus', '/storage/tokoh/logo-scopus-elsevier.webp', 'kolom-logo-scopus', true],
-                // Sama polanya: berkasnya belum ada, kolomnya terbuka sendiri
-                // begitu berkasnya ditaruh di MIS.
-                ['bukti-703', '/storage/tokoh/turnitin-framework-703.webp', 'kolom-bukti-703', true],
+                /*
+                 * Dari MIS pada jalur TETAP, sengaja di luar folder galeri/:
+                 * perintah `galeri:rapikan --buang-yatim` menyapu berkas di
+                 * galeri/ yang tidak ditunjuk baris Galeri mana pun, dan
+                 * gambar ini memang tidak punya barisnya.
+                 */
+                ['bukti-703', '/storage/bukti/plagiasi.webp', 'kolom-bukti-703', true],
             ].forEach(function (p) {
                 var img = el(p[0]);
                 if (!img) return;
