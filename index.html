@@ -504,9 +504,9 @@
         .testimoni {
             display: grid;
             gap: 24px;
-            max-width: 860px;
+            max-width: 1040px;
             margin: 0 auto;
-            align-items: center;
+            align-items: stretch;
         }
 
         /*
@@ -525,8 +525,45 @@
             box-shadow: 0 18px 44px -26px rgba(15, 43, 91, .75);
         }
 
+        /*
+         * Teksnya dibungkus kartu yang ikut setinggi videonya. Videonya
+         * potret 9:16 - terukur 533 px - sedangkan teksnya cuma 216 px,
+         * jadi tanpa ini ada 317 px ruang menganga di sebelahnya. Kartunya
+         * mengisi tinggi itu dan teksnya ditengahkan di dalamnya.
+         */
+        .testimoni-kata {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 30px 32px;
+            border-radius: 18px;
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 16px 40px -30px rgba(15, 43, 91, .6);
+        }
+
         .testimoni-kata p { margin: 0 0 14px; color: #475569; line-height: 1.8; }
         .testimoni-kata p:last-child { margin-bottom: 0; }
+
+        /* Tanda kutip dan baris asal mengisi tinggi kartu dengan sesuatu yang
+           memang berguna, bukan dengan ruang kosong: kartunya ikut setinggi
+           video potret 604 px sedangkan teksnya cuma 216 px. */
+        .testimoni-kata .kutip {
+            margin-bottom: 14px;
+            font-size: 30px;
+            line-height: 1;
+            color: var(--primary-orange);
+            opacity: .35;
+        }
+
+        .testimoni-asal {
+            margin: 18px 0 0 !important;
+            padding-top: 16px;
+            border-top: 1px solid #e2e8f0;
+            font-size: .86rem;
+            font-weight: 700;
+            color: var(--primary-navy) !important;
+        }
         .testimoni-kata strong { color: var(--primary-navy); }
 
         @media (min-width: 768px) {
@@ -534,8 +571,21 @@
             .testimoni video { margin: 0; }
         }
 
+        @media (min-width: 1200px) {
+            .testimoni { grid-template-columns: 340px 1fr; gap: 40px; }
+            .testimoni video { max-width: 340px; }
+        }
+
         .foto-suasana {
             width: 100%;
+            /*
+             * height:auto WAJIB di sini. Gambarnya memakai atribut
+             * width/height, dan tanpa ini tinggi dari atribut itu MENANG atas
+             * aspect-ratio - terukur 636x716 padahal 16/10 seharusnya
+             * 636x398, jadi melar 318 px dan menenggelamkan daftar di
+             * sebelahnya yang cuma setinggi 189 px.
+             */
+            height: auto;
             aspect-ratio: 16 / 10;
             object-fit: cover;
             border-radius: 18px;
@@ -598,6 +648,25 @@
         }
 
         .kop em { font-style: normal; color: var(--primary-orange); }
+
+        /*
+         * Bootstrap berhenti melebarkan .container di 1320 px. Di layar
+         * 1920 itu menyisakan 300 px kosong di tiap sisi - terukur, cuma 69%
+         * layar yang terpakai. Blok teks panjang tetap dibatasi
+         * --kolom-teks, jadi melebarkan wadahnya tidak membuat barisnya
+         * jadi terlalu panjang untuk dibaca.
+         */
+        @media (min-width: 1600px) {
+            .container { max-width: 1480px; }
+        }
+
+        /* Satu langkah lagi di layar sangat lebar - 1480 px di 1920 masih
+           menyisakan 220 px tiap sisi. Berhenti di 1600: lebih lebar dari itu
+           kartu-kartu yang isinya sedikit kembali terbaca melompong, persis
+           cacat yang baru diperbaiki. */
+        @media (min-width: 1900px) {
+            .container { max-width: 1600px; }
+        }
 
         /* Judul yang berdiri di atas kartu gradien. Mewarisi skala .kop
            supaya semua judul halaman ini satu ukuran — sebelumnya dua judul
@@ -800,6 +869,52 @@
             .kartu-pemateri { grid-template-columns: 230px 1fr; }
         }
 
+        @media (min-width: 1200px) {
+            .kartu-pemateri { grid-template-columns: 300px 1fr; gap: 36px; padding: 32px; }
+        }
+
+        @media (min-width: 1600px) {
+            .kartu-pemateri { grid-template-columns: 340px 1fr; gap: 44px; padding: 38px; }
+        }
+
+        /*
+         * Pemateri boleh belum punya foto. Saat itu yang tampil cuma inisial
+         * satu huruf, dan memberinya kolom selebar foto membuat balok kosong
+         * - terukur 340x425 px warna pekat di kartu selebar 1456 px, dan itu
+         * yang membuat bagian ini terbaca melompong.
+         *
+         * Tanpa foto: kolomnya dilipat jadi satu, inisialnya mengecil jadi
+         * lencana bulat, dan butirnya menyebar jadi tiga kolom supaya lebar
+         * kartunya benar-benar terpakai.
+         */
+        .kartu-pemateri:has(#pemateri-foto-besar[hidden]) {
+            grid-template-columns: auto 1fr;
+            align-items: start;
+            gap: 20px;
+        }
+
+        .kartu-pemateri:has(#pemateri-foto-besar[hidden]) .inisial {
+            width: 84px;
+            height: 84px;
+            aspect-ratio: 1;
+            border-radius: 50%;
+            font-size: 34px;
+        }
+
+        @media (min-width: 992px) {
+            .kartu-pemateri:has(#pemateri-foto-besar[hidden]) .daftar-poin {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 0 28px;
+            }
+
+            /* Garis bawah dibuang di susunan kolom: di sana ia memotong
+               mendatar antarkolom, bukan memisahkan butir yang berurutan. */
+            .kartu-pemateri:has(#pemateri-foto-besar[hidden]) .daftar-poin li {
+                border-bottom: 0;
+            }
+        }
+
         .kartu-pemateri img,
         .kartu-pemateri .inisial {
             width: 100%;
@@ -819,9 +934,9 @@
 
         /* ---- Bagian harga ---- */
         .kotak-harga {
-            max-width: 560px;
+            max-width: 640px;
             margin: 0 auto;
-            padding: 36px 28px;
+            padding: 44px 36px;
             border-radius: 24px;
             background: #fff;
             border: 1px solid #e2e8f0;
@@ -1134,6 +1249,14 @@
 
         @media (min-width: 768px) {
             .tokoh { grid-template-columns: 300px 1fr; padding: 32px; }
+        }
+
+        @media (min-width: 1200px) {
+            .tokoh { grid-template-columns: 360px 1fr; gap: 36px; }
+        }
+
+        @media (min-width: 1600px) {
+            .tokoh { grid-template-columns: 420px 1fr; gap: 44px; padding: 40px; }
         }
 
         .tokoh img {
@@ -1699,6 +1822,8 @@
                     poster="" aria-label="Testimoni peserta Scopus Camp"></video>
 
                 <div class="testimoni-kata">
+                    <i class="fa-solid fa-quote-left kutip" aria-hidden="true"></i>
+
                     <p>
                         Testimoni dari peserta yang berhasil <strong>submit ke jurnal
                         internasional bereputasi di Scopus</strong>. Para peserta merasa bahagia
@@ -1709,6 +1834,8 @@
                         Dari yang awalnya pesimis dan takut tidak tembus Scopus, sekarang
                         mereka <strong>membuktikan sendiri bahwa tembus Scopus itu mudah.</strong>
                     </p>
+
+                    <p class="testimoni-asal">Peserta Scopus Camp &mdash; Pusat Rumah Scopus, Yogyakarta</p>
                 </div>
             </div>
         </div>
