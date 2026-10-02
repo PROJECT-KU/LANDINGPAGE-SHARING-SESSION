@@ -598,6 +598,47 @@
 
         .penutup-poin strong { color: var(--primary-orange); }
 
+        /* ---- Kartu sambutan "Selamat datang di Rumah Scopus" ---- */
+        .kartu-sambutan {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 36px 32px 32px;
+            border-radius: 22px;
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 18px 40px -28px rgba(15, 43, 91, .6);
+            text-align: center;
+        }
+
+        .kartu-sambutan .kop { margin-bottom: 24px; }
+        .kartu-sambutan p { margin: 0 0 12px; color: #475569; line-height: 1.75; }
+        .kartu-sambutan p:last-child { margin-bottom: 0; }
+
+        /*
+         * Tingginya yang dipatok, bukan lebarnya: logonya memanjang, jadi
+         * mematok lebar membuat tulisannya ikut mengecil tak terbaca.
+         */
+        .logo-sambutan {
+            width: auto;
+            height: 72px;
+            max-width: 100%;
+            margin: 0 auto 22px;
+            object-fit: contain;
+        }
+
+        .sambutan-angka {
+            margin-top: 18px !important;
+            padding-top: 18px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .sambutan-angka strong { color: var(--primary-orange); }
+
+        @media (max-width: 575.98px) {
+            .kartu-sambutan { padding: 26px 18px 24px; }
+            .logo-sambutan { height: 54px; }
+        }
+
         @media (max-width: 575.98px) {
             .logo-scopus img { height: 34px; }
             .penutup-poin { padding: 14px 16px; font-size: .94rem; }
@@ -1145,7 +1186,32 @@
         </div>
 
         <!-- ============================================================= -->
-        <!-- 3. YANG DIPELAJARI — dari API                                 -->
+        <!-- 3. SELAMAT DATANG — siapa yang menawarkan                      -->
+        <!-- ============================================================= -->
+        <!-- Letaknya tepat di antara masalah (bagian 2) dan isi acaranya
+             (bagian 4), mengikuti urutan rumahscopus.org: orang baru mau
+             mendengar isi acaranya setelah tahu siapa yang menawarkan. -->
+        <div class="bagian">
+            <div class="kartu-sambutan">
+                <h2 class="kop">Selamat datang di <em>Rumah Scopus!</em></h2>
+
+                <img src="images/Logo RSC 01.png" alt="Rumah Scopus Foundation"
+                    class="logo-sambutan" loading="lazy" decoding="async">
+
+                <p>
+                    Rumah yang akan membimbing Anda supaya memiliki paper ilmiah
+                    yang terindeks di Scopus.
+                </p>
+
+                <p class="sambutan-angka">
+                    <strong>95% member Rumah Scopus</strong> berhasil terindeks Scopus
+                    dalam waktu <strong>6 bulan.</strong>
+                </p>
+            </div>
+        </div>
+
+        <!-- ============================================================= -->
+        <!-- 4. YANG DIPELAJARI — dari API                                 -->
         <!-- ============================================================= -->
         <div class="bagian" id="rinci">
             <div class="row g-4 align-items-center">
@@ -1164,7 +1230,7 @@
         </div>
 
         <!-- ============================================================= -->
-        <!-- 4. PEMATERI                                                   -->
+        <!-- 5. PEMATERI                                                   -->
         <!-- ============================================================= -->
         <div class="bagian">
             <h2 class="kop">Siapa yang <em>membawakan?</em></h2>
@@ -1192,7 +1258,7 @@
         </div>
 
         <!-- ============================================================= -->
-        <!-- 5. TOKOH DI BALIK RUMAH SCOPUS                                -->
+        <!-- 6. TOKOH DI BALIK RUMAH SCOPUS                                -->
         <!-- ============================================================= -->
         <!-- Ditaruh SESUDAH pemateri sesi: pembacanya baru tahu siapa yang
              membawakan kelasnya, lalu diperlihatkan siapa yang berdiri di
@@ -1233,7 +1299,7 @@
         </div>
 
         <!-- ============================================================= -->
-        <!-- 6. KENAPA MEMILIH KAMI                                        -->
+        <!-- 7. KENAPA MEMILIH KAMI                                        -->
         <!-- ============================================================= -->
         <!-- Kalimat dan susunannya mengikuti rumahscopus.org. Statis di sini,
              bukan dari API: ini janji merek yang jarang berubah, sementara
@@ -1284,7 +1350,7 @@
         </div>
 
         <!-- ============================================================= -->
-        <!-- 7. ANGKA KEPERCAYAAN                                          -->
+        <!-- 8. ANGKA KEPERCAYAAN                                          -->
         <!-- ============================================================= -->
         <div class="main-card gradien-rs bagian"
             style="border-radius: 15px; box-shadow: 0 10px 20px rgba(0, 0, 0, .2); overflow: hidden;">
@@ -1314,7 +1380,7 @@
         </div>
 
         <!-- ============================================================= -->
-        <!-- 8. GALERI — dari API, diisi admin lewat MIS                   -->
+        <!-- 9. GALERI — dari API, diisi admin lewat MIS                   -->
         <!-- ============================================================= -->
         <!-- Seluruh bagian ini tersembunyi kalau galerinya memang kosong:
              judul "Galeri kegiatan" di atas ruang kosong lebih buruk daripada
@@ -1340,7 +1406,7 @@
         </div>
 
         <!-- ============================================================= -->
-        <!-- 9. SIAPA YANG WAJIB IKUT                                      -->
+        <!-- 10. SIAPA YANG WAJIB IKUT                                      -->
         <!-- ============================================================= -->
         <div class="bagian">
             <h2 class="kop">Siapa yang <em>wajib ikut?</em></h2>
@@ -1379,7 +1445,7 @@
         </div>
 
         <!-- ============================================================= -->
-        <!-- 10. YANG DIBAWA PULANG + HARGA                                -->
+        <!-- 11. YANG DIBAWA PULANG + HARGA                                -->
         <!-- ============================================================= -->
         <div class="bagian" id="daftar">
             <div class="row g-4 align-items-center mb-4">
@@ -1430,7 +1496,7 @@
         </div>
 
         <!-- ============================================================= -->
-        <!-- 11. FAQ                                                       -->
+        <!-- 12. FAQ                                                       -->
         <!-- ============================================================= -->
         <div class="bagian">
             <h2 class="kop">Pertanyaan yang <em>sering ditanyakan</em></h2>
