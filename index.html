@@ -106,6 +106,106 @@
                 radial-gradient(900px 600px at 52% 108%, rgba(255, 106, 0, .10), transparent 62%);
         }
 
+        /* ==== GERAK KECIL YANG MENGARAHKAN MATA ==== */
+        /*
+         * Semuanya dijaga lambat dan kecil. Gerak di halaman penjualan
+         * gunanya menunjukkan APA yang bisa ditekan dan KE MANA arahnya,
+         * bukan meramaikan layar - yang terakhir justru membuat orang
+         * memalingkan muka.
+         */
+
+        /* Panah turun di tombol: memantul, menunjukkan isinya ada di bawah. */
+        .btn-glossy-primary .fa-arrow-down {
+            animation: panah-turun 1.6s ease-in-out infinite;
+        }
+
+        @keyframes panah-turun {
+            0%, 100% { transform: translateY(0); }
+            50%      { transform: translateY(5px); }
+        }
+
+        /* Panah kanan: menyenggol ke depan, menandakan ada langkah lanjutan. */
+        .btn-glossy-primary .fa-arrow-right {
+            animation: panah-maju 1.6s ease-in-out infinite;
+        }
+
+        @keyframes panah-maju {
+            0%, 100% { transform: translateX(0); }
+            50%      { transform: translateX(5px); }
+        }
+
+        /*
+         * Denyut tombol utama. Cincinnya digambar oleh ::after supaya yang
+         * membesar hanya bayangan - kalau tombolnya sendiri yang diskalakan,
+         * sasaran tekannya ikut bergerak dan jadi lebih sulit dikenai.
+         */
+        .btn-glossy-primary.berdenyut {
+            position: relative;
+        }
+
+        .btn-glossy-primary.berdenyut::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            box-shadow: 0 0 0 0 rgba(255, 106, 0, .55);
+            animation: denyut-tombol 2.4s ease-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes denyut-tombol {
+            0%   { box-shadow: 0 0 0 0 rgba(255, 106, 0, .5); }
+            70%  { box-shadow: 0 0 0 18px rgba(255, 106, 0, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 106, 0, 0); }
+        }
+
+        /* Petunjuk gulir di bawah hero. */
+        .petunjuk-gulir {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 26px;
+            color: #94a3b8;
+            font-size: .8rem;
+            font-weight: 700;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            text-decoration: none;
+        }
+
+        .petunjuk-gulir i {
+            display: grid;
+            place-items: center;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 1px solid #cbd5e1;
+            color: var(--primary-orange);
+            animation: panah-turun 1.6s ease-in-out infinite;
+        }
+
+        /* Detik hitung mundur berdenyut tiap kali angkanya berganti. */
+        .countdown #m-detik {
+            display: inline-block;
+            animation: detak 1s ease-out infinite;
+        }
+
+        @keyframes detak {
+            0%   { transform: scale(1.12); }
+            30%  { transform: scale(1); }
+            100% { transform: scale(1); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .btn-glossy-primary .fa-arrow-down,
+            .btn-glossy-primary .fa-arrow-right,
+            .btn-glossy-primary.berdenyut::after,
+            .petunjuk-gulir i,
+            .countdown #m-detik {
+                animation: none;
+            }
+        }
+
         /* ==== MUNCUL SAAT DIGULIR ==== */
         /*
          * Kelasnya dipasang oleh skrip, BUKAN ditulis di markup. Kalau
@@ -1478,10 +1578,21 @@
                      tahu harganya, dan menemukan angka baru di halaman
                      berikutnya terasa seperti dijebak. -->
                 <div class="d-grid d-md-flex gap-3">
-                    <a href="#daftar" class="btn-glossy-primary">
+                    <a href="#daftar" class="btn-glossy-primary berdenyut">
                         Lihat detail &amp; biayanya <i class="fa-solid fa-arrow-down"></i>
                     </a>
                 </div>
+
+                <!--
+                    Petunjuk gulir. Isinya sengaja sekadar hiasan bagi pembaca
+                    layar (aria-hidden): tautan "Lihat detail" tepat di atasnya
+                    sudah membawa ke tempat yang sama, jadi ini akan jadi
+                    pengulangan yang membingungkan kalau ikut dibacakan.
+                -->
+                <a href="#rinci" class="petunjuk-gulir" aria-hidden="true" tabindex="-1">
+                    <span>Gulir ke bawah</span>
+                    <i class="fa-solid fa-chevron-down"></i>
+                </a>
             </div>
 
             <div class="col-lg-5 offset-lg-1">
@@ -1964,7 +2075,7 @@
                 <div><span class="kursi-sisa" id="kursi" hidden></span></div>
 
                 <div class="d-grid mt-3">
-                    <a class="btn-glossy-primary" id="cta" href="#" rel="noopener">
+                    <a class="btn-glossy-primary berdenyut" id="cta" href="#" rel="noopener">
                         <span id="cta-teks">Daftar sekarang</span> <i class="fa-solid fa-arrow-right"></i>
                     </a>
                 </div>
