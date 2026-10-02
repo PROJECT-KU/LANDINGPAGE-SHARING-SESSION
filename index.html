@@ -1889,21 +1889,31 @@
             }
         }
 
-        /* FAQ dua kolom di layar lebar — pertanyaannya pendek-pendek, jadi
-           satu kolom menyisakan separuh lebar kosong. */
+        /*
+         * FAQ dua kolom di layar lebar - pertanyaannya pendek-pendek, jadi
+         * satu kolom menyisakan separuh lebar kosong.
+         *
+         * MULTIKOLOM, bukan grid. Dengan grid, kedua kolom terikat baris yang
+         * sama: begitu satu jawaban dibuka, barisnya ikut tinggi dan
+         * tetangganya di kanan meninggalkan lubang sebesar jawaban itu.
+         * Multikolom mengalirkan tiap kolom sendiri-sendiri, jadi membuka satu
+         * jawaban hanya mendorong yang di bawahnya pada kolom yang sama.
+         *
+         * break-inside: avoid wajib menyertainya, kalau tidak satu kotak bisa
+         * terpotong di tengah lalu disambung di pangkal kolom berikutnya.
+         */
         @media (min-width: 992px) {
             .faq {
-                display: grid;
-                grid-template-columns: repeat(2, 1fr);
-                gap: 16px;
-                align-items: start;
-                /* max-width: 760px bawaannya ikut dilepas - kalau tidak, dua
-                   kolomnya tetap berdesakan di 760 px dan separuh lebar
-                   wadahnya dibiarkan kosong. */
+                columns: 2;
+                column-gap: 18px;
                 max-width: 1100px;
             }
 
-            .faq details { margin: 0 !important; }
+            .faq details {
+                break-inside: avoid;
+                -webkit-column-break-inside: avoid;
+                margin: 0 0 18px !important;
+            }
         }
 
         /* Daftar susunan acara ikut menyebar. Pemilihnya disamakan dengan
