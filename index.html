@@ -57,6 +57,7 @@
             --gradient-navy: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
             --gradient-red: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
             --bg-light: #f8fafc;
+            --kolom-teks: 720px;   /* lebar baca untuk blok teks panjang */
         }
 
         body {
@@ -384,7 +385,7 @@
         /* ---- Kenapa memilih kami: susunannya mengikuti situs utama ---- */
         .kartu-alasan {
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             gap: 12px;
             height: 100%;
             padding: 20px;
@@ -395,6 +396,7 @@
 
         .kartu-alasan .ikon {
             flex: 0 0 auto;
+            margin-top: 2px;
             display: grid;
             place-items: center;
             width: 46px;
@@ -463,7 +465,40 @@
            sedangkan centang hijau di atasnya alasan bergabung. */
         .daftar-poin .fa-lightbulb { margin-top: 3px; color: var(--primary-orange); }
 
-        .daftar-materi { max-width: 720px; margin: 0 auto; }
+        .daftar-materi { max-width: var(--kolom-teks); margin: 0 auto; }
+
+        /*
+         * Sesi boleh tidak punya flyer, dan flyernya boleh gagal dimuat. Saat
+         * kolom kanannya tersembunyi, kolom kiri melebar penuh dan isinya ikut
+         * rata tengah seperti bagian lain.
+         *
+         * Tanpa ini separuh bagiannya dibiarkan kosong - terukur 558 px dari
+         * 1116 px di layar 1280 - dan judulnya rata kiri sendirian di antara
+         * judul-judul yang rata tengah.
+         *
+         * Lewat :has() supaya berlaku untuk SEMUA jalan yang menyembunyikan
+         * kolom itu, termasuk yang ditambahkan nanti, bukan hanya yang
+         * kebetulan diingat untuk ikut menyetel kelas.
+         */
+        #rinci:has(#kolom-flyer[hidden]) > .row > .col-lg-6 {
+            flex: 0 0 100%;
+            max-width: 100%;
+            width: 100%;
+        }
+
+        #rinci:has(#kolom-flyer[hidden]) .kop { text-align: center !important; }
+
+        #rinci:has(#kolom-flyer[hidden]) .kop-sub {
+            margin-left: auto !important;
+            margin-right: auto !important;
+            text-align: center !important;
+        }
+
+        #rinci:has(#kolom-flyer[hidden]) .daftar-poin {
+            max-width: var(--kolom-teks);
+            margin-left: auto;
+            margin-right: auto;
+        }
 
         /* ---- Testimoni ---- */
         .testimoni {
@@ -564,6 +599,22 @@
 
         .kop em { font-style: normal; color: var(--primary-orange); }
 
+        /* Judul yang berdiri di atas kartu gradien. Mewarisi skala .kop
+           supaya semua judul halaman ini satu ukuran — sebelumnya dua judul
+           ini diatur sebaris dan ukurannya beda sendiri. */
+        .kop-terang { margin: 26px 20px 0; color: #fff; }
+        .kop-terang em { color: #ffd0a8; }
+
+        /*
+         * Tautan teks biasa tingginya cuma setinggi barisnya — terukur 20-24
+         * px, di bawah ambang yang masih enak ditekan di layar sentuh.
+         * Diberi ruang tekan tanpa menggeser tata letaknya.
+         */
+        a.text-decoration-none {
+            display: inline-block;
+            padding: 6px 2px;
+        }
+
         .kop-sub {
             max-width: 640px;
             margin: 0 auto 28px;
@@ -611,7 +662,7 @@
         }
 
         .penjelas {
-            max-width: 720px;
+            max-width: var(--kolom-teks);
             margin: 0 auto 26px;
             text-align: center;
         }
@@ -640,7 +691,7 @@
 
         /* ---- Kartu sambutan "Selamat datang di Rumah Scopus" ---- */
         .kartu-sambutan {
-            max-width: 720px;
+            max-width: var(--kolom-teks);
             margin: 0 auto;
             padding: 36px 32px 32px;
             border-radius: 22px;
@@ -675,7 +726,7 @@
         .sambutan-angka strong { color: var(--primary-orange); }
 
         /* ---- "Kenapa harus bergabung" ---- */
-        .daftar-gabung { max-width: 720px; margin: 0 auto; }
+        .daftar-gabung { max-width: var(--kolom-teks); margin: 0 auto; }
 
         /*
          * Latarnya gelap pekat seperti di situs utama: ini satu-satunya klaim
@@ -683,7 +734,7 @@
          * dibaca sepintas bersama butir-butir di atasnya.
          */
         .spanduk-703 {
-            max-width: 720px;
+            max-width: var(--kolom-teks);
             margin: 28px auto 0;
             padding: 18px 24px;
             border-radius: 14px;
@@ -1032,23 +1083,37 @@
         .galeri-titik {
             display: flex;
             justify-content: center;
-            gap: 7px;
-            margin-top: 6px;
+            gap: 2px;
         }
 
+        /*
+         * Titiknya tetap kecil, tetapi yang bisa ditekan jauh lebih besar:
+         * tombolnya 24x36 px dan titiknya digambar oleh ::before. Sebelumnya
+         * tombolnya sendiri cuma 8x8 px — terukur, dan itu di bawah ambang
+         * 24 px yang masih bisa dikenai ujung jari.
+         */
         .galeri-titik button {
-            width: 8px;
-            height: 8px;
+            display: grid;
+            place-items: center;
+            width: 24px;
+            height: 36px;
             padding: 0;
             border: 0;
+            background: none;
+            cursor: pointer;
+        }
+
+        .galeri-titik button::before {
+            content: '';
+            width: 8px;
+            height: 8px;
             border-radius: 50%;
             background: #cbd5e1;
-            cursor: pointer;
             transition: width .2s ease, background .2s ease;
         }
 
-        .galeri-titik button[aria-current="true"] {
-            width: 22px;
+        .galeri-titik button[aria-current="true"]::before {
+            width: 20px;
             border-radius: 999px;
             background: var(--primary-orange);
         }
@@ -1128,6 +1193,7 @@
         <div class="row mb-4 pt-3">
             <div class="col-12 text-center text-md-start">
                 <img src="images/Logo RSC 01.png" alt="Rumah Scopus Foundation" class="mb-3"
+                    width="2182" height="543"
                     style="max-height: 65px; width: auto; object-fit: contain;">
             </div>
         </div>
@@ -1285,7 +1351,8 @@
                 <h2 class="kop">Selamat datang di <em>Rumah Scopus!</em></h2>
 
                 <img src="images/Logo RSC 01.png" alt="Rumah Scopus Foundation"
-                    class="logo-sambutan" loading="lazy" decoding="async">
+                    class="logo-sambutan" width="2182" height="543"
+                    loading="lazy" decoding="async">
 
                 <p>
                     Rumah yang akan membimbing Anda supaya memiliki paper ilmiah
@@ -1473,7 +1540,7 @@
              yang berganti tiap sesi sudah datang dari API di atas. -->
         <div class="main-card gradien-rs bagian"
             style="border-radius: 15px; box-shadow: 0 10px 20px rgba(0, 0, 0, .2); overflow: hidden;">
-            <h2 class="text-center mt-4" style="font-weight: 900; color: #fff;">Kenapa Memilih Kami?</h2>
+            <h2 class="kop kop-terang">Kenapa Memilih Kami?</h2>
             <div style="padding: 24px 30px 30px;">
                 <div class="row g-3">
                     <div class="col-md-6 col-lg-3">
@@ -1521,7 +1588,7 @@
         <!-- ============================================================= -->
         <div class="main-card gradien-rs bagian"
             style="border-radius: 15px; box-shadow: 0 10px 20px rgba(0, 0, 0, .2); overflow: hidden;">
-            <h2 class="text-center mt-4" style="font-weight: 900; color: #fff;">Sudah Dipercaya Ribuan Orang</h2>
+            <h2 class="kop kop-terang">Sudah Dipercaya Ribuan Orang</h2>
             <div style="padding: 24px 30px 30px;">
                 <div class="row g-3">
                     <div class="col-md-4">
