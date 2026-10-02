@@ -925,7 +925,17 @@
             gap: 24px;
             max-width: 1040px;
             margin: 0 auto;
-            align-items: stretch;
+            /*
+             * center, bukan stretch. Dengan stretch kartunya ikut setinggi
+             * video potret - terukur 660x604 px padahal tulisannya cuma
+             * setinggi 276 px, jadi 329 px bidang putih kosong di dalam
+             * kartunya sendiri. Bidang putih kosong lebih mencolok daripada
+             * jarak biasa, sebab ia punya tepi dan bayangan.
+             *
+             * Memeluk isinya: kartunya seringkas tulisannya, dan ruang di
+             * sampingnya jadi latar halaman biasa.
+             */
+            align-items: center;
         }
 
         /*
@@ -991,8 +1001,11 @@
         }
 
         @media (min-width: 1200px) {
-            .testimoni { grid-template-columns: 340px 1fr; gap: 40px; }
-            .testimoni video { max-width: 340px; }
+            .testimoni { grid-template-columns: 300px 1fr; gap: 40px; }
+
+            /* Tingginya ikut dibatasi supaya bagiannya tidak jadi satu layar
+               penuh hanya untuk satu testimoni. */
+            .testimoni video { max-width: 300px; max-height: 520px; }
         }
 
         .foto-suasana {
