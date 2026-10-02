@@ -465,6 +465,40 @@
 
         .daftar-materi { max-width: 720px; margin: 0 auto; }
 
+        /* ---- Testimoni ---- */
+        .testimoni {
+            display: grid;
+            gap: 24px;
+            max-width: 860px;
+            margin: 0 auto;
+            align-items: center;
+        }
+
+        /*
+         * Videonya POTRET (9:16, rekaman ponsel). Lebarnya dibatasi, bukan
+         * dibiarkan selebar kolom: pada layar lebar video 9:16 yang melar
+         * jadi setinggi dua layar penuh.
+         */
+        .testimoni video {
+            width: 100%;
+            max-width: 300px;
+            height: auto;
+            margin: 0 auto;
+            display: block;
+            border-radius: 18px;
+            background: #0f172a;
+            box-shadow: 0 18px 44px -26px rgba(15, 43, 91, .75);
+        }
+
+        .testimoni-kata p { margin: 0 0 14px; color: #475569; line-height: 1.8; }
+        .testimoni-kata p:last-child { margin-bottom: 0; }
+        .testimoni-kata strong { color: var(--primary-navy); }
+
+        @media (min-width: 768px) {
+            .testimoni { grid-template-columns: 300px 1fr; gap: 32px; }
+            .testimoni video { margin: 0; }
+        }
+
         .foto-suasana {
             width: 100%;
             aspect-ratio: 16 / 10;
@@ -1578,7 +1612,42 @@
         </div>
 
         <!-- ============================================================= -->
-        <!-- 13. YANG DIBAWA PULANG + HARGA                                -->
+        <!-- 13. APA KATA MEREKA — testimoni                                -->
+        <!-- ============================================================= -->
+        <!-- Tepat sebelum harga, mengikuti urutan rumahscopus.org: keberatan
+             terakhir sebelum orang melihat angkanya adalah "benar tidak ini
+             berhasil", dan suara peserta yang menjawabnya. -->
+        <div class="bagian">
+            <h2 class="kop">Apa kata mereka yang <em>sudah bergabung?</em></h2>
+
+            <div class="testimoni">
+                <!--
+                    preload="none" itu intinya: berkasnya 13 MB, dan tanpa itu
+                    tiap pengunjung iklan membayar 13 MB kuota hanya untuk
+                    menggulir melewatinya. Yang dimuat lebih dulu cuma
+                    sampulnya, 74 KB. Yang menekan putar saja yang mengunduh.
+                -->
+                <video id="video-testimoni" controls playsinline preload="none"
+                    width="540" height="960"
+                    poster="" aria-label="Testimoni peserta Scopus Camp"></video>
+
+                <div class="testimoni-kata">
+                    <p>
+                        Testimoni dari peserta yang berhasil <strong>submit ke jurnal
+                        internasional bereputasi di Scopus</strong>. Para peserta merasa bahagia
+                        setelah mengikuti Scopus Camp di Pusat Rumah Scopus, Yogyakarta,
+                        selama 3 hari.
+                    </p>
+                    <p>
+                        Dari yang awalnya pesimis dan takut tidak tembus Scopus, sekarang
+                        mereka <strong>membuktikan sendiri bahwa tembus Scopus itu mudah.</strong>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================================= -->
+        <!-- 14. YANG DIBAWA PULANG + HARGA                                -->
         <!-- ============================================================= -->
         <div class="bagian" id="daftar">
             <div class="row g-4 align-items-center mb-4">
@@ -1629,7 +1698,7 @@
         </div>
 
         <!-- ============================================================= -->
-        <!-- 14. FAQ                                                       -->
+        <!-- 15. FAQ                                                       -->
         <!-- ============================================================= -->
         <div class="bagian">
             <h2 class="kop">Pertanyaan yang <em>sering ditanyakan</em></h2>
@@ -1826,6 +1895,43 @@
 
                 img.src = alamat;
             });
+
+            /*
+             * Testimoni: sampul dan berkas videonya dipasang di sini supaya
+             * ikut berpindah pangkalan saat diuji di lokal.
+             *
+             * Sampulnya diintai lebih dulu (74 KB) dan videonya baru dipasang
+             * kalau sampulnya termuat. Videonya sendiri tidak bisa diintai
+             * murah — preload="none" memang ada supaya 13 MB itu tidak
+             * terunduh sebelum ada yang menekan putar — jadi sampulnya yang
+             * dipakai sebagai penanda bahwa berkasnya memang terbit di MIS.
+             * Kalau tidak, seluruh bagiannya disembunyikan: pemutar video
+             * hitam yang tidak bisa diputar lebih buruk daripada tidak ada.
+             */
+            (function () {
+                var vid = el('video-testimoni');
+                if (!vid) return;
+
+                var bagian = vid.closest('.bagian');
+                var sampul = PANGKALAN + '/storage/video/testimoni-sampul.webp';
+
+                var intai = new Image();
+
+                intai.onload = function () {
+                    vid.poster = sampul;
+
+                    var sumber = document.createElement('source');
+                    sumber.src = PANGKALAN + '/storage/video/testimoni.mp4';
+                    sumber.type = 'video/mp4';
+                    vid.appendChild(sumber);
+                };
+
+                intai.onerror = function () {
+                    if (bagian) bagian.hidden = true;
+                };
+
+                intai.src = sampul;
+            })();
 
             mulaiPenghitung();
 
