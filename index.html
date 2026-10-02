@@ -2288,6 +2288,29 @@
             outline: 3px solid var(--primary-orange);
             outline-offset: 2px;
         }
+
+        /* ==== TESTIMONI KEDUA (REKAMAN MENDATAR) ==== */
+        .testimoni-kedua {
+            max-width: 760px;
+            margin: 34px auto 0;
+            text-align: center;
+        }
+
+        .testimoni-kedua video {
+            width: 100%;
+            height: auto;
+            aspect-ratio: 16 / 9;
+            border-radius: 18px;
+            background: #0f172a;
+            box-shadow: 0 18px 44px -26px rgba(15, 43, 91, .75);
+        }
+
+        .testimoni-kedua .testimoni-asal {
+            max-width: 100%;
+            margin: 16px 0 0 !important;
+            border-top: 0;
+            padding-top: 0;
+        }
     </style>
 </head>
 
@@ -2912,6 +2935,19 @@
                     <p class="testimoni-asal">Peserta Scopus Camp &mdash; Pusat Rumah Scopus, Yogyakarta</p>
                 </div>
             </div>
+
+            <!--
+                Testimoni kedua. Rekamannya MENDATAR 16:9, berbeda dari yang
+                pertama yang potret 9:16 - karena itu ia berdiri sendiri di
+                bawah, bukan disandingkan: dua video dengan nisbah sejauh itu
+                berdampingan selalu terbaca tidak sejajar.
+            -->
+            <div class="testimoni-kedua" id="kolom-testimoni2" hidden>
+                <video id="video-testimoni2" controls playsinline preload="none"
+                    width="640" height="360"
+                    poster="" aria-label="Testimoni peserta Rumah Scopus"></video>
+                <p class="testimoni-asal">Peserta Rumah Scopus</p>
+            </div>
         </div>
 
         <!-- ============================================================= -->
@@ -3220,6 +3256,34 @@
 
                 var bagian = vid.closest('.bagian');
                 var sampul = PANGKALAN + '/storage/video/testimoni-sampul.webp';
+
+                /*
+                 * Testimoni kedua dipasang dengan pola yang sama: sampulnya
+                 * diintai lebih dulu, videonya baru menyusul. Kolomnya berdiri
+                 * sendiri - kalau berkasnya belum ada, hanya bagian kedua yang
+                 * disembunyikan, yang pertama tetap tampil.
+                 */
+                (function () {
+                    var v2 = el('video-testimoni2');
+                    var kolom2 = el('kolom-testimoni2');
+                    if (!v2 || !kolom2) return;
+
+                    var sampul2 = PANGKALAN + '/storage/video/testimoni2-sampul.webp';
+                    var intai2 = new Image();
+
+                    intai2.onload = function () {
+                        v2.poster = sampul2;
+
+                        var sumber2 = document.createElement('source');
+                        sumber2.src = PANGKALAN + '/storage/video/testimoni2-web.mp4';
+                        sumber2.type = 'video/mp4';
+                        v2.appendChild(sumber2);
+
+                        kolom2.hidden = false;
+                    };
+
+                    intai2.src = sampul2;
+                })();
 
                 var intai = new Image();
 
