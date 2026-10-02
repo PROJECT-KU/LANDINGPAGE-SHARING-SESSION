@@ -1951,6 +1951,67 @@
                 padding: 30px;
             }
         }
+
+        /* ==== PITA ANGKA KEPERCAYAAN ==== */
+        /*
+         * Ini SATU-SATUNYA bidang gradien penuh yang tersisa di halaman.
+         * Dibiarkan satu supaya tetap menonjol; dua bidang seperti ini
+         * bertumpuk justru saling melemahkan dan membuat halamannya terasa
+         * berisik.
+         */
+        .pita-angka {
+            padding: 44px 36px 48px;
+            border-radius: 24px;
+            background: var(--gradient-orange);
+            box-shadow: 0 24px 50px -28px rgba(230, 92, 0, .75);
+        }
+
+        .pita-angka .kop { margin: 0 0 6px; color: #fff; }
+        .pita-angka .kop em { color: #ffe3c9; }
+
+        /*
+         * Kotak putih tembus pandangnya dibuang. Di atas gradien oranye,
+         * putih 16% menghasilkan beda terang yang tipis - kotaknya nyaris
+         * tidak terbaca sebagai kotak, tetapi cukup untuk mengaburkan
+         * angkanya. Sekarang angkanya berdiri langsung di atas pita, dipisah
+         * garis tipis.
+         */
+        .kotak-angka {
+            padding: 18px 20px;
+            border-radius: 0;
+            background: none;
+            text-align: center;
+            color: #fff;
+        }
+
+        @media (min-width: 768px) {
+            .pita-angka .col-md-4 + .col-md-4 .kotak-angka {
+                border-left: 1px solid rgba(255, 255, 255, .35);
+            }
+        }
+
+        .kotak-angka strong {
+            font-size: clamp(2.2rem, 7vw, 3.4rem);
+            text-shadow: 0 2px 10px rgba(146, 64, 14, .35);
+        }
+
+        .kotak-angka span {
+            display: block;
+            margin-top: 6px;
+            font-size: .88rem;
+            line-height: 1.5;
+            color: rgba(255, 255, 255, .92);
+        }
+
+        @media (max-width: 575.98px) {
+            .pita-angka { padding: 34px 20px 36px; }
+        }
+
+        /* Kartu alasan kembali memakai rupa kartu halaman ini. */
+        .kartu-alasan {
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 12px 30px -24px rgba(15, 43, 91, .6);
+        }
     </style>
 </head>
 
@@ -2344,10 +2405,15 @@
         <!-- Kalimat dan susunannya mengikuti rumahscopus.org. Statis di sini,
              bukan dari API: ini janji merek yang jarang berubah, sementara
              yang berganti tiap sesi sudah datang dari API di atas. -->
-        <div class="main-card gradien-rs bagian"
-            style="border-radius: 15px; box-shadow: 0 10px 20px rgba(0, 0, 0, .2); overflow: hidden;">
-            <h2 class="kop kop-terang">Kenapa Memilih Kami?</h2>
-            <div style="padding: 24px 30px 30px;">
+        <!-- Dulu blok gradien pekat. Bertumpuk dengan blok angka di bawahnya,
+             dua bidang oranye penuh itu mendominasi halaman dan terbaca
+             sebagai desain yang berbeda dari bagian lain yang serba kartu
+             putih. Sekarang mengikuti bahasa rupa yang sama; satu blok
+             gradien ditinggalkan di bawah sebagai SATU momen tegas. -->
+        <div class="bagian">
+            <h2 class="kop">Kenapa <em>memilih kami?</em></h2>
+            <p class="kop-sub">Empat hal yang membedakan kelasnya dari sekadar ikut seminar.</p>
+            <div>
                 <div class="row g-3">
                     <div class="col-md-6 col-lg-3">
                         <div class="kartu-alasan">
@@ -2392,10 +2458,9 @@
         <!-- ============================================================= -->
         <!-- 9. ANGKA KEPERCAYAAN                                          -->
         <!-- ============================================================= -->
-        <div class="main-card gradien-rs bagian"
-            style="border-radius: 15px; box-shadow: 0 10px 20px rgba(0, 0, 0, .2); overflow: hidden;">
-            <h2 class="kop kop-terang">Sudah Dipercaya Ribuan Orang</h2>
-            <div style="padding: 24px 30px 30px;">
+        <div class="bagian pita-angka">
+            <h2 class="kop kop-terang">Sudah dipercaya <em>ribuan orang</em></h2>
+            <div>
                 <div class="row g-3">
                     <div class="col-md-4">
                         <div class="kotak-angka">
