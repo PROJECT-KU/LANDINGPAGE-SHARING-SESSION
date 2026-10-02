@@ -1438,15 +1438,53 @@
         }
 
         /* ---- Bagian harga ---- */
+        /*
+         * Kotak pendaftaran sengaja dibedakan dari kartu lain di halaman:
+         * garis tepi oranye tebal, latar sedikit hangat, dan bayangan
+         * berwarna. Kartu putih bergaris abu-abu tipis - rupa kartu biasa di
+         * sini - membuatnya tenggelam di antara belasan kartu lain, padahal
+         * inilah satu-satunya tempat orang bisa mendaftar.
+         */
         .kotak-harga {
+            position: relative;
             max-width: 640px;
             margin: 0 auto;
-            padding: 44px 36px;
-            border-radius: 24px;
-            background: #fff;
-            border: 1px solid #e2e8f0;
-            box-shadow: 0 22px 60px -34px rgba(15, 43, 91, .7);
+            padding: 50px 36px 40px;
+            border-radius: 26px;
+            background: linear-gradient(180deg, #fff8f2 0%, #fff 42%);
+            border: 2px solid rgba(255, 106, 0, .55);
+            box-shadow: 0 26px 60px -30px rgba(230, 92, 0, .55);
             text-align: center;
+        }
+
+        /* Lencananya duduk di garis tepi atas, jadi penanda yang terbaca
+           sebelum isinya dibaca. */
+        .lencana-daftar {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 20px;
+            border-radius: 999px;
+            background: var(--gradient-orange);
+            box-shadow: 0 8px 20px -8px rgba(230, 92, 0, .8);
+            color: #fff;
+            font-size: .76rem;
+            font-weight: 800;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        /* Tombol daftarnya dibesarkan - ini sasaran tekan yang paling
+           menentukan di seluruh halaman. */
+        .kotak-harga .btn-glossy-primary {
+            min-height: 64px;
+            font-size: 1rem;
+            letter-spacing: .8px;
         }
 
         /* Harga asal dicoret hanya muncul kalau memang ADA promo. Coretan yang
@@ -2702,6 +2740,16 @@
                 </div>
 
                 <div class="kotak-harga">
+                <!--
+                    Lencana penanda. Tanpa ini kotaknya berupa kartu putih yang
+                    rupanya sama dengan belasan kartu lain di halaman, dan
+                    pembacanya harus membaca isinya dulu untuk tahu bahwa di
+                    sinilah tempat mendaftar.
+                -->
+                <span class="lencana-daftar">
+                    <i class="fa-solid fa-ticket"></i> Pendaftaran
+                </span>
+
                 <p class="fw-bold mb-3" style="color: var(--primary-navy); font-size: 1.1rem;">
                     Amankan kursi Anda sekarang
                 </p>
