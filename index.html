@@ -2137,6 +2137,32 @@
                jauh melewati tulisan yang pendek. */
             .tutup-daftar .daftar-poin { max-width: 560px; }
         }
+
+        /* ==== DUA BUKTI PEMERIKSAAN BERDAMPINGAN ==== */
+        .dua-bukti { display: grid; gap: 22px; margin-top: 22px; }
+
+        @media (min-width: 992px) {
+            .dua-bukti {
+                grid-template-columns: 1fr 1fr;
+                gap: 28px;
+                /* start, bukan center: kedua laporan beda nisbah - yang
+                   Turnitin 1400x908, yang AI 1000x362 - jadi keduanya
+                   disejajarkan dari tepi atas, bukan dari tengah. */
+                align-items: start;
+                max-width: 1100px;
+                margin-inline: auto;
+            }
+
+            .dua-bukti .bukti-plagiarisme { margin: 0; max-width: 100%; }
+        }
+
+        .bukti-sumber {
+            margin: 14px 0 0;
+            font-size: .78rem;
+            font-style: italic;
+            color: #94a3b8;
+            text-align: center;
+        }
     </style>
 </head>
 
@@ -2386,7 +2412,8 @@
 
             <p class="spanduk-703">
                 Paper yang dibuat dengan <strong>&ldquo;Framework 703&rdquo;</strong> Rumah Scopus
-                konsisten menghasilkan plagiarisme <strong>di bawah 15%</strong>.
+                konsisten menghasilkan plagiarisme <strong>di bawah 15%</strong>, dan tulisan
+                AI-nya <strong>tidak mencapai ambang 20%</strong>.
             </p>
 
             <!--
@@ -2395,6 +2422,7 @@
                 berkasnya benar-benar termuat — lihat daftar gambar statis
                 di skrip, dan alasannya di komentar sana.
             -->
+            <div class="dua-bukti">
             <div class="bukti-plagiarisme" id="kolom-bukti-703" hidden>
                 <!--
                     width/height dipasang supaya ruangnya sudah disediakan
@@ -2406,8 +2434,24 @@
                 <img id="bukti-703" width="1400" height="908"
                     alt="Laporan orisinalitas Turnitin sebuah paper Rumah Scopus"
                     loading="lazy" decoding="async">
-                <span class="bukti-ket">*Aset foto dari Rumah Scopus</span>
+                <span class="bukti-ket">Laporan orisinalitas Turnitin &mdash; kemiripan 10%</span>
             </div>
+
+            <!--
+                Pemeriksaan tulisan AI. Angkanya memang TIDAK tertulis di
+                laporannya: iThenticate hanya menampilkan "*%" dan menjelaskan
+                bahwa skor di bawah ambang 20% sengaja tidak ditampilkan.
+                Karena itu keterangannya berbunyi "tidak mencapai ambang 20%",
+                bukan menyebut angka yang tidak ada di dokumennya.
+            -->
+            <div class="bukti-plagiarisme" id="kolom-bukti-ai" hidden>
+                <img id="bukti-ai" width="1000" height="362"
+                    alt="Laporan pemeriksaan tulisan AI iThenticate" loading="lazy" decoding="async">
+                <span class="bukti-ket">Pemeriksaan tulisan AI &mdash; di bawah ambang 20%</span>
+            </div>
+            </div>
+
+            <p class="bukti-sumber">*Aset foto dari Rumah Scopus</p>
         </div>
 
         <!-- ============================================================= -->
@@ -2964,6 +3008,7 @@
                  * gambar ini memang tidak punya barisnya.
                  */
                 ['bukti-703', '/storage/bukti/plagiasi.webp', 'kolom-bukti-703', true],
+                ['bukti-ai', '/storage/bukti/plagiasi-ai.webp', 'kolom-bukti-ai', true],
             ].forEach(function (p) {
                 var img = el(p[0]);
                 if (!img) return;
