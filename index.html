@@ -106,6 +106,38 @@
                 radial-gradient(900px 600px at 52% 108%, rgba(255, 106, 0, .10), transparent 62%);
         }
 
+        /* ==== BILAH KETERISIAN KURSI ==== */
+        .bilah-kursi { margin: 14px auto 4px; max-width: 420px; }
+
+        .bilah-kursi-alur {
+            overflow: hidden;
+            height: 9px;
+            border-radius: 999px;
+            background: #e2e8f0;
+        }
+
+        .bilah-kursi-alur span {
+            display: block;
+            width: 0;
+            height: 100%;
+            border-radius: inherit;
+            background: var(--gradient-orange);
+            /* Lebarnya ditulis sekali oleh skrip saat bagiannya terlihat;
+               transisinya yang membuatnya terbaca terisi, bukan melompat. */
+            transition: width 1.1s cubic-bezier(.22, .8, .3, 1);
+        }
+
+        .bilah-kursi small {
+            display: block;
+            margin-top: 8px;
+            font-size: .78rem;
+            color: #64748b;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .bilah-kursi-alur span { transition: none; }
+        }
+
         /* ==== BILAH KEMAJUAN GULIR ==== */
         .bilah-kemajuan {
             position: fixed;
@@ -1145,6 +1177,12 @@
         .penutup-poin strong { color: var(--primary-orange); }
 
         /* ---- Kartu sambutan "Selamat datang di Rumah Scopus" ---- */
+        /*
+         * Kartu ini terukur hanya mengisi 45% lebar wadah di layar 1920 -
+         * satu-satunya bagian yang benar-benar melompong; yang lain 99-100%.
+         * Di layar lebar logonya pindah ke kolom kiri dan teksnya ke kanan,
+         * jadi kartunya terisi tanpa barisnya jadi terlalu panjang dibaca.
+         */
         .kartu-sambutan {
             max-width: var(--kolom-teks);
             margin: 0 auto;
@@ -1156,7 +1194,31 @@
             text-align: center;
         }
 
-        .kartu-sambutan .kop { margin-bottom: 24px; }
+        .kartu-sambutan .kop { margin-bottom: 18px; }
+
+        @media (min-width: 992px) {
+            .kartu-sambutan {
+                display: grid;
+                grid-template-columns: minmax(220px, 300px) 1fr;
+                gap: 40px;
+                align-items: center;
+                max-width: 1100px;
+                padding: 44px 48px;
+                text-align: left;
+            }
+
+            .kartu-sambutan .logo-sambutan { margin: 0; }
+            .kartu-sambutan .kop { text-align: left; }
+        }
+
+        @media (min-width: 1600px) {
+            .kartu-sambutan {
+                grid-template-columns: 340px 1fr;
+                gap: 56px;
+                max-width: 1280px;
+                padding: 52px 56px;
+            }
+        }
         .kartu-sambutan p { margin: 0 0 12px; color: #475569; line-height: 1.75; }
         .kartu-sambutan p:last-child { margin-bottom: 0; }
 
@@ -1170,6 +1232,12 @@
             max-width: 100%;
             margin: 0 auto 22px;
             object-fit: contain;
+        }
+
+        /* Di kolomnya sendiri logonya boleh selebar kolom; tingginya yang
+           dilepas, bukan lebarnya, sebab nisbahnya 4:1. */
+        @media (min-width: 992px) {
+            .logo-sambutan { width: 100%; height: auto; }
         }
 
         .sambutan-angka {
@@ -1889,21 +1957,23 @@
              mendengar isi acaranya setelah tahu siapa yang menawarkan. -->
         <div class="bagian">
             <div class="kartu-sambutan">
-                <h2 class="kop">Selamat datang di <em>Rumah Scopus!</em></h2>
-
                 <img src="images/Logo RSC 01.png" alt="Rumah Scopus Foundation"
                     class="logo-sambutan" width="2182" height="543"
                     loading="lazy" decoding="async">
 
-                <p>
-                    Rumah yang akan membimbing Anda supaya memiliki paper ilmiah
-                    yang terindeks di Scopus.
-                </p>
+                <div class="sambutan-isi">
+                    <h2 class="kop">Selamat datang di <em>Rumah Scopus!</em></h2>
 
-                <p class="sambutan-angka">
-                    <strong>95% member Rumah Scopus</strong> berhasil terindeks Scopus
-                    dalam waktu <strong>6 bulan.</strong>
-                </p>
+                    <p>
+                        Rumah yang akan membimbing Anda supaya memiliki paper ilmiah
+                        yang terindeks di Scopus.
+                    </p>
+
+                    <p class="sambutan-angka">
+                        <strong>95% member Rumah Scopus</strong> berhasil terindeks Scopus
+                        dalam waktu <strong>6 bulan.</strong>
+                    </p>
+                </div>
             </div>
         </div>
 
@@ -2287,6 +2357,18 @@
                 <span class="harga-satuan">per peserta</span>
 
                 <div><span class="kursi-sisa" id="kursi" hidden></span></div>
+
+                <!--
+                    Bilah keterisian kursi. Disembunyikan sampai angkanya
+                    benar-benar datang dari API: bilah kosong yang tidak pernah
+                    terisi lebih buruk daripada tidak ada bilahnya.
+                -->
+                <div class="bilah-kursi" id="bilah-kursi" hidden>
+                    <div class="bilah-kursi-alur">
+                        <span id="bilah-kursi-isi"></span>
+                    </div>
+                    <small id="bilah-kursi-ket"></small>
+                </div>
 
                 <div class="d-grid mt-3">
                     <a class="btn-glossy-primary berdenyut" id="cta" href="#" rel="noopener">
@@ -2682,6 +2764,8 @@
                     el('kursi').hidden = false;
                 }
 
+                pasangBilahKursi(s.kuota);
+
                 pasangPemateri(s.pemateri || {});
                 pasangKontak(s.kontak || []);
                 pasangLain(lain);
@@ -3064,6 +3148,55 @@
                 img.addEventListener('error', function () {
                     el('kolom-flyer').hidden = true;
                 });
+            }
+
+            /**
+             * Bilah keterisian kursi di kotak harga.
+             *
+             * Terisinya baru digambar saat kotak harga MASUK LAYAR, bukan saat
+             * datanya tiba: kalau digambar lebih dulu, bilahnya sudah penuh
+             * sebelum siapa pun melihatnya dan geraknya terbuang percuma.
+             *
+             * Hanya muncul kalau total dan sisanya memang angka yang masuk
+             * akal. Bilah yang dikarang dari data setengah jadi akan
+             * menyesatkan soal seberapa penuh kelasnya.
+             */
+            function pasangBilahKursi(kuota) {
+                var bar = el('bilah-kursi');
+                if (!bar) return;
+
+                if (!kuota || typeof kuota.total !== 'number' || typeof kuota.sisa !== 'number'
+                    || kuota.total <= 0 || kuota.sisa < 0 || kuota.sisa > kuota.total) {
+                    return;
+                }
+
+                var terisi = kuota.total - kuota.sisa;
+                var persen = Math.round((terisi / kuota.total) * 100);
+
+                el('bilah-kursi-ket').textContent =
+                    terisi + ' dari ' + kuota.total + ' kursi sudah terisi (' + persen + '%)';
+
+                bar.hidden = false;
+
+                var isi = el('bilah-kursi-isi');
+
+                function gambar() {
+                    // Minimal 2% supaya sisa lengkungnya tetap terlihat saat
+                    // yang terisi masih sangat sedikit.
+                    isi.style.width = Math.max(persen, persen > 0 ? 2 : 0) + '%';
+                }
+
+                if (!('IntersectionObserver' in window)) {
+                    gambar();
+
+                    return;
+                }
+
+                new IntersectionObserver(function (m, o) {
+                    if (!m[0].isIntersecting) return;
+                    gambar();
+                    o.disconnect();
+                }, { threshold: 0.25 }).observe(bar);
             }
 
             /**
