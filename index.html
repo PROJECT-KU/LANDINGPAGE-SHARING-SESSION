@@ -184,9 +184,16 @@
             animation: panah-turun 1.6s ease-in-out infinite;
         }
 
-        /* Detik hitung mundur berdenyut tiap kali angkanya berganti. */
+        /*
+         * Detik hitung mundur berdenyut tiap kali angkanya berganti.
+         *
+         * JANGAN menyentuh display di sini. `.countdown strong` memang
+         * `display: block`, dan menimpanya dengan inline-block - lewat id,
+         * yang bobotnya menang - membuat label "DETIK" naik ke baris yang
+         * sama sehingga terbaca "39DETIK". transform sendiri sudah bekerja
+         * pada unsur block, jadi tidak ada alasan mengubahnya.
+         */
         .countdown #m-detik {
-            display: inline-block;
             animation: detak 1s ease-out infinite;
         }
 
@@ -196,13 +203,78 @@
             100% { transform: scale(1); }
         }
 
+        /* Lencana platform di hero mengambang pelan. */
+        .glossy-badge-orange {
+            animation: mengambang 3.4s ease-in-out infinite;
+        }
+
+        @keyframes mengambang {
+            0%, 100% { transform: translateY(0); }
+            50%      { transform: translateY(-5px); }
+        }
+
+        /*
+         * Kartu terangkat saat disentuh tetikus. Hanya di peranti yang
+         * MEMANG punya tetikus: di layar sentuh keadaan :hover menempel
+         * setelah diketuk dan kartunya tertinggal terangkat.
+         */
+        @media (hover: hover) {
+            .kartu-poin,
+            .kartu-alasan,
+            .kotak-angka,
+            .kartu-sambutan {
+                transition: transform .25s ease, box-shadow .25s ease;
+            }
+
+            .kartu-poin:hover,
+            .kartu-alasan:hover,
+            .kartu-sambutan:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 20px 40px -24px rgba(15, 43, 91, .55);
+            }
+
+            .kotak-angka:hover { transform: translateY(-4px); }
+
+            .kartu-poin .ikon,
+            .kartu-alasan .ikon {
+                transition: transform .25s ease;
+            }
+
+            .kartu-poin:hover .ikon,
+            .kartu-alasan:hover .ikon {
+                transform: scale(1.08) rotate(-4deg);
+            }
+        }
+
+        /* Harga melompat sekali saat bagiannya muncul — satu kali saja,
+           sebab ini angka yang ditunggu, bukan hiasan yang berulang. */
+        .bagian.tampak .harga-utama {
+            animation: harga-muncul .7s cubic-bezier(.2, .9, .3, 1.2) .15s both;
+        }
+
+        @keyframes harga-muncul {
+            0%   { transform: scale(.82); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
         @media (prefers-reduced-motion: reduce) {
             .btn-glossy-primary .fa-arrow-down,
             .btn-glossy-primary .fa-arrow-right,
             .btn-glossy-primary.berdenyut::after,
             .petunjuk-gulir i,
-            .countdown #m-detik {
+            .countdown #m-detik,
+            .glossy-badge-orange,
+            .bagian.tampak .harga-utama {
                 animation: none;
+            }
+
+            .kartu-poin,
+            .kartu-alasan,
+            .kotak-angka,
+            .kartu-sambutan,
+            .kartu-poin .ikon,
+            .kartu-alasan .ikon {
+                transition: none;
             }
         }
 
