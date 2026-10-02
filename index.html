@@ -1540,8 +1540,18 @@
             /* Ruang bagi bayangan kartu supaya tidak terpotong tepi gulungan. */
             padding: 6px 2px 14px;
             -webkit-overflow-scrolling: touch;
-            scrollbar-width: thin;
+            /*
+             * Bilah gulirnya disembunyikan. Panah kiri-kanan dan barisan titik
+             * di bawahnya sudah memberi tahu bahwa fotonya bisa digeser, jadi
+             * bilah bawaan peramban cuma menambah satu garis abu-abu melintang
+             * tepat di bawah foto. Gulirannya sendiri TIDAK dimatikan -
+             * usapan di ponsel dan roda tetikus tetap jalan.
+             */
+            scrollbar-width: none;
+            -ms-overflow-style: none;
         }
+
+        .galeri::-webkit-scrollbar { display: none; }
 
         /*
          * Pengganjal di KEDUA UJUNG selebar sisa satu layar.
