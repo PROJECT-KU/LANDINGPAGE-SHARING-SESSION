@@ -8,6 +8,48 @@
     <meta name="description"
         content="Webinar eksklusif daring Rumah Scopus. Materi terapan, pemateri praktisi, rekaman, dan e-sertifikat resmi.">
 
+    <link rel="canonical" href="https://sharingsession.rumahscopusfoundation.com/">
+    <meta name="robots" content="index, follow">
+    <meta name="theme-color" content="#ff6a00">
+
+    <!--
+        Pratinjau saat tautannya dibagikan.
+
+        Tanpa ini, tautan yang dikirim di WhatsApp, Facebook, atau Instagram
+        muncul sebagai teks mentah tanpa gambar dan tanpa judul - padahal
+        dibagikan lewat pesan itulah cara halaman ini paling banyak dibuka.
+
+        Judul, keterangan, dan gambarnya DIPERBARUI SKRIP begitu data sesi
+        tiba dari API. Yang tertulis di sini isian dasar untuk perayap yang
+        tidak menjalankan JavaScript - sebagian besar perayap pratinjau
+        memang begitu, jadi isian dasarnya harus sudah masuk akal sendiri.
+    -->
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="id_ID">
+    <meta property="og:site_name" content="Rumah Scopus Foundation">
+    <meta property="og:url" content="https://sharingsession.rumahscopusfoundation.com/">
+    <meta property="og:title" id="og-judul" content="Webinar Eksklusif - Rumah Scopus">
+    <meta property="og:description" id="og-keterangan"
+        content="Webinar eksklusif daring Rumah Scopus. Materi terapan, pemateri praktisi, rekaman, dan e-sertifikat resmi.">
+    <meta property="og:image" id="og-gambar"
+        content="https://sharingsession.rumahscopusfoundation.com/images/Logo%20RSC%2001.png">
+    <meta property="og:image:alt" content="Rumah Scopus Foundation">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" id="tw-judul" content="Webinar Eksklusif - Rumah Scopus">
+    <meta name="twitter:description" id="tw-keterangan"
+        content="Webinar eksklusif daring Rumah Scopus. Materi terapan, pemateri praktisi, rekaman, dan e-sertifikat resmi.">
+    <meta name="twitter:image" id="tw-gambar"
+        content="https://sharingsession.rumahscopusfoundation.com/images/Logo%20RSC%2001.png">
+
+    <!--
+        Data terstruktur acara. Diisi skrip dari data sesi yang sama dengan
+        yang tampil di halaman, supaya tidak pernah ada dua versi kebenaran.
+        Dibiarkan kosong kalau sesinya tidak ada - penanda acara yang
+        mengarang tanggal lebih buruk daripada tidak ada penanda.
+    -->
+    <script type="application/ld+json" id="data-acara"></script>
+
     <!-- Favicon -->
     <link rel="icon" href="images/Icon-RS.png" type="image/png">
     <link href="images/Icon-RS.png" rel="icon">
@@ -827,7 +869,7 @@
         /* min-width: 0 supaya kalimatnya boleh patah; tanpa itu item flex
            menolak menyusut dan kartunya meluber di layar sempit. */
         .kartu-alasan .teks { flex: 1 1 0; min-width: 0; }
-        .kartu-alasan h5 { margin: 0 0 2px; font-size: 1rem; font-weight: 700; }
+        .kartu-alasan h3 { margin: 0 0 2px; font-size: 1rem; font-weight: 700; }
         .kartu-alasan p { margin: 0; font-size: .86rem; line-height: 1.5; color: #64748b; }
 
         /* ---- Angka kepercayaan ---- */
@@ -1177,7 +1219,7 @@
             font-size: 20px;
         }
 
-        .kartu-poin h5 { font-size: 1.02rem; font-weight: 800; color: var(--primary-navy); }
+        .kartu-poin h3 { font-size: 1.02rem; font-weight: 800; color: var(--primary-navy); }
         .kartu-poin p { margin: 0; font-size: .9rem; line-height: 1.6; color: #64748b; }
 
         /* ---- Paragraf penjelas & penutup di bagian "kenapa Scopus" ---- */
@@ -2163,6 +2205,89 @@
             color: #94a3b8;
             text-align: center;
         }
+
+        /* ==== TOMBOL WHATSAPP MELAYANG ==== */
+        .wa-melayang {
+            position: fixed;
+            right: 16px;
+            /* Di atas ajakan lengket, bukan menimpanya. Ajakan lengket hanya
+               muncul di bawah 992 px, jadi jaraknya dibedakan per lebar. */
+            bottom: 96px;
+            z-index: 56;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 18px;
+            border-radius: 999px;
+            background: #25d366;
+            box-shadow: 0 14px 30px -12px rgba(37, 211, 102, .8);
+            color: #fff;
+            font-size: .88rem;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .wa-melayang i { font-size: 1.25rem; }
+
+        @media (min-width: 992px) {
+            .wa-melayang { bottom: 24px; }
+        }
+
+        /* Di layar sangat sempit tulisannya disembunyikan supaya tombolnya
+           tidak memakan separuh lebar layar. */
+        @media (max-width: 400px) {
+            .wa-melayang { padding: 14px; }
+            .wa-melayang span { display: none; }
+        }
+
+        @media (hover: hover) {
+            .wa-melayang { transition: transform .2s ease; }
+            .wa-melayang:hover { transform: translateY(-3px); color: #fff; }
+        }
+
+        /* ==== PESAN SESI SUDAH DIMULAI ==== */
+        .sudah-mulai {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            max-width: 560px;
+            margin: 0 0 1.75rem;
+            padding: 14px 18px;
+            border-radius: 14px;
+            border: 1px solid #fde68a;
+            background: #fffbeb;
+            color: #92400e;
+            font-size: .92rem;
+            font-weight: 600;
+            line-height: 1.6;
+        }
+
+        .sudah-mulai i { margin-top: 2px; }
+
+        /* ==== LEWATI KE ISI ==== */
+        .lewati-ke-isi {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            z-index: 80;
+            padding: 12px 20px;
+            border-radius: 12px;
+            background: var(--primary-navy);
+            color: #fff;
+            font-weight: 700;
+            text-decoration: none;
+            /* Digeser keluar layar, BUKAN display:none - yang kedua membuatnya
+               ikut hilang dari urutan Tab, jadi tidak pernah bisa difokus. */
+            transform: translateY(-200%);
+            transition: transform .18s ease;
+        }
+
+        .lewati-ke-isi:focus {
+            transform: none;
+            color: #fff;
+            outline: 3px solid var(--primary-orange);
+            outline-offset: 2px;
+        }
     </style>
 </head>
 
@@ -2187,6 +2312,27 @@
         ribuan piksel di belakang; ini membuatnya selalu sejangkauan ibu jari.
         Disembunyikan di layar lebar - di sana tombolnya memang masih terlihat.
     -->
+    <!--
+        Tautan lewati. Hanya terlihat saat difokus papan ketik: pengguna
+        papan ketik tidak perlu menekan Tab melewati seluruh kepala halaman
+        sebelum sampai ke isinya.
+    -->
+    <a class="lewati-ke-isi" href="#isi">Lewati ke isi halaman</a>
+
+    <!--
+        Tombol WhatsApp melayang. Nomornya sebelumnya hanya ada di kaki
+        halaman; orang yang ragu di tengah halaman harus menggulir 9.000 px
+        untuk bertanya, dan kebanyakan tidak melakukannya.
+
+        Nomornya DIISI SKRIP dari kontak yang sama dengan yang di kaki
+        halaman, dan tombolnya tetap tersembunyi kalau tidak ada nomor -
+        tombol yang menuju entah ke mana lebih buruk daripada tidak ada.
+    -->
+    <a class="wa-melayang" id="wa-melayang" href="#" target="_blank" rel="noopener" hidden>
+        <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
+        <span>Tanya dulu</span>
+    </a>
+
     <div class="ajakan-lengket" id="ajakan-lengket" hidden>
         <div>
             <strong id="lengket-harga">&mdash;</strong>
@@ -2229,6 +2375,17 @@
                     langkah yang bisa Anda kerjakan hari itu juga.
                 </div>
 
+                <!--
+                    Pesan saat hitung mundurnya habis. Sebelumnya kotak hitung
+                    mundur hanya disembunyikan, jadi pengunjung yang datang
+                    sesudah jam mulai tidak tahu apakah acaranya sudah lewat
+                    atau memang belum pernah dibuka.
+                -->
+                <p class="sudah-mulai" id="sudah-mulai" hidden>
+                    <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+                    Sesi ini sudah dimulai. Hubungi panitia untuk menanyakan sesi berikutnya.
+                </p>
+
                 <!-- Hitung mundur; tetap tersembunyi kalau jam acaranya belum diisi -->
                 <div class="countdown" id="mundur" hidden>
                     <div><strong id="m-hari">–</strong><span>Hari</span></div>
@@ -2242,15 +2399,15 @@
                         <div class="text-muted fw-bold" style="font-size: 12px;">
                             <i class="fa-regular fa-calendar me-1" style="color: var(--primary-orange);"></i> TANGGAL
                         </div>
-                        <h5 class="fw-bold mb-0 rangka" id="tanggal" style="color: var(--primary-navy);">
-                            00 Xxxxxxx 0000</h5>
+                        <p class="fw-bold mb-0 rangka" id="tanggal" style="color: var(--primary-navy);">
+                            00 Xxxxxxx 0000</p>
                         <small class="text-muted rangka" id="jam">00.00 - 00.00 WIB</small>
                     </div>
                     <div class="glossy-card p-3 flex-grow-1" style="border-radius: 15px;">
                         <div class="text-muted fw-bold" style="font-size: 12px;">
                             <i class="fa-solid fa-video me-1 text-primary"></i> PLATFORM
                         </div>
-                        <h5 class="fw-bold mb-0 rangka" id="platform2" style="color: var(--primary-navy);">Xxxx</h5>
+                        <p class="fw-bold mb-0 rangka" id="platform2" style="color: var(--primary-navy);">Xxxx</p>
                         <small class="text-muted">Pertemuan daring</small>
                     </div>
                 </div>
@@ -2259,9 +2416,9 @@
                     style="background: linear-gradient(to right, #f8fafc, #f1f5f9); border-left: 5px solid var(--primary-navy);">
                     <span class="glossy-badge-navy mb-2" style="font-size: 11px;">TOPIK <i
                             class="fa-solid fa-arrow-right ms-1"></i></span>
-                    <h4 class="fw-bold mb-0 rangka" id="judul"
+                    <h2 class="fw-bold mb-0 rangka" id="judul"
                         style="color: var(--primary-navy); font-style: italic;">
-                        Judul sesi sedang dimuat dari sistem Rumah Scopus</h4>
+                        Judul sesi sedang dimuat dari sistem Rumah Scopus</h2>
                 </div>
 
                 <!-- Tombol hero mengantar ke bagian harga di bawah, BUKAN
@@ -2328,21 +2485,21 @@
                 <div class="col-md-6 col-lg-4">
                     <div class="kartu-poin">
                         <span class="ikon gradien-rs"><i class="fa-solid fa-arrow-trend-up"></i></span>
-                        <h5>Mudah naik jabatan</h5>
+                        <h3>Mudah naik jabatan</h3>
                         <p>Publikasi internasional jadi syarat yang paling sering mengganjal kenaikan jabatan.</p>
                     </div>
                 </div>
                 <div class="col-md-6 col-lg-4">
                     <div class="kartu-poin">
                         <span class="ikon gradien-rs"><i class="fa-solid fa-graduation-cap"></i></span>
-                        <h5>Memenuhi syarat kelulusan S3</h5>
+                        <h3>Memenuhi syarat kelulusan S3</h3>
                         <p>Banyak program doktor mensyaratkan satu artikel terindeks sebelum sidang.</p>
                     </div>
                 </div>
                 <div class="col-md-6 col-lg-4">
                     <div class="kartu-poin">
                         <span class="ikon gradien-rs"><i class="fa-solid fa-award"></i></span>
-                        <h5>Dipercepat jadi guru besar</h5>
+                        <h3>Dipercepat jadi guru besar</h3>
                         <p>Rekam jejak publikasi yang terindeks memperpendek jalan ke guru besar.</p>
                     </div>
                 </div>
@@ -2588,7 +2745,7 @@
                         <div class="kartu-alasan">
                             <span class="ikon gradien-rs"><i class="fa-solid fa-user-graduate"></i></span>
                             <span class="teks">
-                                <h5>Trainer Profesional</h5>
+                                <h3>Trainer Profesional</h3>
                                 <p>Didampingi trainer yang sudah menerbitkan sendiri</p>
                             </span>
                         </div>
@@ -2597,7 +2754,7 @@
                         <div class="kartu-alasan">
                             <span class="ikon gradien-rs"><i class="fa-solid fa-user-check"></i></span>
                             <span class="teks">
-                                <h5>Pendampingan</h5>
+                                <h3>Pendampingan</h3>
                                 <p>Didampingi sampai artikel terindeks Scopus</p>
                             </span>
                         </div>
@@ -2606,7 +2763,7 @@
                         <div class="kartu-alasan">
                             <span class="ikon gradien-rs"><i class="fa-solid fa-chalkboard-user"></i></span>
                             <span class="teks">
-                                <h5>Learning By Doing</h5>
+                                <h3>Learning By Doing</h3>
                                 <p>Pembelajaran langsung dengan praktik, bukan ceramah</p>
                             </span>
                         </div>
@@ -2615,7 +2772,7 @@
                         <div class="kartu-alasan">
                             <span class="ikon gradien-rs"><i class="fa-solid fa-newspaper"></i></span>
                             <span class="teks">
-                                <h5>Terbukti</h5>
+                                <h3>Terbukti</h3>
                                 <p>Sudah terbukti ratusan kali terindeks Scopus</p>
                             </span>
                         </div>
@@ -2690,28 +2847,28 @@
                 <div class="col-md-6 col-lg-3">
                     <div class="kartu-poin">
                         <span class="ikon gradien-rs"><i class="fa-solid fa-chalkboard-user"></i></span>
-                        <h5>Dosen</h5>
+                        <h3>Dosen</h3>
                         <p>Yang sedang mengejar kenaikan pangkat dan butuh publikasi terindeks.</p>
                     </div>
                 </div>
                 <div class="col-md-6 col-lg-3">
                     <div class="kartu-poin">
                         <span class="ikon gradien-rs"><i class="fa-solid fa-user-graduate"></i></span>
-                        <h5>Mahasiswa</h5>
+                        <h3>Mahasiswa</h3>
                         <p>Yang publikasinya jadi syarat kelulusan dan waktunya mepet.</p>
                     </div>
                 </div>
                 <div class="col-md-6 col-lg-3">
                     <div class="kartu-poin">
                         <span class="ikon gradien-rs"><i class="fa-solid fa-flask"></i></span>
-                        <h5>Peneliti</h5>
+                        <h3>Peneliti</h3>
                         <p>Yang hasil risetnya sudah ada tapi belum tahu ke mana harus disubmit.</p>
                     </div>
                 </div>
                 <div class="col-md-6 col-lg-3">
                     <div class="kartu-poin">
                         <span class="ikon gradien-rs"><i class="fa-solid fa-building-columns"></i></span>
-                        <h5>Pengelola kampus</h5>
+                        <h3>Pengelola kampus</h3>
                         <p>Yang sedang mendorong akreditasi lewat publikasi internasional.</p>
                     </div>
                 </div>
@@ -2894,8 +3051,8 @@
         <!-- ============================================ belum ada / galat -->
         <div class="pesan-kosong" id="kosong" hidden>
             <i class="fa-regular fa-calendar-xmark"></i>
-            <h5 class="fw-bold" style="color: var(--primary-navy);" id="kosong-judul">
-                Belum ada sesi yang dijadwalkan</h5>
+            <h2 class="fw-bold" style="color: var(--primary-navy);" id="kosong-judul">
+                Belum ada sesi yang dijadwalkan</h2>
             <p class="text-muted mb-4" id="kosong-sub">
                 Jadwal berikutnya diumumkan lewat Instagram dan grup WhatsApp Rumah Scopus.</p>
             <a class="btn-glossy-primary"
@@ -3228,6 +3385,8 @@
                 pasangDaftar('daftar-kegiatan', s.kegiatan || [], 'nomor');
                 pasangDaftar('daftar-fasilitas', s.fasilitas || [], 'centang');
                 pasangFlyer(s);
+                pasangPratinjau(s);
+                pasangWaMelayang(s);
                 pasangGaleri(s.galeri || []);
 
                 if (s.mulai_pada) mulaiHitungMundur(s.mulai_pada);
@@ -3590,6 +3749,116 @@
 
                     jalan();
                 }
+            }
+
+            /**
+             * Mengisi tombol WhatsApp melayang dari kontak panitia.
+             *
+             * Tetap tersembunyi kalau tidak ada nomor: tombol yang menuju
+             * entah ke mana lebih buruk daripada tidak ada tombol.
+             *
+             * Pesannya sudah berisi judul sesi, supaya panitia langsung tahu
+             * yang ditanyakan tanpa harus bertanya balik.
+             */
+            function pasangWaMelayang(s) {
+                var tombol = el('wa-melayang');
+                if (!tombol) return;
+
+                var kontak = (s.kontak || []).filter(function (k) { return k && k.wa; });
+                if (!kontak.length) return;
+
+                var sapa = 'Halo, saya mau bertanya tentang '
+                    + (s.judul ? '"' + s.judul + '"' : 'Webinar Eksklusif Rumah Scopus') + '.';
+
+                tombol.href = 'https://wa.me/' + kontak[0].wa + '?text=' + encodeURIComponent(sapa);
+                tombol.hidden = false;
+
+                // Minat yang kuat, sama seperti klik Daftar - ikut dicatat
+                // supaya iklannya bisa dinilai dari dua sinyal, bukan satu.
+                tombol.addEventListener('click', function () {
+                    if (window.fbq) fbq('track', 'Contact');
+                });
+            }
+
+            /**
+             * Memperbarui pratinjau tautan dan data terstruktur dari data sesi.
+             *
+             * Isian di <head> hanya dasar untuk perayap yang tidak menjalankan
+             * JavaScript. Yang menjalankannya - termasuk alat uji pratinjau
+             * Facebook dan Google Rich Results - membaca hasil setelah skrip
+             * jalan, dan di situlah judul serta flyer sesi yang sedang dibuka
+             * ikut terbawa.
+             *
+             * Gambarnya memakai flyer sesi kalau ada; kalau tidak, logo
+             * yayasan yang sudah tertulis di <head> dibiarkan apa adanya.
+             */
+            function pasangPratinjau(s) {
+                var judul = s.judul ? s.judul + ' - Rumah Scopus' : null;
+
+                var ket = s.judul
+                    ? [s.judul, s.tanggal, s.jam, s.platform].filter(Boolean).join(' - ')
+                    : null;
+
+                function setel(id, nilai) {
+                    var e = el(id);
+                    if (e && nilai) e.setAttribute('content', nilai);
+                }
+
+                setel('og-judul', judul);
+                setel('tw-judul', judul);
+                setel('og-keterangan', ket);
+                setel('tw-keterangan', ket);
+                setel('og-gambar', s.flyer);
+                setel('tw-gambar', s.flyer);
+
+                if (judul) document.title = judul;
+
+                /*
+                 * Penanda acara hanya ditulis kalau waktu mulainya MEMANG ada.
+                 * schema.org mewajibkan startDate, dan penanda yang mengarang
+                 * tanggal lebih buruk daripada tidak ada penanda sama sekali.
+                 */
+                var simpul = el('data-acara');
+                if (!simpul || !s.mulai_pada) return;
+
+                var acara = {
+                    '@context': 'https://schema.org',
+                    '@type': 'Event',
+                    name: s.judul || 'Webinar Eksklusif Rumah Scopus',
+                    startDate: s.mulai_pada,
+                    eventAttendanceMode: 'https://schema.org/OnlineEventAttendanceMode',
+                    eventStatus: 'https://schema.org/EventScheduled',
+                    location: {
+                        '@type': 'VirtualLocation',
+                        url: location.href
+                    },
+                    organizer: {
+                        '@type': 'Organization',
+                        name: 'Rumah Scopus Foundation',
+                        url: 'https://www.rumahscopusfoundation.com'
+                    }
+                };
+
+                if (s.deskripsi) acara.description = s.deskripsi.slice(0, 500);
+                if (s.flyer) acara.image = [s.flyer];
+
+                if (s.pemateri && s.pemateri.nama) {
+                    acara.performer = { '@type': 'Person', name: s.pemateri.nama };
+                }
+
+                if (typeof s.harga === 'number' && s.daftar_url) {
+                    acara.offers = {
+                        '@type': 'Offer',
+                        price: String(s.harga_promo || s.harga),
+                        priceCurrency: 'IDR',
+                        url: s.daftar_url,
+                        availability: (s.kuota && s.kuota.habis)
+                            ? 'https://schema.org/SoldOut'
+                            : 'https://schema.org/InStock'
+                    };
+                }
+
+                simpul.textContent = JSON.stringify(acara);
             }
 
             function pasangFlyer(s) {
@@ -4051,6 +4320,13 @@
 
                     if (sisa <= 0) {
                         kotak.hidden = true;
+
+                        // Diberi tahu, bukan sekadar dihilangkan: kotak yang
+                        // lenyap tanpa penjelasan membuat pengunjung mengira
+                        // acaranya memang belum pernah dibuka.
+                        var pesan = el('sudah-mulai');
+                        if (pesan) pesan.hidden = false;
+
                         clearInterval(jam);
 
                         return;
