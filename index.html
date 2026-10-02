@@ -459,6 +459,12 @@
 
         .daftar-poin .fa-circle-check { margin-top: 3px; color: #10b981; }
 
+        /* Bohlam oranye, bukan centang hijau: daftar ini kurikulum lembaga,
+           sedangkan centang hijau di atasnya alasan bergabung. */
+        .daftar-poin .fa-lightbulb { margin-top: 3px; color: var(--primary-orange); }
+
+        .daftar-materi { max-width: 720px; margin: 0 auto; }
+
         .foto-suasana {
             width: 100%;
             aspect-ratio: 16 / 10;
@@ -1309,12 +1315,40 @@
         </div>
 
         <!-- ============================================================= -->
-        <!-- 5. YANG DIPELAJARI — dari API                                 -->
+        <!-- 5. MATERI CERDIK — kurikulum lembaga, statis                   -->
+        <!-- ============================================================= -->
+        <!-- Ini KURIKULUM Rumah Scopus, berlaku untuk semua sesi — maka
+             statis, seperti "Kenapa Memilih Kami". Yang di bawahnya adalah
+             susunan acara SESI INI dan datang dari API; dua-duanya soal
+             "yang dipelajari", jadi judul dan rupanya sengaja dibedakan:
+             di sini bohlam oranye, di bawah nomor urut. -->
+        <div class="bagian">
+            <h2 class="kop">Materi cerdik seperti apa yang <em>akan Anda pelajari?</em></h2>
+
+            <ul class="daftar-poin daftar-materi">
+                <li><i class="fa-solid fa-lightbulb"></i>
+                    <span>Memanfaatkan <strong>semua teknologi yang ada</strong> untuk
+                        mempermudah penulisan paper.</span></li>
+                <li><i class="fa-solid fa-lightbulb"></i>
+                    <span><strong>Anatomi penulisan paper</strong> yang terbukti ampuh untuk
+                        menghasilkan paper yang menarik.</span></li>
+                <li><i class="fa-solid fa-lightbulb"></i>
+                    <span>Cara penulisan yang <strong>efisien dan efektif</strong>, supaya paper
+                        Anda terlihat profesional.</span></li>
+                <li><i class="fa-solid fa-lightbulb"></i>
+                    <span>Menulis paper <strong>secara digital</strong>.</span></li>
+                <li><i class="fa-solid fa-lightbulb"></i>
+                    <span>Teknik <strong>menghindari jurnal predator</strong>.</span></li>
+            </ul>
+        </div>
+
+        <!-- ============================================================= -->
+        <!-- 6. SUSUNAN ACARA SESI INI — dari API                          -->
         <!-- ============================================================= -->
         <div class="bagian" id="rinci">
             <div class="row g-4 align-items-center">
                 <div class="col-lg-6">
-                    <h2 class="kop text-lg-start">Materi apa yang <em>akan Anda pelajari?</em></h2>
+                    <h2 class="kop text-lg-start">Susunan acara <em>sesi ini</em></h2>
                     <p class="kop-sub text-lg-start ms-lg-0">
                         Bukan teori yang berhenti di catatan — tiap bagian langsung dipraktikkan
                         bersama pemateri.
@@ -1328,7 +1362,7 @@
         </div>
 
         <!-- ============================================================= -->
-        <!-- 6. PEMATERI                                                   -->
+        <!-- 7. PEMATERI                                                   -->
         <!-- ============================================================= -->
         <div class="bagian">
             <h2 class="kop">Siapa yang <em>membawakan?</em></h2>
@@ -1356,7 +1390,7 @@
         </div>
 
         <!-- ============================================================= -->
-        <!-- 7. TOKOH DI BALIK RUMAH SCOPUS                                -->
+        <!-- 8. TOKOH DI BALIK RUMAH SCOPUS                                -->
         <!-- ============================================================= -->
         <!-- Ditaruh SESUDAH pemateri sesi: pembacanya baru tahu siapa yang
              membawakan kelasnya, lalu diperlihatkan siapa yang berdiri di
@@ -1397,7 +1431,7 @@
         </div>
 
         <!-- ============================================================= -->
-        <!-- 8. KENAPA MEMILIH KAMI                                        -->
+        <!-- 9. KENAPA MEMILIH KAMI                                        -->
         <!-- ============================================================= -->
         <!-- Kalimat dan susunannya mengikuti rumahscopus.org. Statis di sini,
              bukan dari API: ini janji merek yang jarang berubah, sementara
@@ -1448,7 +1482,7 @@
         </div>
 
         <!-- ============================================================= -->
-        <!-- 9. ANGKA KEPERCAYAAN                                          -->
+        <!-- 10. ANGKA KEPERCAYAAN                                          -->
         <!-- ============================================================= -->
         <div class="main-card gradien-rs bagian"
             style="border-radius: 15px; box-shadow: 0 10px 20px rgba(0, 0, 0, .2); overflow: hidden;">
@@ -1478,7 +1512,7 @@
         </div>
 
         <!-- ============================================================= -->
-        <!-- 10. GALERI — dari API, diisi admin lewat MIS                   -->
+        <!-- 11. GALERI — dari API, diisi admin lewat MIS                   -->
         <!-- ============================================================= -->
         <!-- Seluruh bagian ini tersembunyi kalau galerinya memang kosong:
              judul "Galeri kegiatan" di atas ruang kosong lebih buruk daripada
@@ -1504,7 +1538,7 @@
         </div>
 
         <!-- ============================================================= -->
-        <!-- 11. SIAPA YANG WAJIB IKUT                                      -->
+        <!-- 12. SIAPA YANG WAJIB IKUT                                      -->
         <!-- ============================================================= -->
         <div class="bagian">
             <h2 class="kop">Siapa yang <em>wajib ikut?</em></h2>
@@ -1543,7 +1577,7 @@
         </div>
 
         <!-- ============================================================= -->
-        <!-- 12. YANG DIBAWA PULANG + HARGA                                -->
+        <!-- 13. YANG DIBAWA PULANG + HARGA                                -->
         <!-- ============================================================= -->
         <div class="bagian" id="daftar">
             <div class="row g-4 align-items-center mb-4">
@@ -1594,7 +1628,7 @@
         </div>
 
         <!-- ============================================================= -->
-        <!-- 13. FAQ                                                       -->
+        <!-- 14. FAQ                                                       -->
         <!-- ============================================================= -->
         <div class="bagian">
             <h2 class="kop">Pertanyaan yang <em>sering ditanyakan</em></h2>
