@@ -634,6 +634,53 @@
 
         .sambutan-angka strong { color: var(--primary-orange); }
 
+        /* ---- "Kenapa harus bergabung" ---- */
+        .daftar-gabung { max-width: 720px; margin: 0 auto; }
+
+        /*
+         * Latarnya gelap pekat seperti di situs utama: ini satu-satunya klaim
+         * berangka keras di bagian ini, dan kontras penuh membuatnya berhenti
+         * dibaca sepintas bersama butir-butir di atasnya.
+         */
+        .spanduk-703 {
+            max-width: 720px;
+            margin: 28px auto 0;
+            padding: 18px 24px;
+            border-radius: 14px;
+            background: var(--primary-navy);
+            color: #fff;
+            text-align: center;
+            font-weight: 600;
+            line-height: 1.65;
+        }
+
+        .spanduk-703 strong { color: #ffb066; }
+
+        .bukti-plagiarisme {
+            max-width: 560px;
+            margin: 18px auto 0;
+            text-align: center;
+        }
+
+        .bukti-plagiarisme img {
+            width: 100%;
+            height: auto;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 12px 30px -22px rgba(15, 43, 91, .7);
+        }
+
+        .bukti-ket {
+            display: block;
+            margin-top: 10px;
+            font-size: .82rem;
+            color: #94a3b8;
+        }
+
+        @media (max-width: 575.98px) {
+            .spanduk-703 { padding: 16px 16px; font-size: .94rem; }
+        }
+
         @media (max-width: 575.98px) {
             .kartu-sambutan { padding: 26px 18px 24px; }
             .logo-sambutan { height: 54px; }
@@ -1211,7 +1258,49 @@
         </div>
 
         <!-- ============================================================= -->
-        <!-- 4. YANG DIPELAJARI — dari API                                 -->
+        <!-- 4. KENAPA HARUS BERGABUNG                                      -->
+        <!-- ============================================================= -->
+        <!-- Ini soal LEMBAGANYA, bukan kelasnya — maka menempel pada blok
+             sambutan di atas. "Kenapa Memilih Kami" jauh di bawah bicara soal
+             kelasnya (trainer, pendampingan, learning by doing); dua-duanya
+             diawali "kenapa", jadi sengaja dijauhkan dan dibedakan rupanya
+             supaya tidak terbaca sebagai bagian yang sama diulang. -->
+        <div class="bagian">
+            <h2 class="kop">Kenapa harus <em>bergabung di Rumah Scopus?</em></h2>
+
+            <ul class="daftar-poin daftar-gabung">
+                <li><i class="fa-solid fa-circle-check"></i>
+                    <span>Rumah Scopus punya <strong>trik khusus dalam penulisan paper</strong>
+                        supaya bisa terindeks di Scopus.</span></li>
+                <li><i class="fa-solid fa-circle-check"></i>
+                    <span>Wadah untuk <strong>saling berkolaborasi</strong>, supaya jalan menuju
+                        terindeks Scopus lebih mudah dan efisien.</span></li>
+                <li><i class="fa-solid fa-circle-check"></i>
+                    <span>Wadah untuk <strong>saling berbagi bahasa</strong>. Tidak menguasai
+                        bahasa Inggris pun, Anda tetap bisa punya paper yang terindeks
+                        Scopus.</span></li>
+            </ul>
+
+            <p class="spanduk-703">
+                Paper yang dibuat dengan <strong>&ldquo;Framework 703&rdquo;</strong> Rumah Scopus
+                konsisten menghasilkan plagiarisme <strong>di bawah 15%</strong>.
+            </p>
+
+            <!--
+                Tangkapan laporan Turnitin. Berkasnya BELUM ADA; kolomnya
+                diintai lewat gambar lepas DOM dan baru terbuka kalau
+                berkasnya benar-benar termuat — lihat daftar gambar statis
+                di skrip, dan alasannya di komentar sana.
+            -->
+            <div class="bukti-plagiarisme" id="kolom-bukti-703" hidden>
+                <img id="bukti-703" alt="Laporan orisinalitas Turnitin sebuah paper Rumah Scopus"
+                    loading="lazy" decoding="async">
+                <span class="bukti-ket">Contoh laporan orisinalitas paper anggota Rumah Scopus.</span>
+            </div>
+        </div>
+
+        <!-- ============================================================= -->
+        <!-- 5. YANG DIPELAJARI — dari API                                 -->
         <!-- ============================================================= -->
         <div class="bagian" id="rinci">
             <div class="row g-4 align-items-center">
@@ -1230,7 +1319,7 @@
         </div>
 
         <!-- ============================================================= -->
-        <!-- 5. PEMATERI                                                   -->
+        <!-- 6. PEMATERI                                                   -->
         <!-- ============================================================= -->
         <div class="bagian">
             <h2 class="kop">Siapa yang <em>membawakan?</em></h2>
@@ -1258,7 +1347,7 @@
         </div>
 
         <!-- ============================================================= -->
-        <!-- 6. TOKOH DI BALIK RUMAH SCOPUS                                -->
+        <!-- 7. TOKOH DI BALIK RUMAH SCOPUS                                -->
         <!-- ============================================================= -->
         <!-- Ditaruh SESUDAH pemateri sesi: pembacanya baru tahu siapa yang
              membawakan kelasnya, lalu diperlihatkan siapa yang berdiri di
@@ -1299,7 +1388,7 @@
         </div>
 
         <!-- ============================================================= -->
-        <!-- 7. KENAPA MEMILIH KAMI                                        -->
+        <!-- 8. KENAPA MEMILIH KAMI                                        -->
         <!-- ============================================================= -->
         <!-- Kalimat dan susunannya mengikuti rumahscopus.org. Statis di sini,
              bukan dari API: ini janji merek yang jarang berubah, sementara
@@ -1350,7 +1439,7 @@
         </div>
 
         <!-- ============================================================= -->
-        <!-- 8. ANGKA KEPERCAYAAN                                          -->
+        <!-- 9. ANGKA KEPERCAYAAN                                          -->
         <!-- ============================================================= -->
         <div class="main-card gradien-rs bagian"
             style="border-radius: 15px; box-shadow: 0 10px 20px rgba(0, 0, 0, .2); overflow: hidden;">
@@ -1380,7 +1469,7 @@
         </div>
 
         <!-- ============================================================= -->
-        <!-- 9. GALERI — dari API, diisi admin lewat MIS                   -->
+        <!-- 10. GALERI — dari API, diisi admin lewat MIS                   -->
         <!-- ============================================================= -->
         <!-- Seluruh bagian ini tersembunyi kalau galerinya memang kosong:
              judul "Galeri kegiatan" di atas ruang kosong lebih buruk daripada
@@ -1406,7 +1495,7 @@
         </div>
 
         <!-- ============================================================= -->
-        <!-- 10. SIAPA YANG WAJIB IKUT                                      -->
+        <!-- 11. SIAPA YANG WAJIB IKUT                                      -->
         <!-- ============================================================= -->
         <div class="bagian">
             <h2 class="kop">Siapa yang <em>wajib ikut?</em></h2>
@@ -1445,7 +1534,7 @@
         </div>
 
         <!-- ============================================================= -->
-        <!-- 11. YANG DIBAWA PULANG + HARGA                                -->
+        <!-- 12. YANG DIBAWA PULANG + HARGA                                -->
         <!-- ============================================================= -->
         <div class="bagian" id="daftar">
             <div class="row g-4 align-items-center mb-4">
@@ -1496,7 +1585,7 @@
         </div>
 
         <!-- ============================================================= -->
-        <!-- 12. FAQ                                                       -->
+        <!-- 13. FAQ                                                       -->
         <!-- ============================================================= -->
         <div class="bagian">
             <h2 class="kop">Pertanyaan yang <em>sering ditanyakan</em></h2>
@@ -1651,6 +1740,9 @@
                  * seandainya kolomnya dibiarkan tampil sejak awal.
                  */
                 ['logo-scopus', '/storage/tokoh/logo-scopus-elsevier.webp', 'kolom-logo-scopus', true],
+                // Sama polanya: berkasnya belum ada, kolomnya terbuka sendiri
+                // begitu berkasnya ditaruh di MIS.
+                ['bukti-703', '/storage/tokoh/turnitin-framework-703.webp', 'kolom-bukti-703', true],
             ].forEach(function (p) {
                 var img = el(p[0]);
                 if (!img) return;
