@@ -555,6 +555,54 @@
         .kartu-poin h5 { font-size: 1.02rem; font-weight: 800; color: var(--primary-navy); }
         .kartu-poin p { margin: 0; font-size: .9rem; line-height: 1.6; color: #64748b; }
 
+        /* ---- Paragraf penjelas & penutup di bagian "kenapa Scopus" ---- */
+        .logo-scopus { margin: 0 auto 22px; text-align: center; }
+
+        /*
+         * Tingginya yang dipatok, bukan lebarnya: logo Scopus-Elsevier itu
+         * sangat memanjang (kira-kira 4:1), jadi mematok lebar membuatnya
+         * ikut mengecil tak terbaca di ponsel.
+         */
+        .logo-scopus img {
+            width: auto;
+            height: 46px;
+            max-width: 100%;
+            object-fit: contain;
+        }
+
+        .penjelas {
+            max-width: 720px;
+            margin: 0 auto 26px;
+            text-align: center;
+        }
+
+        .penjelas p { margin: 0 0 12px; color: #475569; line-height: 1.75; }
+
+        .penjelas-ajak {
+            margin-bottom: 0 !important;
+            font-weight: 700;
+            color: var(--primary-navy) !important;
+        }
+
+        .penutup-poin {
+            max-width: 680px;
+            margin: 26px auto 0;
+            padding: 16px 22px;
+            border-radius: 16px;
+            border: 1px dashed rgba(255, 106, 0, .45);
+            background: rgba(255, 106, 0, .06);
+            color: #475569;
+            text-align: center;
+            line-height: 1.7;
+        }
+
+        .penutup-poin strong { color: var(--primary-orange); }
+
+        @media (max-width: 575.98px) {
+            .logo-scopus img { height: 34px; }
+            .penutup-poin { padding: 14px 16px; font-size: .94rem; }
+        }
+
         /* ---- Kartu pemateri ---- */
         .kartu-pemateri {
             display: grid;
@@ -1042,42 +1090,58 @@
         <!-- 2. KENAPA INI PENTING — masalahnya dulu                       -->
         <!-- ============================================================= -->
         <div class="bagian">
-            <h2 class="kop">Kenapa paper Anda harus <em>terindeks Scopus?</em></h2>
-            <p class="kop-sub">
-                Scopus adalah pengindeks jurnal berreputasi internasional, dan sudah jadi standar
-                yang wajib ditaklukkan para akademisi dan peneliti.
-            </p>
+            <h2 class="kop"><em>Scopus:</em> makhluk liar tapi wajib ditaklukkan</h2>
+            <p class="kop-sub">Pelajari bagaimana cara cerdik menaklukkannya.</p>
 
-            <div class="row g-3">
-                <div class="col-md-6 col-lg-3">
+            <!--
+                Logo Scopus/Elsevier. Kolomnya ikut tersembunyi sampai
+                berkasnya benar-benar termuat dari MIS, sebab berkasnya
+                belum ada di sana - lihat daftar gambar statis di skrip.
+            -->
+            <div class="logo-scopus" id="kolom-logo-scopus" hidden>
+                <img id="logo-scopus" alt="Scopus - Elsevier" loading="lazy" decoding="async">
+            </div>
+
+            <div class="penjelas">
+                <p>
+                    Scopus adalah pengindeks jurnal yang memiliki reputasi skala internasional,
+                    dan dijadikan standar yang wajib ditaklukkan oleh para akademisi dan peneliti.
+                </p>
+                <p class="penjelas-ajak">Jika jurnal Anda terindeks Scopus, maka Anda akan:</p>
+            </div>
+
+            <div class="row g-3 justify-content-center">
+                <div class="col-md-6 col-lg-4">
                     <div class="kartu-poin">
                         <span class="ikon gradien-rs"><i class="fa-solid fa-arrow-trend-up"></i></span>
-                        <h5>Naik jabatan</h5>
+                        <h5>Mudah naik jabatan</h5>
                         <p>Publikasi internasional jadi syarat yang paling sering mengganjal kenaikan jabatan.</p>
                     </div>
                 </div>
-                <div class="col-md-6 col-lg-3">
+                <div class="col-md-6 col-lg-4">
                     <div class="kartu-poin">
                         <span class="ikon gradien-rs"><i class="fa-solid fa-graduation-cap"></i></span>
-                        <h5>Syarat kelulusan S3</h5>
+                        <h5>Memenuhi syarat kelulusan S3</h5>
                         <p>Banyak program doktor mensyaratkan satu artikel terindeks sebelum sidang.</p>
                     </div>
                 </div>
-                <div class="col-md-6 col-lg-3">
+                <div class="col-md-6 col-lg-4">
                     <div class="kartu-poin">
                         <span class="ikon gradien-rs"><i class="fa-solid fa-award"></i></span>
-                        <h5>Percepatan guru besar</h5>
+                        <h5>Dipercepat jadi guru besar</h5>
                         <p>Rekam jejak publikasi yang terindeks memperpendek jalan ke guru besar.</p>
                     </div>
                 </div>
-                <div class="col-md-6 col-lg-3">
-                    <div class="kartu-poin">
-                        <span class="ikon gradien-rs"><i class="fa-solid fa-globe"></i></span>
-                        <h5>Diakui dunia</h5>
-                        <p>Penelitian Anda terbaca dan bisa disitasi peneliti dari negara mana pun.</p>
-                    </div>
-                </div>
             </div>
+
+            <!--
+                Penutup, bukan kartu keempat. Di situs utama poin ini memang
+                ditegaskan sendiri; menjadikannya kartu membuatnya setara
+                dengan tiga yang lain padahal justru ini yang paling besar.
+            -->
+            <p class="penutup-poin">
+                Dan pastinya, penelitian Anda <strong>akan diakui oleh dunia.</strong>
+            </p>
         </div>
 
         <!-- ============================================================= -->
@@ -1513,18 +1577,48 @@
                  * halaman ini sama sekali.
                  */
                 ['foto-tokoh', '/storage/tokoh/presiden-master-trainer.webp', null],
+                /*
+                 * Logo Scopus-Elsevier. Unsur keempat 'tunggu' membalik
+                 * perilakunya: kolomnya BARU ditampilkan setelah gambarnya
+                 * benar-benar termuat. Berkas ini belum ada di MIS, dan
+                 * gambar yang gagal dimuat tetap menyisakan jarak kosong
+                 * seandainya kolomnya dibiarkan tampil sejak awal.
+                 */
+                ['logo-scopus', '/storage/tokoh/logo-scopus-elsevier.webp', 'kolom-logo-scopus', true],
             ].forEach(function (p) {
                 var img = el(p[0]);
                 if (!img) return;
 
-                img.src = PANGKALAN + p[1];
+                var wadah = p[2] ? el(p[2]) : img;
+                var alamat = PANGKALAN + p[1];
+
+                if (p[3] && wadah) {
+                    /*
+                     * Diintai lewat gambar LEPAS DOM, bukan dengan memasang
+                     * src lalu menunggu 'load' di gambar yang ada di halaman.
+                     * Wadahnya mulai `hidden`, jadi gambarnya ber-display:none,
+                     * dan gambar loading="lazy" di dalamnya TIDAK PERNAH mulai
+                     * dimuat — complete:false, naturalWidth:0 — sehingga
+                     * 'load'-nya tak pernah terbit dan wadahnya tak pernah
+                     * terbuka. Gambar lepas DOM tidak kena aturan itu.
+                     */
+                    var intai = new Image();
+                    intai.onload = function () {
+                        img.src = alamat;
+                        wadah.hidden = false;
+                    };
+                    intai.src = alamat;
+
+                    return;
+                }
 
                 img.addEventListener('error', function () {
                     // Yang gagal dimuat disembunyikan — kotak gambar rusak di
                     // halaman iklan lebih buruk daripada tidak ada gambarnya.
-                    var wadah = p[2] ? el(p[2]) : img;
                     if (wadah) wadah.hidden = true;
                 });
+
+                img.src = alamat;
             });
 
             mulaiPenghitung();
