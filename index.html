@@ -106,6 +106,71 @@
                 radial-gradient(900px 600px at 52% 108%, rgba(255, 106, 0, .10), transparent 62%);
         }
 
+        /* ==== BILAH KEMAJUAN GULIR ==== */
+        .bilah-kemajuan {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 60;
+            width: 100%;
+            height: 3px;
+            background: transparent;
+            pointer-events: none;
+        }
+
+        .bilah-kemajuan span {
+            display: block;
+            width: 0;
+            height: 100%;
+            background: var(--gradient-orange);
+            /* Lebarnya ditulis langsung tiap bingkai; transisi di sini justru
+               membuatnya tertinggal di belakang gulirannya. */
+            transition: none;
+        }
+
+        /* ==== AJAKAN LENGKET DI PONSEL ==== */
+        .ajakan-lengket {
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 55;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+            background: rgba(255, 255, 255, .96);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-top: 1px solid #e2e8f0;
+            box-shadow: 0 -10px 30px -20px rgba(15, 43, 91, .6);
+            transform: translateY(110%);
+            transition: transform .35s cubic-bezier(.22, .8, .3, 1);
+        }
+
+        .ajakan-lengket.tampil { transform: none; }
+
+        .ajakan-lengket strong {
+            display: block;
+            font-size: 1.15rem;
+            font-weight: 900;
+            line-height: 1.1;
+            color: #16a34a;
+        }
+
+        .ajakan-lengket span { font-size: .74rem; color: #64748b; }
+
+        .ajakan-lengket .btn-glossy-primary {
+            min-height: 46px;
+            padding: 10px 24px;
+            font-size: .82rem;
+        }
+
+        @media (min-width: 992px) {
+            .ajakan-lengket { display: none; }
+        }
+
         /* ==== GERAK KECIL YANG MENGARAHKAN MATA ==== */
         /*
          * Semuanya dijaga lambat dan kecil. Gerak di halaman penjualan
@@ -203,6 +268,56 @@
             100% { transform: scale(1); }
         }
 
+        /*
+         * Judul hero masuk bertahap saat halaman dibuka. Kelas .masuk
+         * dipasang oleh skrip pada <body>; tanpa skrip, tidak ada yang
+         * disembunyikan sama sekali.
+         */
+        body.masuk .title-main,
+        body.masuk .hook-text,
+        body.masuk .countdown {
+            animation: naik-masuk .7s cubic-bezier(.22, .8, .3, 1) both;
+        }
+
+        body.masuk .title-main  { animation-delay: .05s; }
+        body.masuk .hook-text   { animation-delay: .18s; }
+        body.masuk .countdown   { animation-delay: .30s; }
+
+        @keyframes naik-masuk {
+            from { opacity: 0; transform: translateY(18px); }
+            to   { opacity: 1; transform: none; }
+        }
+
+        /*
+         * Sapuan kilau melintasi tombol saat disentuh tetikus. overflow
+         * hidden dipasang di tombolnya supaya kilaunya terpotong rapi di
+         * lengkung sudutnya.
+         */
+        @media (hover: hover) {
+            .btn-glossy-primary { overflow: hidden; }
+
+            .btn-glossy-primary::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -60%;
+                width: 45%;
+                height: 100%;
+                background: linear-gradient(100deg, transparent, rgba(255, 255, 255, .45), transparent);
+                transform: skewX(-18deg);
+                pointer-events: none;
+            }
+
+            .btn-glossy-primary:hover::before {
+                animation: sapuan-kilau .7s ease;
+            }
+        }
+
+        @keyframes sapuan-kilau {
+            from { left: -60%; }
+            to   { left: 115%; }
+        }
+
         /* Lencana platform di hero mengambang pelan. */
         .glossy-badge-orange {
             animation: mengambang 3.4s ease-in-out infinite;
@@ -264,9 +379,15 @@
             .petunjuk-gulir i,
             .countdown #m-detik,
             .glossy-badge-orange,
-            .bagian.tampak .harga-utama {
+            .bagian.tampak .harga-utama,
+            body.masuk .title-main,
+            body.masuk .hook-text,
+            body.masuk .countdown,
+            .btn-glossy-primary:hover::before {
                 animation: none;
             }
+
+            .ajakan-lengket { transition: none; }
 
             .kartu-poin,
             .kartu-alasan,
@@ -1570,10 +1691,31 @@
 
 <body>
 
+    <!--
+        Bilah kemajuan gulir. Halaman ini 9.000 px lebih; tanpa penanda,
+        orang tidak tahu masih sepanjang apa lagi dan lebih cepat menyerah.
+        aria-hidden: ini isyarat rupa, bukan informasi yang perlu dibacakan.
+    -->
+    <div class="bilah-kemajuan" aria-hidden="true"><span id="kemajuan"></span></div>
+
     <div class="lapis-hias" aria-hidden="true">
         <div class="shape-blob" style="top: -100px; left: -100px; width: 400px; height: 400px;"></div>
         <div class="shape-blob"
             style="bottom: 100px; right: -50px; width: 300px; height: 300px; background: rgba(15, 43, 91, 0.1);"></div>
+    </div>
+
+    <!--
+        Ajakan yang menempel di bawah layar ponsel, muncul setelah hero
+        terlewati. Di halaman sepanjang ini tombol daftar bisa tertinggal
+        ribuan piksel di belakang; ini membuatnya selalu sejangkauan ibu jari.
+        Disembunyikan di layar lebar - di sana tombolnya memang masih terlihat.
+    -->
+    <div class="ajakan-lengket" id="ajakan-lengket" hidden>
+        <div>
+            <strong id="lengket-harga">&mdash;</strong>
+            <span>per peserta</span>
+        </div>
+        <a href="#daftar" class="btn-glossy-primary">Daftar <i class="fa-solid fa-arrow-right"></i></a>
     </div>
 
     <div class="container py-5" style="position: relative; z-index: 2;">
@@ -2404,6 +2546,15 @@
             })();
 
             pasangMuncul();
+            pasangKemajuan();
+            pasangAjakanLengket();
+
+            // Judul hero baru dianimasikan SESUDAH kelasnya dipasang skrip.
+            // Kalau ditulis di markup, halaman tanpa skrip akan menyembunyikan
+            // judulnya selamanya.
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.body.classList.add('masuk');
+            }
 
             mulaiPenghitung();
 
@@ -2506,6 +2657,11 @@
                 } else {
                     isi('harga', s.harga_tulis || 'Hubungi panitia');
                 }
+
+                // Harga di ajakan lengket mengikuti harga yang BENAR-BENAR
+                // ditagih - yang promo kalau promonya ada - supaya angkanya
+                // tidak berbeda dengan yang di kotak harga.
+                isi('lengket-harga', el('harga').textContent);
 
                 /*
                  * Lencana sisa kursi hanya muncul kalau memang tinggal
@@ -2908,6 +3064,74 @@
                 img.addEventListener('error', function () {
                     el('kolom-flyer').hidden = true;
                 });
+            }
+
+            /**
+             * Bilah kemajuan gulir di tepi atas.
+             *
+             * Dihitung dari tinggi yang BISA digulir (scrollHeight dikurangi
+             * tinggi layar), bukan dari scrollHeight saja: dengan yang kedua,
+             * bilahnya tidak pernah mencapai ujung kanan walau halamannya
+             * sudah mentok di dasar.
+             */
+            function pasangKemajuan() {
+                var bilah = el('kemajuan');
+                if (!bilah) return;
+
+                var terjadwal = false;
+
+                function gambar() {
+                    var bisa = document.documentElement.scrollHeight - window.innerHeight;
+                    var persen = bisa > 0 ? (window.scrollY / bisa) * 100 : 0;
+                    bilah.style.width = Math.min(100, Math.max(0, persen)) + '%';
+                }
+
+                function jadwalkan() {
+                    if (terjadwal) return;
+                    terjadwal = true;
+                    requestAnimationFrame(function () { terjadwal = false; gambar(); });
+                }
+
+                window.addEventListener('scroll', jadwalkan, { passive: true });
+                window.addEventListener('resize', jadwalkan);
+                gambar();
+            }
+
+            /**
+             * Ajakan lengket di ponsel: muncul begitu hero terlewati.
+             *
+             * Disembunyikan lagi saat kotak harga sudah terlihat — di sana
+             * tombol daftar yang sebenarnya sudah ada di layar, dan dua ajakan
+             * sekaligus hanya membuat orang ragu harus menekan yang mana.
+             */
+            function pasangAjakanLengket() {
+                var bar = el('ajakan-lengket');
+                var hero = el('isi');
+                var kotak = document.querySelector('.kotak-harga');
+                if (!bar || !hero) return;
+
+                bar.hidden = false;
+
+                var lewatHero = false;
+                var hargaTerlihat = false;
+
+                function perbarui() {
+                    bar.classList.toggle('tampil', lewatHero && !hargaTerlihat);
+                }
+
+                if (!('IntersectionObserver' in window)) return;
+
+                new IntersectionObserver(function (m) {
+                    lewatHero = !m[0].isIntersecting;
+                    perbarui();
+                }, { threshold: 0 }).observe(hero);
+
+                if (kotak) {
+                    new IntersectionObserver(function (m) {
+                        hargaTerlihat = m[0].isIntersecting;
+                        perbarui();
+                    }, { threshold: 0 }).observe(kotak);
+                }
             }
 
             /**
