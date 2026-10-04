@@ -3176,12 +3176,74 @@
              */
             var LOKAL = ['localhost', '127.0.0.1', '0.0.0.0', '[::1]'];
 
-            var PANGKALAN = LOKAL.indexOf(location.hostname) !== -1
-                ? 'http://127.0.0.1:8000'
-                : PRODUKSI;
+            /*
+             * Di lokal, portnya DICARI — bukan dipatok.
+             *
+             * Dulu tertulis 8000 saja, dan itu benar hanya selama `php artisan
+             * serve` kebagian port bawaannya. Begitu 8000 sudah dipakai proyek
+             * lain, peladennya pindah sendiri ke 8001 atau 8002, dan halaman
+             * ini tetap menanyai 8000 yang kosong: yang terlihat "Sedang ada
+             * gangguan" dan jadwalnya hilang sama sekali, padahal datanya ada
+             * dan aktif — cuma di port sebelah.
+             *
+             * Urutannya sengaja menaik: 8000 dicoba lebih dulu supaya yang
+             * memakai port bawaan tidak membayar satu permintaan sia-sia.
+             */
+            var KANDIDAT_LOKAL = [
+                'http://127.0.0.1:8000',
+                'http://127.0.0.1:8001',
+                'http://127.0.0.1:8002',
+            ];
 
             var paksa = new URLSearchParams(location.search).get('api');
-            if (paksa) PANGKALAN = paksa.replace(/\/+$/, '');
+            var diLokal = LOKAL.indexOf(location.hostname) !== -1;
+
+            var PANGKALAN = paksa
+                ? paksa.replace(/\/+$/, '')
+                : (diLokal ? KANDIDAT_LOKAL[0] : PRODUKSI);
+
+            /*
+             * Janji yang menahan SEGALA yang memakai PANGKALAN sampai alamatnya
+             * pasti — bukan hanya data sesinya, tetapi juga gambar dan video
+             * yang diambil dari MIS. Di produksi dan saat ?api= dipakai,
+             * alamatnya sudah pasti sejak awal, jadi janjinya selesai seketika
+             * dan tidak ada satu permintaan tambahan pun.
+             */
+            var siapPangkalan = (paksa || ! diLokal)
+                ? Promise.resolve(PANGKALAN)
+                : cariPangkalanLokal();
+
+            function cariPangkalanLokal() {
+                var sisa = KANDIDAT_LOKAL.slice();
+
+                return (function coba() {
+                    if (! sisa.length) {
+                        /*
+                         * Semua buntu — peladennya memang sedang mati.
+                         * PANGKALAN dibiarkan di kandidat pertama supaya pesan
+                         * galat di konsol menyebut alamat yang nyata, bukan
+                         * "undefined".
+                         */
+                        return Promise.resolve(PANGKALAN);
+                    }
+
+                    var alamat = sisa.shift();
+
+                    return fetch(alamat + '/api/webinar-eksklusif', {
+                        cache: 'no-store',
+                        headers: { 'Accept': 'application/json' },
+                    }).then(function (r) {
+                        // Yang menjawab 404 pun bukan jawaban yang dipakai:
+                        // port itu boleh jadi milik aplikasi lain yang kebetulan
+                        // hidup, dan isinya bukan data sesi ini.
+                        return r.ok ? alamat : coba();
+                    }, coba);
+                })().then(function (menang) {
+                    PANGKALAN = menang;
+
+                    return menang;
+                });
+            }
 
             function el(id) { return document.getElementById(id); }
 
@@ -3196,64 +3258,66 @@
              * disembunyikan — bukan menyisakan kotak gambar rusak di halaman
              * yang dituju iklan berbayar.
              */
-            [
-                ['ilustrasi', '/assets/img/public/ringkas/ilustrasi-belajar.jpg', 'kolom-ilustrasi'],
-                /*
-                 * Jalur TETAP, bukan nama berkas berkode acak: mengganti foto
-                 * tokohnya cukup menimpa berkas itu di MIS, tanpa menyentuh
-                 * halaman ini sama sekali.
-                 */
-                ['foto-tokoh', '/storage/tokoh/presiden-master-trainer.webp', null],
-                /*
-                 * Logo Scopus-Elsevier. Unsur keempat 'tunggu' membalik
-                 * perilakunya: kolomnya BARU ditampilkan setelah gambarnya
-                 * benar-benar termuat. Berkas ini belum ada di MIS, dan
-                 * gambar yang gagal dimuat tetap menyisakan jarak kosong
-                 * seandainya kolomnya dibiarkan tampil sejak awal.
-                 */
-                ['logo-scopus', '/storage/bukti/logo-scopus.webp', 'kolom-logo-scopus', true],
-                /*
-                 * Dari MIS pada jalur TETAP, sengaja di luar folder galeri/:
-                 * perintah `galeri:rapikan --buang-yatim` menyapu berkas di
-                 * galeri/ yang tidak ditunjuk baris Galeri mana pun, dan
-                 * gambar ini memang tidak punya barisnya.
-                 */
-                ['bukti-703', '/storage/bukti/plagiasi.webp', 'kolom-bukti-703', true],
-                ['bukti-ai', '/storage/bukti/plagiasi-ai.webp', 'kolom-bukti-ai', true],
-            ].forEach(function (p) {
-                var img = el(p[0]);
-                if (!img) return;
-
-                var wadah = p[2] ? el(p[2]) : img;
-                var alamat = PANGKALAN + p[1];
-
-                if (p[3] && wadah) {
+            siapPangkalan.then(function () {
+                [
+                    ['ilustrasi', '/assets/img/public/ringkas/ilustrasi-belajar.jpg', 'kolom-ilustrasi'],
                     /*
-                     * Diintai lewat gambar LEPAS DOM, bukan dengan memasang
-                     * src lalu menunggu 'load' di gambar yang ada di halaman.
-                     * Wadahnya mulai `hidden`, jadi gambarnya ber-display:none,
-                     * dan gambar loading="lazy" di dalamnya TIDAK PERNAH mulai
-                     * dimuat — complete:false, naturalWidth:0 — sehingga
-                     * 'load'-nya tak pernah terbit dan wadahnya tak pernah
-                     * terbuka. Gambar lepas DOM tidak kena aturan itu.
+                     * Jalur TETAP, bukan nama berkas berkode acak: mengganti foto
+                     * tokohnya cukup menimpa berkas itu di MIS, tanpa menyentuh
+                     * halaman ini sama sekali.
                      */
-                    var intai = new Image();
-                    intai.onload = function () {
-                        img.src = alamat;
-                        wadah.hidden = false;
-                    };
-                    intai.src = alamat;
+                    ['foto-tokoh', '/storage/tokoh/presiden-master-trainer.webp', null],
+                    /*
+                     * Logo Scopus-Elsevier. Unsur keempat 'tunggu' membalik
+                     * perilakunya: kolomnya BARU ditampilkan setelah gambarnya
+                     * benar-benar termuat. Berkas ini belum ada di MIS, dan
+                     * gambar yang gagal dimuat tetap menyisakan jarak kosong
+                     * seandainya kolomnya dibiarkan tampil sejak awal.
+                     */
+                    ['logo-scopus', '/storage/bukti/logo-scopus.webp', 'kolom-logo-scopus', true],
+                    /*
+                     * Dari MIS pada jalur TETAP, sengaja di luar folder galeri/:
+                     * perintah `galeri:rapikan --buang-yatim` menyapu berkas di
+                     * galeri/ yang tidak ditunjuk baris Galeri mana pun, dan
+                     * gambar ini memang tidak punya barisnya.
+                     */
+                    ['bukti-703', '/storage/bukti/plagiasi.webp', 'kolom-bukti-703', true],
+                    ['bukti-ai', '/storage/bukti/plagiasi-ai.webp', 'kolom-bukti-ai', true],
+                ].forEach(function (p) {
+                    var img = el(p[0]);
+                    if (!img) return;
 
-                    return;
-                }
+                    var wadah = p[2] ? el(p[2]) : img;
+                    var alamat = PANGKALAN + p[1];
 
-                img.addEventListener('error', function () {
-                    // Yang gagal dimuat disembunyikan — kotak gambar rusak di
-                    // halaman iklan lebih buruk daripada tidak ada gambarnya.
-                    if (wadah) wadah.hidden = true;
+                    if (p[3] && wadah) {
+                        /*
+                         * Diintai lewat gambar LEPAS DOM, bukan dengan memasang
+                         * src lalu menunggu 'load' di gambar yang ada di halaman.
+                         * Wadahnya mulai `hidden`, jadi gambarnya ber-display:none,
+                         * dan gambar loading="lazy" di dalamnya TIDAK PERNAH mulai
+                         * dimuat — complete:false, naturalWidth:0 — sehingga
+                         * 'load'-nya tak pernah terbit dan wadahnya tak pernah
+                         * terbuka. Gambar lepas DOM tidak kena aturan itu.
+                         */
+                        var intai = new Image();
+                        intai.onload = function () {
+                            img.src = alamat;
+                            wadah.hidden = false;
+                        };
+                        intai.src = alamat;
+
+                        return;
+                    }
+
+                    img.addEventListener('error', function () {
+                        // Yang gagal dimuat disembunyikan — kotak gambar rusak di
+                        // halaman iklan lebih buruk daripada tidak ada gambarnya.
+                        if (wadah) wadah.hidden = true;
+                    });
+
+                    img.src = alamat;
                 });
-
-                img.src = alamat;
             });
 
             /*
@@ -3269,31 +3333,33 @@
              * Tiap rekaman berdiri sendiri: yang berkasnya belum ada
              * disembunyikan tanpa mengganggu yang lain.
              */
-            [
-                ['video-testimoni', 'kolom-testimoni1', 'testimoni', 'testimoni-sampul'],
-                ['video-testimoni2', 'kolom-testimoni2', 'testimoni2-web', 'testimoni2-sampul'],
-                ['video-testimoni3', 'kolom-testimoni3', 'testimoni3-web', 'testimoni3-sampul'],
-            ].forEach(function (p) {
-                var vid = el(p[0]);
-                var kolom = el(p[1]);
+            siapPangkalan.then(function () {
+                [
+                    ['video-testimoni', 'kolom-testimoni1', 'testimoni', 'testimoni-sampul'],
+                    ['video-testimoni2', 'kolom-testimoni2', 'testimoni2-web', 'testimoni2-sampul'],
+                    ['video-testimoni3', 'kolom-testimoni3', 'testimoni3-web', 'testimoni3-sampul'],
+                ].forEach(function (p) {
+                    var vid = el(p[0]);
+                    var kolom = el(p[1]);
 
-                if (!vid || !kolom) return;
+                    if (!vid || !kolom) return;
 
-                var sampul = PANGKALAN + '/storage/video/' + p[3] + '.webp';
-                var intai = new Image();
+                    var sampul = PANGKALAN + '/storage/video/' + p[3] + '.webp';
+                    var intai = new Image();
 
-                intai.onload = function () {
-                    vid.poster = sampul;
+                    intai.onload = function () {
+                        vid.poster = sampul;
 
-                    var sumber = document.createElement('source');
-                    sumber.src = PANGKALAN + '/storage/video/' + p[2] + '.mp4';
-                    sumber.type = 'video/mp4';
-                    vid.appendChild(sumber);
+                        var sumber = document.createElement('source');
+                        sumber.src = PANGKALAN + '/storage/video/' + p[2] + '.mp4';
+                        sumber.type = 'video/mp4';
+                        vid.appendChild(sumber);
 
-                    kolom.hidden = false;
-                };
+                        kolom.hidden = false;
+                    };
 
-                intai.src = sampul;
+                    intai.src = sampul;
+                });
             });
 
             pasangMuncul();
@@ -3323,36 +3389,38 @@
                 pilihanAmbil.cache = 'no-store';
             }
 
-            fetch(PANGKALAN + '/api/webinar-eksklusif', pilihanAmbil)
-                .then(function (r) {
-                    if (!r.ok) throw new Error('status ' + r.status);
-                    return r.json();
-                })
-                .then(function (d) {
-                    if (!d.ada || !d.sesi) {
-                        tampilkanKosong(d.pesan);
-                        return;
-                    }
+            siapPangkalan.then(function () {
+                fetch(PANGKALAN + '/api/webinar-eksklusif', pilihanAmbil)
+                    .then(function (r) {
+                        if (!r.ok) throw new Error('status ' + r.status);
+                        return r.json();
+                    })
+                    .then(function (d) {
+                        if (!d.ada || !d.sesi) {
+                            tampilkanKosong(d.pesan);
+                            return;
+                        }
 
-                    pasang(d.sesi, d.berikutnya || []);
-                })
-                .catch(function (e) {
-                    /*
-                     * Gagal memuat TIDAK boleh berakhir halaman kosong. Yang
-                     * membukanya orang yang baru saja menekan iklan, dan satu-
-                     * satunya yang masih berguna baginya adalah nomor panitia.
-                     */
-                    // Alamat yang gagal ikut dicatat. Tanpa itu, "gagal memuat"
-                    // tidak membedakan API yang belum dideploy dari peladen yang
-                    // sedang mati — dan keduanya diperbaiki dengan cara yang
-                    // sama sekali berbeda.
-                    console.error('Gagal memuat data sesi dari ' + PANGKALAN + ':', e);
+                        pasang(d.sesi, d.berikutnya || []);
+                    })
+                    .catch(function (e) {
+                        /*
+                         * Gagal memuat TIDAK boleh berakhir halaman kosong. Yang
+                         * membukanya orang yang baru saja menekan iklan, dan satu-
+                         * satunya yang masih berguna baginya adalah nomor panitia.
+                         */
+                        // Alamat yang gagal ikut dicatat. Tanpa itu, "gagal memuat"
+                        // tidak membedakan API yang belum dideploy dari peladen yang
+                        // sedang mati — dan keduanya diperbaiki dengan cara yang
+                        // sama sekali berbeda.
+                        console.error('Gagal memuat data sesi dari ' + PANGKALAN + ':', e);
 
-                    tampilkanKosong(
-                        'Jadwalnya sedang tidak bisa dimuat. Hubungi panitia untuk informasi terbaru.',
-                        'Sedang ada gangguan'
-                    );
-                });
+                        tampilkanKosong(
+                            'Jadwalnya sedang tidak bisa dimuat. Hubungi panitia untuk informasi terbaru.',
+                            'Sedang ada gangguan'
+                        );
+                    });
+            });
 
             function tampilkanKosong(pesan, judul) {
                 el('isi').hidden = true;
