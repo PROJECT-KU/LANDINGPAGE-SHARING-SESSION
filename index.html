@@ -3158,8 +3158,19 @@
              * ?api=... di alamat halaman menimpanya. Itu dipakai untuk mencoba
              * halaman ini terhadap peladen lokal tanpa menyunting berkas lalu
              * lupa mengembalikannya sebelum dideploy.
+             *
+             * Sempat tertulis rumahscopus.org, dan di sana TIDAK ADA satu pun
+             * yang dibutuhkan halaman ini — diuji langsung 5 Okt 2026:
+             * /api/webinar-eksklusif, /storage/video/, dan /Webinar-Eksklusif
+             * ketiganya 404. Situs itu memang bukan MIS. Yang memuat API-nya
+             * MIS, dan MIS tinggal di domain ini.
+             *
+             * Sebelas tempat di halaman ini bergantung padanya — jadwal,
+             * gambar, video testimoni, dan tombol daftar — jadi salah alamat
+             * di sini berarti seluruh isinya kosong sekaligus, dengan satu
+             * pita "Sedang ada gangguan" sebagai gantinya.
              */
-            var PRODUKSI = 'https://rumahscopus.org';
+            var PRODUKSI = 'https://rumahscopusfoundation.com';
 
             /*
              * Saat halaman ini dibuka dari mesin sendiri — Live Server di
